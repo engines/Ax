@@ -1,0 +1,18 @@
+{
+  "name": "@engines/ax-appkit-field-dependent",
+  "version": "0.0.1",
+  "description": "An Ax extension that adds a dependent option to ax-appkit field controls.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-dependent#readme",
+  "dependencies": {
+    "@engines/ax-appkit-field": "^0.0.1"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@engines/ax-codemirror",
+  "version": "0.0.1",
+  "description": "An Ax extension for CodeMirror.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax-codemirror#readme",
+  "dependencies": {
+    "@engines/ax": "^0.0.1",
+    "codemirror": "^5.52.2"
+  }
+}

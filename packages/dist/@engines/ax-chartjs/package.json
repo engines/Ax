@@ -1,0 +1,18 @@
+{
+  "name": "@engines/ax-chartjs",
+  "version": "0.0.1",
+  "description": "An Ax extension for Chart.js.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax-chartjs#readme",
+  "dependencies": {
+    "chart.js": "^2.9.3"
+  }
+}

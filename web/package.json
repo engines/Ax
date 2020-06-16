@@ -1,0 +1,32 @@
+{
+  "name": "tutorial",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "build": "webpack -p"
+  },
+  "devDependencies": {
+    "css-loader": "^3.5.3",
+    "file-loader": "^6.0.0",
+    "raw-loader": "^4.0.1",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "@engines/ax": "file:../packages/dist/@engines/ax",
+    "@engines/ax-appkit": "file:../packages/dist/@engines/ax-appkit",
+    "@engines/ax-chartjs": "file:../packages/dist/@engines/ax-chartjs",
+    "@engines/ax-markedjs": "file:../packages/dist/@engines/ax-markedjs",
+    "@engines/ax-xtermjs": "file:../packages/dist/@engines/ax-xtermjs",
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "bootstrap": "^4.5.0",
+    "chart.js": "^2.9.3",
+    "codemirror": "^5.54.0",
+    "dompurify": "^2.0.11",
+    "highlight.js": "^10.0.3",
+    "jquery": "^3.5.1",
+    "markedjs": "^10.0.0",
+    "popper.js": "^1.16.1"
+  }
+}

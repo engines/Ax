@@ -1,0 +1,16 @@
+{
+  "name": "@engines/ax",
+  "version": "0.0.1",
+  "description": "Ax is for creating dynamic web content.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax#readme",
+  "main": "lib/ax.js"
+}

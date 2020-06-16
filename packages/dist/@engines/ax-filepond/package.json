@@ -1,0 +1,19 @@
+{
+  "name": "@engines/ax-filepond",
+  "version": "0.0.1",
+  "description": "An Ax extension for FilePond.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax-filepond#readme",
+  "dependencies": {
+    "@engines/ax": "^0.0.1",
+    "filepond": "^4.13.4"
+  }
+}
