@@ -1,12 +1,15 @@
 const gulp = require("gulp"),
-  webserver = require("gulp-webserver");
+  connect = require('gulp-connect');
 
 module.exports = {
   "webserver": function (done) {
-    return gulp.src("packages/dist").pipe(webserver());
+    connect.server({
+      root: 'packages/dist',
+      port: 8000,
+    })
   },
   "source-monitor": function (done) {
-    return gulp.watch(
+    gulp.watch(
       ["./packages/src/**/*.js"],
       gulp.series(["build:ax", "build:axf"])
     );
