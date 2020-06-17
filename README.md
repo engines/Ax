@@ -3,6 +3,7 @@ Ax
 
 Ax is a JavaScript library for creating reactive DOM components and single page applications.
 
+<a href="/docs/index.md">Docs></a>
 
 This Repo
 =========

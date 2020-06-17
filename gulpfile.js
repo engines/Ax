@@ -1,6 +1,7 @@
 const requireDir = require("require-dir"),
   tasks = requireDir("./tasks"),
-  gulp = require("gulp");
+  gulp = require("gulp"),
+  exec = require('child_process').exec;
 
 gulp.task("build:pretty-source", tasks.build["pretty-source"]);
 gulp.task("build:ax", tasks.build["ax"]);

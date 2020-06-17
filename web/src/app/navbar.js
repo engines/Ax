@@ -2,7 +2,7 @@ let navbar = (router) => (a, x) =>
   a["nav#navbar.navbar.navbar-expand-md.navbar-light.bg-white.mx-n2.mt-n1"](
     [
       a.a(
-        a.img(null,{src: 'logo.png', width: 100, height: 57, class: 'app-navbar-brand-icon'}),
+        a.img(null,{src: '/logo.png', width: 100, height: 57, class: 'app-navbar-brand-icon'}),
         {
           class: "navbar-brand",
           href: "#",

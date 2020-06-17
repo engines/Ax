@@ -22,7 +22,8 @@ const importAll = (r) => Object.assign(...r.keys().map( f => {
   obj[f.match(/\w+/)[0]] = r(f).default
   return obj
 }));
-app.Pages = importAll(require.context('./../../docs/', false, /\.md$/))
+app.Docs = importAll(require.context('./../../docs/', false, /\.md$/))
+app.Pages = importAll(require.context('./../pages/', false, /\.md$/))
 
 // Load ax extensions
 ax.extend( axAppkit, axChartjs, axMarkedjs, axXtermjs );

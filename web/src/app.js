@@ -6,9 +6,11 @@ const app = (a,x) => [
       navbar(router),
       router.nest({
         routes: {
-          '/?': () => app.page('index'),
-          '/usage': () => app.page('usage'),
-          '/integration': () => 'hi',
+          '/?': app.page('index'),
+          '/docs/?': app.page('docs/index'),
+          '/docs/installation': app.page('docs/installation'),
+          '/docs/usage': app.page('docs/usage'),
+          '/docs/integration': app.page('docs/integration'),
         }
       })
     ],

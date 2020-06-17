@@ -8,7 +8,7 @@ highlightjs.registerLanguage('xml', xml);
 highlightjs.registerLanguage('javascript', javascript);
 highlightjs.registerLanguage('shell', shell);
 
-const md = (markdown) => (a,x) =>
+const mdUNSAFE = (markdown) => (a,x) =>
   x.markedjs.markdown({
     markdown: markdown,
     // sanitize: DOMPurify.sanitize,
@@ -19,4 +19,4 @@ const md = (markdown) => (a,x) =>
     }
   });
 
-export default md
+export default mdUNSAFE
