@@ -44,7 +44,7 @@ ax.extension.markedjs.markdown = function (options = {}) {
     html = options.sanitize(html);
   }
 
-  return a['div|ax-markedjs'](a(html), options.markedjsTag);
+  return a[`${options.inline ? 'span' : 'div'}|ax-markedjs`](a(html), options.markedjsTag);
 };
 
 ax.extension.markedjs.report = {};

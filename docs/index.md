@@ -1,4 +1,3 @@
-<!--MARKDOWN-->
 Ax
 ==
 
@@ -6,13 +5,12 @@ Ax
 ```javascript
 ax('Hello, world!')
 ```
-
-<!--NAVIGATION-->
-<a href="/docs/installation.md">Installation</a>
-
-
 <!--MARKDOWN-->
 
+<!--NAVIGATION-->
+<a href="/docs/installation.md">Installation</a> <a href="/docs/installation.md">Installation</a>
+
+<!--MARKDOWN-->
 Content
 -------
 

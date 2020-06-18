@@ -23,18 +23,18 @@ let navbar = (router) => (a, x) =>
         a.ul(
           [
             a.li(
-              a.a('Installation', {
+              a.a('Home', {
                 class: 'nav-link',
                 href: '#',
                 $on: {click: (e, el) => {
                   e.preventDefault();
-                  router.open("/installation")
+                  router.open("/")
                 }},
               }),
               {
                 class: 'nav-item',
                 data: {
-                  path: '/installation'
+                  path: '/'
                 },
               }
             ),
