@@ -23,7 +23,11 @@ const importAll = (r) => Object.assign(...r.keys().map( f => {
   return obj
 }));
 app.Docs = importAll(require.context('./../../docs/', false, /\.md$/))
-app.Pages = importAll(require.context('./../pages/', false, /\.md$/))
+// app.Pages = importAll(require.context('./../pages/', false, /\.md$/))
+
+import readme from './../../README.md'
+
+app.Docs.readme = readme
 
 // Load ax extensions
 ax.extend( axAppkit, axChartjs, axMarkedjs, axXtermjs );

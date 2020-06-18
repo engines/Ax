@@ -1,6 +1,5 @@
 <!--NAVIGATION-->
-<a href="/docs">Index</a>
-<!--/NAVIGATION-->
+<a href="/docs/index.md">Index</a>
 
 <!--MARKDOWN-->
 Ax Installation
@@ -15,5 +14,3 @@ npm i axf
 
 CDN
 ---
-
-<!--/MARKDOWN-->

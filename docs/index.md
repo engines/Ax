@@ -2,18 +2,16 @@
 Ax
 ==
 
-<!--/MARKDOWN-->
-
 <!--PLAYGROUND-->
 ```javascript
 ax('Hello, world!')
 ```
-<!--/PLAYGROUND-->
 
 <!--NAVIGATION-->
-<a href="/docs/installation">Installation</a>
-<!--/NAVIGATION-->
+<a href="/docs/installation.md">Installation</a>
 
+
+<!--MARKDOWN-->
 
 Content
 -------
