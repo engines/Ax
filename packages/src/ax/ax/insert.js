@@ -1,11 +1,13 @@
 /**
  * Inserts an element in the DOM.
  */
-ax.insert = function (selector, type, content, options = {}) {
+ax.insert = function (element, options = {}) {
+  let target = options.target;
+  if (ax.is.string(target)) {
+    target = window.document.querySelector(target);
+  } else if (ax.is.undefined(target)) {
+    target = window.document.body;
+  }
   let method = options.method || 'appendChild';
-  let tag = window.document.createElement(type);
-  Object.assign(tag, options.tag);
-  let target = window.document.querySelector(selector);
-  tag.innerHTML = content;
-  target[method](tag);
+  target[method](element);
 };

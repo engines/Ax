@@ -1,5 +1,5 @@
 <!--NAVIGATION-->
-<a href="/docs/index.md">Index</a>
+<a class="app-navigation" href="/docs/index.md">Index</a>
 
 <!--MARKDOWN-->
 Ax Installation

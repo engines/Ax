@@ -11,7 +11,7 @@ ax.extension.form.factory.textarea = function (options = {}) {
     ...options.textareaTag,
   };
 
-  return a['|appkit-form-textarea-wrapper'](
+  return a['ax-appkit-form-textarea-wrapper'](
     a.textarea(value, textareaTagOptions),
     options.wrapperTag
   );

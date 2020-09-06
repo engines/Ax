@@ -1,7 +1,7 @@
 {
   "name": "@engines/ax-appkit-form-async",
-  "version": "0.0.1",
-  "description": "An Ax extension that adds asynchronous submit to the form builder.",
+  "description": "An Ax extension that makes ax-appkit-kit forms submit asynchronously.",
+  "main": "ax-appkit-form-async.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/engines/Ax.git"
@@ -11,8 +11,5 @@
   "bugs": {
     "url": "https://github.com/engines/Ax/issues"
   },
-  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-form-async#readme",
-  "dependencies": {
-    "@engines/ax-appkit": "^0.0.1"
-  }
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-form-async#readme"
 }

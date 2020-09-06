@@ -1,0 +1,15 @@
+{
+  "name": "@engines/ax-appkit-chartjs",
+  "description": "An Ax extension for Chart.js.",
+  "main": "ax-appkit-chartjs.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-chartjs#readme"
+}

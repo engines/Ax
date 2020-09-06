@@ -6,7 +6,7 @@ ax.extension.report.factory.radios = function (options = {}) {
 
   let selections = x.lib.form.selections(options.selections);
 
-  return a['|appkit-report-radios'](
+  return a['ax-appkit-report-radios'](
     selections.map((selection) => {
       let label = selection.label;
 
@@ -22,7 +22,6 @@ ax.extension.report.factory.radios = function (options = {}) {
         value: value == selection.value ? selection.value : '',
         label: label,
         checked: selection.value,
-        // required: options.required,
         tabindex: -1,
         readonly: 'readonly',
         inputTag: {
@@ -34,6 +33,9 @@ ax.extension.report.factory.radios = function (options = {}) {
         checkTag: options.checkTag,
       });
     }),
-    options.radiosTag
+    {
+      tabindex: 0,
+      ...options.radiosTag,
+    }
   );
 };

@@ -1,40 +1,32 @@
 ax.extension.bootstrap.form.shim = {
   field: (f, target) => {
     return (options = {}) => {
-      let vertical = ax.is.undefined(options.vertical)
-        ? f.formOptions.vertical
-        : options.vertical;
+      let horizontal = ax.is.undefined(options.horizontal)
+        ? f.formOptions.horizontal
+        : options.horizontal;
 
       let fieldTagClass, headerTagClass, bodyTagClass;
 
       if (
         options.as == 'one' ||
-        options.control == 'one' ||
         options.as == 'many' ||
-        options.control == 'many' ||
         options.as == 'table' ||
-        options.control == 'table' ||
-        options.as == 'nest' ||
-        options.control == 'nest'
+        options.as == 'nest'
       ) {
         fieldTagClass = 'd-block mb-0';
-      } else if (
-        options.as == 'hidden' ||
-        options.as == 'input/hidden' ||
-        options.type == 'hidden'
-      ) {
+      } else if (options.as == 'hidden') {
         fieldTagClass = 'd-none';
       } else {
         fieldTagClass = 'd-block mb-1';
       }
 
-      if (vertical) {
-        headerTagClass = '';
-        bodyTagClass = '';
-      } else {
+      if (horizontal) {
         fieldTagClass = fieldTagClass + ' form-row';
         headerTagClass = 'd-inline-block align-top mt-2 col-sm-4';
         bodyTagClass = 'd-inline-block col-sm-8';
+      } else {
+        headerTagClass = '';
+        bodyTagClass = '';
       }
 
       return target({
@@ -67,20 +59,20 @@ ax.extension.bootstrap.form.shim = {
   },
 
   fieldset: (f, target) => (options = {}) => {
-    let vertical = ax.is.undefined(options.vertical)
-      ? f.formOptions.vertical
-      : options.vertical;
+    let horizontal = ax.is.undefined(options.horizontal)
+      ? f.formOptions.horizontal
+      : options.horizontal;
 
     let fieldsetTagClass, headerTagClass, bodyTagClass;
 
-    if (vertical) {
-      fieldsetTagClass = '';
-      headerTagClass = '';
-      bodyTagClass = '';
-    } else {
+    if (horizontal) {
       fieldsetTagClass = 'mb-0 form-row';
       headerTagClass = 'd-inline-block align-top mt-2 col-sm-4';
       bodyTagClass = 'd-inline-block col-sm-8';
+    } else {
+      fieldsetTagClass = '';
+      headerTagClass = '';
+      bodyTagClass = '';
     }
 
     return target({
@@ -219,9 +211,9 @@ ax.extension.bootstrap.form.shim = {
           class: 'd-inline-block float-right',
           ...options.itemHeaderTag,
         },
-        itemButtonsTag: {
+        itemMenuTag: {
           class: 'btn-group',
-          ...options.itemButtonsTag,
+          ...options.itemMenuTag,
         },
         itemBodyTag: {
           class: 'd-inline-block float-left',
@@ -299,9 +291,9 @@ ax.extension.bootstrap.form.shim = {
           class: 'pl-1 pt-0 pr-0 pb-0',
           ...options.hintTdTag,
         },
-        itemButtonsTag: {
+        itemMenuTag: {
           class: 'btn-group float-right',
-          ...options.itemButtonsTag,
+          ...options.itemMenuTag,
         },
         footerTag: {
           class: 'mb-1 mt-0 d-block',
@@ -324,9 +316,9 @@ ax.extension.bootstrap.form.shim = {
         },
       }),
     many: (f, target) => (options = {}) => {
-      let vertical = ax.is.undefined(options.vertical)
-        ? f.formOptions.vertical
-        : options.vertical;
+      let horizontal = ax.is.undefined(options.horizontal)
+        ? f.formOptions.horizontal
+        : options.horizontal;
 
       return target({
         ...options,
@@ -338,9 +330,9 @@ ax.extension.bootstrap.form.shim = {
           class: 'clearfix',
           ...options.itemHeaderTag,
         },
-        itemButtonsTag: {
-          class: `btn-group float-right ${vertical ? 'mb-0 mt-2' : 'mb-1'}`,
-          ...options.itemButtonsTag,
+        itemMenuTag: {
+          class: `btn-group float-right ${horizontal ? 'mb-1' : 'mb-0 mt-2'}`,
+          ...options.itemMenuTag,
         },
         footerTag: {
           class: 'mb-1 d-block',

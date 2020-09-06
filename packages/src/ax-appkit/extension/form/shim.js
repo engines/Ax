@@ -1,4 +1,5 @@
 ax.extension.form.shim = {
+  form: (f) => (options) => ax.x.form.factory.form(f, options),
   input: (f) => (options) => ax.x.form.factory.input(options),
   select: (f) => (options) => ax.x.form.factory.select(options),
   textarea: (f) => (options) => ax.x.form.factory.textarea(options),
@@ -6,7 +7,6 @@ ax.extension.form.shim = {
   checkboxes: (f) => (options) => ax.x.form.factory.checkboxes(options),
   radios: (f) => (options) => ax.x.form.factory.radios(options),
   button: (f) => (options) => ax.x.form.factory.button(options),
-  form: (f) => (options) => ax.x.form.factory.form(f, options),
   submit: (f) => (options) => ax.x.form.factory.submit(f, options),
   cancel: (f) => (options) => ax.x.form.factory.cancel(f, options),
 };

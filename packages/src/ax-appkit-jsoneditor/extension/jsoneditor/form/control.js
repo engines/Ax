@@ -3,55 +3,53 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
   let x = ax.x;
 
   let controlTagOptions = {
-    $init: function () {
-      let editor = this;
-
+    $init: (el) => {
       let jsoneditorOptions = {
-        onEditable: function (node) {
-          return !editor.$disabled; // Do not allow editing when disabled.
+        onEditable: (node) => {
+          return !el.$disabled; // Do not allow editing when disabled.
         },
-        onChange: function () {
-          editor.$stash();
-          editor.$send('ax.appkit.form.control.change');
+        onChange: () => {
+          el.$stash();
+          el.$send('ax.appkit.form.control.change');
         },
         ...options.jsoneditor,
       };
 
-      this.$editor = new JSONEditor(this.$('div'), jsoneditorOptions);
+      el.$editor = new x.jsoneditor.JSONEditor(el.$('div'), jsoneditorOptions);
 
       let value = options.value || 'null';
 
       if (options.parse) {
         try {
           value = JSON.parse(value);
-          this.$editor.set(value);
-          this.$stash();
+          el.$editor.set(value);
+          el.$stash();
         } catch (error) {
-          this.$nodes = a['p.error'](`⚠ ${error.message}`);
+          el.$nodes = a['p.error'](`⚠ ${error.message}`);
         }
       } else {
-        this.$editor.set(value);
-        this.$stash();
+        el.$editor.set(value);
+        el.$stash();
       }
     },
-    $stash: function () {
-      this.$('input').value = this.$value();
+    $stash: (el) => () => {
+      el.$('input').value = el.$value();
     },
-    $value: function () {
-      return JSON.stringify(this.$editor.get());
+    $value: (el) => () => {
+      return JSON.stringify(el.$editor.get());
     },
-    $data: function () {
-      return this.$value();
+    $data: (el) => () => {
+      return el.$value();
     },
-    $focus: function () {
-      this.$('.jsoneditor-tree button').focus();
+    $focus: (el) => () => {
+      el.$('.jsoneditor-tree button').focus();
     },
-    $disable: function () {
-      this.$disabled = true;
+    $disable: (el) => () => {
+      el.$disabled = true;
     },
-    $enable: function () {
+    $enable: (el) => () => {
       if (!options.disabled) {
-        this.$disabled = false;
+        el.$disabled = false;
       }
     },
     $on: {
@@ -69,9 +67,9 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
     ...options.controlTag,
   };
 
-  return a['|appkit-form-control'](
+  return a['ax-appkit-form-control'](
     [
-      a['|appkit-form-jsoneditor'](
+      a['ax-appkit-form-jsoneditor'](
         [
           a.input(null, {
             name: options.name,

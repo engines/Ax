@@ -2,7 +2,7 @@ ax.extension.report.factory.checkbox = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  return a['|appkit-report-checkbox'](
+  return a['ax-appkit-report-checkbox'](
     x.check({
       ...options,
       inputTag: {
@@ -13,6 +13,9 @@ ax.extension.report.factory.checkbox = function (options = {}) {
       ...options.checkbox,
       readonly: 'readonly',
     }),
-    options.checkboxTag
+    {
+      tabindex: 0,
+      ...options.checkboxTag,
+    }
   );
 };

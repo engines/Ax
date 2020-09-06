@@ -24,6 +24,7 @@ ax.extension.form.factory.input = function (options = {}) {
     value: options.value,
     type: options.type,
     required: options.required,
+    disabled: options.disabled,
     readonly: options.readonly,
     pattern: options.pattern,
     minlength: options.minlength,
@@ -38,7 +39,7 @@ ax.extension.form.factory.input = function (options = {}) {
     ...options.inputTag,
   };
 
-  return a['|appkit-form-input-wrapper'](
+  return a['ax-appkit-form-input-wrapper'](
     [a.input(null, inputTagOptions), datalist],
     options.wrapperTag
   );

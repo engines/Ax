@@ -5,12 +5,12 @@ const modal = (options = {}) => (a, x) =>
     }),
     {
       id: options.id || "modal",
-      $open: function (options = {}) {
-        this.$(".modal-dialog").className = `modal-dialog modal-${
+      $open: (el) => (options = {}) => {
+        el.$(".modal-dialog").className = `modal-dialog modal-${
           options.size || "md"
         }`;
 
-        this.$(".modal-content").$nodes = [
+        el.$(".modal-content").$nodes = [
           a["div.modal-header"]([
             a[".modal-title"](options.title || null),
             a["button.close"](a("&times;"), { data: { dismiss: "modal" } }),
@@ -19,9 +19,9 @@ const modal = (options = {}) => (a, x) =>
           options.footer ? a["div.modal-footer"](options.footer || null) : null,
         ];
 
-        $(this.$(".modal")).modal({ backdrop: "static" });
+        $(el.$(".modal")).modal({ backdrop: "static" });
       },
     }
   );
 
-export default modal
+export default modal;

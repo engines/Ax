@@ -1,7 +1,7 @@
 {
   "name": "@engines/ax-appkit-field-dependent",
-  "version": "0.0.1",
-  "description": "An Ax extension that adds a dependent option to ax-appkit field controls.",
+  "description": "An Ax extension that makes field control visibility dependent upon values in other fields.",
+  "main": "ax-appkit-field-dependent.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/engines/Ax.git"
@@ -11,8 +11,5 @@
   "bugs": {
     "url": "https://github.com/engines/Ax/issues"
   },
-  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-dependent#readme",
-  "dependencies": {
-    "@engines/ax-appkit-field": "^0.0.1"
-  }
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-dependent#readme"
 }

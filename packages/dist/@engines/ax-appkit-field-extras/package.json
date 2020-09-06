@@ -1,7 +1,7 @@
 {
   "name": "@engines/ax-appkit-field-extras",
-  "version": "0.0.1",
-  "description": "An Ax extension that adds a various field controls to the form and report builders.",
+  "description": "An Ax extension that adds some extra controls, including country, language, timezone, password.",
+  "main": "ax-appkit-field-extras.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/engines/Ax.git"
@@ -11,8 +11,5 @@
   "bugs": {
     "url": "https://github.com/engines/Ax/issues"
   },
-  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-extras#readme",
-  "dependencies": {
-    "@engines/ax-appkit-field": "^0.0.1"
-  }
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-extras#readme"
 }

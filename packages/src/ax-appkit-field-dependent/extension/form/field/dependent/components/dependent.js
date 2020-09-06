@@ -5,80 +5,77 @@ ax.extension.form.field.dependent.components.dependent = function (options) {
   let optionsCollection = x.form.field.dependent.collect(options);
 
   let dependentTag = {
-    $init: function () {
-      this.$dependencies = optionsCollection.map((options) => ({
-        field: x.form.field.dependent.components.dependent.dependency(
-          this,
-          options
-        ),
-        value: options.value,
-        pattern: options.pattern,
+    $init: (el) => {
+      el.$dependencies = optionsCollection.map((opts) => ({
+        field: x.form.field.dependent.components.dependent.dependency(el, opts),
+        value: opts.value,
+        pattern: opts.pattern,
       }));
-      for (let dependency of this.$dependencies) {
-        dependency.field.$registerDependent(this);
+      for (let dependency of el.$dependencies) {
+        dependency.field.$registerDependent(el);
       }
     },
-    $registerDependent: function (dependent) {
-      this.$dependents.push(dependent);
+    $registerDependent: (el) => (dependent) => {
+      el.$dependents.push(dependent);
     },
-    $hide: function () {
-      this.style.display = 'none';
-      this.$('|appkit-form-control').$disable();
-      let dependents = x.lib.unnested(this, '|appkit-form-field-dependent');
+    $hide: (el) => () => {
+      el.style.display = 'none';
+      el.$('ax-appkit-form-control').$disable();
+      let dependents = x.lib.unnested(el, 'ax-appkit-form-field-dependent');
       for (let i in dependents) {
         dependents[i].$hide();
       }
     },
-    $show: function () {
-      this.$('|appkit-form-control').$enable();
+    $show: (el) => () => {
+      el.$('ax-appkit-form-control').$enable();
       if (!options.animate) {
-        this.style.display = 'block';
+        el.style.display = 'block';
       } else {
-        x.lib.animate.fade.in(this);
+        x.lib.animate.fade.in(el);
       }
-      let dependents = x.lib.unnested(this, '|appkit-form-field-dependent');
+      let dependents = x.lib.unnested(el, 'ax-appkit-form-field-dependent');
       for (let i in dependents) {
         dependents[i].$check();
       }
     },
     $dependents: [],
-    $value: function () {
-      return this.$('|appkit-form-control').$value();
+    $value: (el) => () => {
+      return el.$('ax-appkit-form-control').$value();
     },
-    $match: function () {
-      if (ax.is.undefined(this.$matched)) {
-        if (this.$dependencies.length) {
-          for (let dependency of this.$dependencies) {
+    $match: (el) => () => {
+      if (ax.is.undefined(el.$matched)) {
+        if (el.$dependencies.length) {
+          for (let dependency of el.$dependencies) {
             if (x.form.field.dependent.components.dependent.match(dependency)) {
-              this.$matched = true;
+              el.$matched = true;
               return true;
             }
           }
-          this.$matched = false;
+          el.$matched = false;
           return false;
         } else {
-          this.$matched = true;
+          el.$matched = true;
           return true;
         }
       } else {
-        return this.$matched;
+        return el.$matched;
       }
     },
-    $check: function () {
-      if (this.$match()) {
-        this.$show();
+    $check: (el) => () => {
+      if (el.$match()) {
+        el.$show();
       } else {
-        this.$hide();
+        el.$hide();
       }
     },
-    $reset: function () {
-      this.$matched = undefined;
-      for (let dependent of this.$dependents) {
+    $reset: (el) => () => {
+      el.$matched = undefined;
+      for (let dependent of el.$dependents) {
         dependent.$reset();
       }
     },
-    $checkDependents: function () {
-      for (let dependent of this.$dependents) {
+    $checkDependents: (el) => () => {
+      for (let dependent of el.$dependents) {
         dependent.$reset();
         dependent.$check();
       }
@@ -96,5 +93,5 @@ ax.extension.form.field.dependent.components.dependent = function (options) {
     },
   };
 
-  return a['|appkit-form-field-dependent'](options.body, dependentTag);
+  return a['ax-appkit-form-field-dependent'](options.body, dependentTag);
 };

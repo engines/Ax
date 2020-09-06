@@ -11,5 +11,11 @@ ax.extension.report.factory.text = function (options = {}) {
     );
   }
 
-  return a['|appkit-report-text'](component, options.textTag);
+  return a['ax-appkit-report-text'](
+    a.textarea(component, {
+      readonly: true,
+      ...options.textareaTag,
+    }),
+    options.textTag
+  );
 };

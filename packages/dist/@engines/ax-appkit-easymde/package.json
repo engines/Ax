@@ -1,0 +1,15 @@
+{
+  "name": "@engines/ax-appkit-easymde",
+  "description": "An Ax extension for EasyMDE.",
+  "main": "ax-appkit-easymde.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-easymde#readme"
+}

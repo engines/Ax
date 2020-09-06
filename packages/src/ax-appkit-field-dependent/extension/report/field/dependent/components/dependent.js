@@ -5,50 +5,50 @@ ax.extension.report.field.dependent.components.dependent = function (options) {
   let optionsCollection = x.form.field.dependent.collect(options);
 
   let dependentTag = {
-    $init: function () {
-      this.$dependencies = optionsCollection.map((options) => ({
+    $init: (el) => {
+      el.$dependencies = optionsCollection.map((options) => ({
         field: x.report.field.dependent.components.dependent.dependency(
-          this,
+          el,
           options
         ),
         value: options.value,
         pattern: options.pattern,
       }));
-      this.$check();
+      el.$check();
     },
-    $hide: function () {
-      this.style.display = 'none';
+    $hide: (el) => () => {
+      el.style.display = 'none';
     },
-    $show: function () {
-      this.style.display = 'block';
+    $show: (el) => () => {
+      el.style.display = 'block';
     },
-    $value: function () {
-      return this.$('|appkit-report-control').$value();
+    $value: (el) => () => {
+      return el.$('ax-appkit-report-control').$value();
     },
-    $match: function () {
-      if (ax.is.undefined(this.$matched)) {
-        if (this.$dependencies.length) {
-          for (let dependency of this.$dependencies) {
+    $match: (el) => () => {
+      if (ax.is.undefined(el.$matched)) {
+        if (el.$dependencies.length) {
+          for (let dependency of el.$dependencies) {
             if (x.form.field.dependent.components.dependent.match(dependency)) {
-              this.$matched = true;
+              el.$matched = true;
               return true;
             }
           }
-          this.$matched = false;
+          el.$matched = false;
           return false;
         } else {
-          this.$matched = true;
+          el.$matched = true;
           return true;
         }
       } else {
-        return this.$matched;
+        return el.$matched;
       }
     },
-    $check: function () {
-      if (this.$match()) {
-        this.$show();
+    $check: (el) => () => {
+      if (el.$match()) {
+        el.$show();
       } else {
-        this.$hide();
+        el.$hide();
       }
     },
     ...options.dependentTag,
@@ -58,5 +58,5 @@ ax.extension.report.field.dependent.components.dependent = function (options) {
     },
   };
 
-  return a['|appkit-report-field-dependent'](options.body, dependentTag);
+  return a['ax-appkit-report-field-dependent'](options.body, dependentTag);
 };

@@ -1,0 +1,15 @@
+{
+  "name": "@engines/ax-appkit-dropdown",
+  "description": "An Ax extension for dropdown menus and popups.",
+  "main": "ax-appkit-dropdown.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-dropdown#readme"
+}

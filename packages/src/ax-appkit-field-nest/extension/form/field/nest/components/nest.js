@@ -3,7 +3,7 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   let x = ax.x;
 
   let nestForm = options.form || (() => null);
-
+  console.log('nest opts', options);
   let ff = this.nest.factory({
     scope: options.name, // name is the scope for child items
     object: options.value,
@@ -15,6 +15,7 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
     let pattern = `^${scope.replace(/(\[|\])/g, '\\$1')}\\[\\d*\\](.*)$`;
     let regex = new RegExp(pattern);
     let match = name.match(regex);
+    if (!match) return scope;
     let i = options.unindexed ? '' : index;
     return `${scope}[${i}]${match[1]}`;
   };
@@ -22,78 +23,56 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   let nestTagOptions = {
     name: ff.scope,
 
-    $rescopeElement: function (el, scope, index) {
-      el.setAttribute(
-        'name',
-        rebasedName(el.getAttribute('name'), scope, index)
-      );
-    },
-
-    $rescope: function (scope, index) {
-      let name = rebasedName(this.getAttribute('name'), scope, index);
-      this.setAttribute('name', name);
-      ff.scope = name;
-
-      let namedElements = x.lib.unnested(this, `[name^="${scope}"]`);
-      namedElements.forEach(
-        function (el) {
-          debugger;
-          if (el.dataset.axPseudotag == 'appkit-form-nest') {
-            el.$rescope(scope, index);
-          } else {
-            this.$rescopeElement(el, scope, index);
-          }
-        }.bind(this)
-      );
+    $rescope: (el) => (oldScope, newScope) => {
+      let oldName = el.getAttribute('name');
+      let newName = oldName.replace(oldScope, newScope);
+      ff.scope = newName;
+      el.setAttribute('name', newName);
+      let rescopable = x.lib.unnested(el, `[name^="${oldName}"]`);
+      rescopable.forEach((target) => {
+        if (ax.is.function(target.$rescope)) {
+          target.$rescope(oldName, newName);
+        } else {
+          target.setAttribute(
+            'name',
+            target.getAttribute('name').replace(oldName, newName)
+          );
+        }
+      });
     },
 
     ...options.nestTag,
   };
 
   let controlTagOptions = {
-    $value: function () {
-      let items = this.$('|appkit-form-nest-items');
-      if (items) {
-        return this.$('|appkit-form-nest-items').$count();
-      } else {
-        return null;
-      }
+    $value: (el) => () => el.$('|ax-appkit-form-nest-items').$count(),
+    $controls: (el) => () => {
+      return x.lib.unnested(el, 'ax-appkit-form-control');
     },
-    $controls: function () {
-      return x.lib.unnested(this, '|appkit-form-control');
+    $buttons: (el) => () => {
+      return el.$$('button').$$;
     },
-    $buttons: function () {
-      return this.$$('button').$$;
-    },
-    $disable: function () {
-      let controls = [...this.$controls(), ...this.$buttons()];
+    $disable: (el) => () => {
+      let controls = [...el.$controls(), ...el.$buttons()];
       for (let i in controls) {
         controls[i].$disable && controls[i].$disable();
       }
     },
-    $enable: function () {
-      let controls = [...this.$controls(), ...this.$buttons()];
+    $enable: (el) => () => {
+      let controls = [...el.$controls(), ...el.$buttons()];
       for (let i in controls) {
         controls[i].$enable && controls[i].$enable();
       }
     },
-    $focus: function () {
-      let first = this.$('|appkit-form-control');
+    $focus: (el) => () => {
+      let first = el.$('ax-appkit-form-control');
       if (first) first.$focus();
-    },
-    $on: {
-      'ax.appkit.form.nest.item.move': (e, el) =>
-        el.$send('ax.appkit.form.control.change'),
-      'ax.appkit.form.nest.item.add': (e, el) =>
-        el.$send('ax.appkit.form.control.change'),
-      'ax.appkit.form.nest.item.remove': (e, el) =>
-        el.$send('ax.appkit.form.control.change'),
     },
     ...options.controlTag,
   };
 
-  return a['|appkit-form-control'](
-    a['|appkit-form-nest'](nestForm(ff), nestTagOptions),
+  return a['ax-appkit-form-control'](
+    a['ax-appkit-form-nest'](nestForm(ff), nestTagOptions),
     controlTagOptions
   );
 };

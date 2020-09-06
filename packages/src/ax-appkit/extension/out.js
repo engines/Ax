@@ -4,7 +4,11 @@ ax.extension.out = function (value, options = {}) {
 
   let component;
 
-  if (value) {
+  if (ax.is.undefined(value)) {
+    component = a['i.placeholder'](
+      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+    );
+  } else {
     if (options.parse) {
       if (ax.is.string(value)) {
         try {
@@ -18,11 +22,7 @@ ax.extension.out = function (value, options = {}) {
     } else {
       component = x.out.element(value);
     }
-  } else {
-    component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
-    );
   }
 
-  return a['|appkit-out'](component, options.outTag);
+  return a['ax-appkit-out'](component, options.outTag);
 };

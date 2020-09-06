@@ -21,7 +21,7 @@ ax.extension.check = function (options = {}) {
     ...options.labelTag,
   };
 
-  return a['|appkit-check'](
+  return a['ax-appkit-check'](
     [
       a.input(null, inputTagOptions),
       a.label(options.label || '', labelTagOptions),

@@ -6,7 +6,7 @@ ax.extension.form.factory.radios = function (options = {}) {
 
   let selections = x.lib.form.selections(options.selections);
 
-  return a['|appkit-form-radios'](
+  return a['ax-appkit-form-radios'](
     selections.map((selection) => {
       let label = selection.label;
 

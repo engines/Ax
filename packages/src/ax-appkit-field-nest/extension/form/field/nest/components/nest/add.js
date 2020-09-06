@@ -5,15 +5,12 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
 
   let label = `✚ Add${singular ? ` ${singular}` : ''}`;
 
-  return a['|appkit-form-nest-add-button'](
+  return a['ax-appkit-form-nest-add-button'](
     f.button({
       label: label,
       onclick: (e, el) => {
-        let itemsTag = options.target
-          ? options.target(el)
-          : el.$('^|appkit-form-nest |appkit-form-nest-items');
-        itemsTag.$add();
-        itemsTag.$send('ax.appkit.form.nest.item.add');
+        let items = el.$('^ax-appkit-form-nest |ax-appkit-form-nest-items');
+        items.$add();
       },
       ...options,
     }),

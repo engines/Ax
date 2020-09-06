@@ -2,7 +2,7 @@ ax.extension.form.factory.checkbox = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  return a['|appkit-report-checkbox'](
+  return a['ax-appkit-form-checkbox'](
     x.check({
       name: options.name,
       value: options.value,

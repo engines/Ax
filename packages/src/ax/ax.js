@@ -2,37 +2,21 @@
  * Creates an HTML element and inserts it in the DOM.
  * The target for the insertion is the document.body, unless options.target
  * specifies otherwise. options.target can be a selector string or an element.
- * If options.target is false, the element will not be added to the DOM.
  * The default insertion method is to append a child. Set options.method
- * 'replace' to replace the target, or 'prepend' to prepend a child.
+ * 'replaceWith' to replace the target, or 'prependChild' to prepend a child.
  */
 let ax = function (component, options = {}) {
-  let element = ax.factory(component);
-  let target = options.target;
-  if (element == null) return;
+  let element = ax.node(component);
+  let insert = () => ax.insert(element, options);
 
-  let load = () => {
-    if (target != false) {
-      if (ax.is.undefined(target)) {
-        target = window.document.body;
-      } else if (ax.is.string(target)) {
-        target = window.document.querySelector(target);
-      }
-      if (options.method == 'replace') {
-        target.replaceWith(element);
-      } else if (options.method == 'prepend') {
-        target.prependChild(element);
-      } else {
-        target.appendChild(element);
-      }
-    }
-  };
-
-  // Ensure that the document is ready.
-  if (document.readyState == 'complete') {
-    load();
+  // Ensure that the document is ready to write to.
+  if (
+    window.document.readyState == 'interactive' ||
+    window.document.readyState == 'complete'
+  ) {
+    insert();
   } else {
-    document.addEventListener('DOMContentLoaded', load);
+    window.document.addEventListener('DOMContentLoaded', insert);
   }
 
   return element;

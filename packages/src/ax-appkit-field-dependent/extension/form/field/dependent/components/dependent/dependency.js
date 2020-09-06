@@ -7,8 +7,7 @@ ax.extension.form.field.dependent.components.dependent.dependency = (
   if (options.selector) {
     selector = options.selector;
   } else {
-    let name = options.name;
-    selector = `[name="${name}"]`;
+    selector = `[name="${options.name}"]`;
   }
 
   let search = options.search || '^form';
@@ -17,7 +16,7 @@ ax.extension.form.field.dependent.components.dependent.dependency = (
   let targetDependency;
 
   if (target) {
-    targetDependency = target.$('^|appkit-form-field-dependent');
+    targetDependency = target.$('^ax-appkit-form-field-dependent');
   }
 
   if (targetDependency) {
@@ -25,8 +24,10 @@ ax.extension.form.field.dependent.components.dependent.dependency = (
   } else {
     console.error(
       el,
-      `Form field failed to find a dependency target using selector:`,
-      selector
+      'Form field failed to find a dependency target using selector:',
+      selector,
+      'from options',
+      options
     );
   }
 };

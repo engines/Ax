@@ -5,7 +5,7 @@ ax.extension.form.factory.checkboxes = function (options = {}) {
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 
-  return a['appkit-form-checkboxes'](
+  return a['ax-appkit-form-checkboxes'](
     selections.map((selection) => {
       let label = selection.label;
 

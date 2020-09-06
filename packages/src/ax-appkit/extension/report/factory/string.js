@@ -14,5 +14,8 @@ ax.extension.report.factory.string = function (options = {}) {
     );
   }
 
-  return a['|appkit-report-string'](component, options.stringTag);
+  return a['ax-appkit-report-string'](component, {
+    tabindex: 0,
+    ...options.stringTag,
+  });
 };

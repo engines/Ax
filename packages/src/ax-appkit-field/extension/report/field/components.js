@@ -1,1 +1,1 @@
-ax.extension.report.field.components = {};
+ax.extension.report.field = {};

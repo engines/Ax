@@ -27,16 +27,16 @@ ax.extension.form.field.dependent.shim = {
       ...options,
       formTag: {
         ...options.formTag,
-        $init: function () {
+        $init: (el) => {
           options.formTag &&
             options.formTag.$init &&
-            options.formTag.$init.bind(this)(arguments);
-          this.$checkDependents();
+            options.formTag.$init.bind(el)(arguments);
+          el.$checkDependents();
         },
-        $checkDependents: function () {
+        $checkDependents: (el) => () => {
           let dependents = ax.x.lib.unnested(
-            this,
-            '|appkit-form-field-dependent'
+            el,
+            'ax-appkit-form-field-dependent'
           );
           for (let i in dependents) {
             dependents[i].$check();
@@ -55,10 +55,10 @@ ax.extension.form.field.dependent.shim = {
             e,
             el
           ) => {
-            let newItem = el.$$('|appkit-form-nest-item').$$.reverse()[0];
+            let newItem = el.$itemElements().reverse()[0];
             let dependents = ax.x.lib.unnested(
               newItem,
-              '|appkit-form-field-dependent'
+              'ax-appkit-form-field-dependent'
             );
             for (let i in dependents) {
               dependents[i].$check();

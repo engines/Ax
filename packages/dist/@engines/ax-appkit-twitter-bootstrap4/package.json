@@ -1,7 +1,7 @@
 {
   "name": "@engines/ax-appkit-twitter-bootstrap4",
-  "version": "0.0.1",
-  "description": "An Ax extension that adds Bootstrap v4 styling to various ax-appkit components.",
+  "description": "An Ax extension that adds bootstrap styling classes to the ax-appkit-kit form builder and report builder.",
+  "main": "ax-appkit-twitter-bootstrap4.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/engines/Ax.git"
@@ -11,11 +11,5 @@
   "bugs": {
     "url": "https://github.com/engines/Ax/issues"
   },
-  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-twitter-bootstrap4#readme",
-  "dependencies": {
-    "@engines/ax-appkit": "^0.0.1",
-    "bootstrap": "^4.4.1",
-    "jquery": "^3.5.0",
-    "popper.js": "^1.16.1"
-  }
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-twitter-bootstrap4#readme"
 }

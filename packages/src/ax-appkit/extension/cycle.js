@@ -9,23 +9,18 @@ ax.extension.cycle = function (options = {}) {
 
   let cycleTag = {
     $state: 0,
-    $nodes: (el, i) => collection[i],
-    $init: function () {
-      let target = this;
-      let cycle = function () {
-        setTimeout(function () {
-          if (target.$state === max) {
-            target.$state = 0;
-          } else {
-            target.$state++;
-          }
-          cycle();
-        }, period);
-      };
-      cycle();
+    $nodes: (el) => collection[el.$state],
+    $init: (el) => {
+      setInterval(() => {
+        if (el.$state === max) {
+          el.$state = 0;
+        } else {
+          el.$state++;
+        }
+      }, period);
     },
     ...options.cycleTag,
   };
 
-  return a['|appkit-cycle'](null, cycleTag);
+  return a['ax-appkit-cycle'](null, cycleTag);
 };

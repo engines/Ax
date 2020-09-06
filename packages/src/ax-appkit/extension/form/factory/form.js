@@ -5,13 +5,14 @@ ax.extension.form.factory.form = (f, options = {}) => {
   let form = options.form || (() => null);
 
   let formTagOptions = {
+    id: options.id,
     method: options.method || 'POST',
     action: options.url || options.action,
-    $formData: function () {
-      return new FormData(this);
+    $formData: (el) => () => {
+      return new FormData(el);
     },
-    $data: function () {
-      return x.lib.form.data.objectify(this.$formData());
+    $data: (el) => () => {
+      return x.lib.form.data.objectify(el.$formData());
     },
     ...options.formTag,
   };

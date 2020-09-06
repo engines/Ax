@@ -1,7 +1,7 @@
 {
   "name": "@engines/ax-appkit",
-  "version": "0.0.1",
-  "description": "Appkit is an Ax extension that provides a router, http utility, form builder and report builder.",
+  "description": "Axf Core is an Ax extension that provides a router, http utility, form builder and report builder.",
+  "main": "ax-appkit.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/engines/Ax.git"
@@ -11,8 +11,5 @@
   "bugs": {
     "url": "https://github.com/engines/Ax/issues"
   },
-  "homepage": "https://github.com/engines/Ax/packages/ax-appkit#readme",
-  "dependencies": {
-    "@engines/ax": "^0.0.1"
-  }
+  "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit#readme"
 }

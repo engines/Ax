@@ -5,7 +5,7 @@ ax.extension.report.factory.select = function (options = {}) {
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections || {});
 
-  let label = [];
+  let labels = [];
 
   if (ax.is.not.array(value)) {
     value = [value];
@@ -14,21 +14,24 @@ ax.extension.report.factory.select = function (options = {}) {
   for (let selected of value) {
     let found = selections.find((selection) => selection.value === selected);
     if (found) {
-      label.push(found.label);
+      labels.push(found.label);
     }
   }
-  label = label.join(', ');
+  labels = labels.join(', ');
 
   let selectTagOptions = {
     name: options.name,
     ...options.selectTag,
   };
 
-  if (label.length == 0) {
-    label = a['i.placeholder'](
+  if (!labels) {
+    labels = a['i.placeholder'](
       ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
     );
   }
 
-  return a['|appkit-report-select'](label, selectTagOptions);
+  return a['ax-appkit-report-select'](labels, {
+    tabindex: 0,
+    ...selectTagOptions,
+  });
 };

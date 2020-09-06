@@ -25,7 +25,7 @@ ax.extension.form.factory.select = function (options = {}) {
     },
   };
 
-  return a['|appkit-form-select-wrapper'](
+  return a['ax-appkit-form-select-wrapper'](
     a.select(this.select.options(options), selectTagOptions),
     options.wrapperTag
   );

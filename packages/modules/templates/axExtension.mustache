@@ -1,0 +1,14 @@
+// Ax, copyright (c) Lachlan Douglas
+// Distributed under an MIT license: https://github.com/engines/Ax/LICENSE.md
+;(function(root, factory) {
+  if (typeof exports === 'object') {
+    module.exports = {
+      extend: (ax, dependencies={}) => factory(ax, dependencies)
+    };
+  } else {
+    factory(root.ax)
+  }
+}(this, function(ax, dependencies={}) {
+
+{{{js}}}
+}));

@@ -3,13 +3,9 @@ ax.extension.form.field.nest.prefab.shim = {
     if (options.collection) {
       if (
         options.as == 'one' ||
-        options.control == 'one' ||
         options.as == 'many' ||
-        options.control == 'many' ||
         options.as == 'table' ||
-        options.control == 'table' ||
-        options.as == 'nest' ||
-        options.control == 'nest'
+        options.as == 'nest'
       ) {
         options.collection = false;
       }
@@ -20,9 +16,9 @@ ax.extension.form.field.nest.prefab.shim = {
 
   controls: {
     table: (f) => (options) =>
-      ax.x.form.field.nest.prefab.components.table(f, options),
+      ax.x.form.field.nest.prefab.controls.table(f, options),
     many: (f) => (options) =>
-      ax.x.form.field.nest.prefab.components.many(f, options),
+      ax.x.form.field.nest.prefab.controls.many(f, options),
     one: (f) => (options) => f.controls.nest(options),
   },
 };

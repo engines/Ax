@@ -1,7 +1,7 @@
 {
   "name": "@engines/ax-appkit-field",
-  "version": "0.0.1",
-  "description": "An Ax extension that add a field control to the ax-appkit form builder and report builder.",
+  "description": "An Ax extension that adds a field control to the ax-appkit-kit form builder and report builder.",
+  "main": "ax-appkit-field.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/engines/Ax.git"
@@ -11,8 +11,5 @@
   "bugs": {
     "url": "https://github.com/engines/Ax/issues"
   },
-  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field#readme",
-  "dependencies": {
-    "@engines/ax-appkit": "^0.0.1"
-  }
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-kit-field#readme"
 }

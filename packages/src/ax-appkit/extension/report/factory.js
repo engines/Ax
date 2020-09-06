@@ -17,11 +17,7 @@ ax.extension.report.factory = function (options) {
       });
     };
 
-    this.target = {
-      scope: options.scope,
-      object: options.object,
-      reportOptions: options.reportOptions,
-    };
+    this.target = options;
 
     for (let i in shims) {
       this.target = proxy(this, this.target, shims[i]);

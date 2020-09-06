@@ -5,9 +5,9 @@ ax.extension.lib.object.assign = function (object, keys, value) {
   if (depth === 1) {
     // Assign the value if no nesting.
 
-    if (key === '') {
+    if (key === '' && ax.is.array(object)) {
       object.push(value);
-    } else {
+    } else if (key) {
       object[key] = value;
     }
   } else {

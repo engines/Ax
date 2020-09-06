@@ -1,18 +1,25 @@
-let navbar = (router) => (a, x) =>
-  a["nav#navbar.navbar.navbar-expand-md.navbar-light.bg-white.mx-n2.mt-n1"](
+export default (router) => (a, x) =>
+  a["nav#navbar.navbar.navbar-expand-md.navbar-light.bg-white"](
     [
       a.a(
-        a.img(null,{src: '/logo.png', width: 100, height: 57, class: 'app-navbar-brand-icon'}),
+        a.img(null, {
+          src: "/logo.png",
+          width: 100,
+          height: 57,
+          class: "app-navbar-brand-icon",
+        }),
         {
           class: "navbar-brand",
           href: "#",
-          $on: {click: (e, el) => {
-            e.preventDefault();
-            router.open("/")
-          }},
+          $on: {
+            click: (e, el) => {
+              e.preventDefault();
+              router.open("/");
+            },
+          },
         }
       ),
-      a.button(a({class: "navbar-toggler-icon"}), {
+      a.button(a({ class: "navbar-toggler-icon" }), {
         class: "navbar-toggler mb-4",
         data: {
           toggle: "collapse",
@@ -23,72 +30,76 @@ let navbar = (router) => (a, x) =>
         a.ul(
           [
             a.li(
-              a.a('Home', {
-                class: 'nav-link',
-                href: '#',
-                $on: {click: (e, el) => {
-                  e.preventDefault();
-                  router.open("/")
-                }},
+              a.a("Home", {
+                class: "nav-link",
+                href: "#",
+                $on: {
+                  click: (e, el) => {
+                    e.preventDefault();
+                    router.open("/");
+                  },
+                },
               }),
               {
-                class: 'nav-item',
+                class: "nav-item",
                 data: {
-                  path: '/'
+                  path: "/",
                 },
               }
             ),
             a.li(
-              a.a( 'Integration',{
-                class: 'nav-link',
-                href: '#',
-                $on: {click: (e, el) => {
-                  e.preventDefault();
-                  router.open("/integration")
-                }},
+              a.a("Docs", {
+                class: "nav-link",
+                href: "#",
+                $on: {
+                  click: (e, el) => {
+                    e.preventDefault();
+                    router.open("/docs");
+                  },
+                },
               }),
               {
-                class: 'nav-item',
+                class: "nav-item",
                 data: {
-                  path: '/integration'
+                  path: "/docs",
                 },
               }
             ),
             a.li(
-              a.a( 'Usage',{
-                class: 'nav-link',
-                href: '#',
-                $on: {click: (e, el) => {
-                  e.preventDefault();
-                  router.open("/usage")
-                }},
+              a.a("Test", {
+                class: "nav-link",
+                href: "#",
+                $on: {
+                  click: (e, el) => {
+                    e.preventDefault();
+                    router.open("/test");
+                  },
+                },
               }),
               {
-                class: 'nav-item',
+                class: "nav-item",
                 data: {
-                  path: '/usage'
+                  path: "/test",
                 },
               }
             ),
           ],
           {
-            class: 'navbar-nav mr-auto mb-4',
+            class: "navbar-nav mr-auto mb-4",
           }
         ),
         {
-          id: 'navbarCollapse',
-          class: 'collapse navbar-collapse',
+          id: "navbarCollapse",
+          class: "collapse navbar-collapse",
         }
       ),
     ],
     {
-      $activate: function() {
-        this.$$('.nav-item.active').classList.remove('active')
-        let section = location.pathname.split('/')[1]
-        let active = this.$(`[data-path="/${section}"]`)
-        if (active) active.classList.add('active')
+      $activate: (el) => () => {
+        el.$$(".nav-item.active").classList.remove("active");
+        let section = location.pathname.split("/")[1];
+        let active = el.$(`[data-path="/${section}"]`);
+        if (active) active.classList.add("active");
       },
     }
   );
-
-export default navbar

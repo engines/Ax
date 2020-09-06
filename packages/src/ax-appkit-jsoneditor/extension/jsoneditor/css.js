@@ -1,5 +1,5 @@
-ax.css({
-  '|appkit-form-codemirror': {
+ax.style({
+  'ax-appkit-form-codemirror': {
     '.jsoneditor-tree': {
       background: 'white',
     },

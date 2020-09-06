@@ -8,5 +8,5 @@ ax.extension.report.factory.report = (r, options = {}) => {
     ...options.reportTag,
   };
 
-  return a['|appkit-report'](report(r), reportTagOptions);
+  return a['ax-appkit-report'](report(r), reportTagOptions);
 };

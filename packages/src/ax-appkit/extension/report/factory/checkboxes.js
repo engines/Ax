@@ -5,7 +5,7 @@ ax.extension.report.factory.checkboxes = function (options = {}) {
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 
-  return a['|appkit-report-checkboxes'](
+  return a['ax-appkit-report-checkboxes'](
     selections.map((selection) => {
       let label = selection.label;
 
@@ -29,6 +29,9 @@ ax.extension.report.factory.checkboxes = function (options = {}) {
         },
       });
     }),
-    options.checkboxesTag
+    {
+      tabindex: 0,
+      ...options.checkboxesTag,
+    }
   );
 };

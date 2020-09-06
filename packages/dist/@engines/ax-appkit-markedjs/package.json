@@ -1,0 +1,15 @@
+{
+  "name": "@engines/ax-appkit-markedjs",
+  "description": "An Ax extension for Marked.js.",
+  "main": "ax-appkit-markedjs.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-markedjs#readme"
+}

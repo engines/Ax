@@ -4,36 +4,35 @@ ax.extension.transition.fade = function (options = {}) {
 
   let duration = (options.duration || 500) / 2;
 
-  return a['div|appkit-transition'](null, {
-    $init: function () {
-      let component = options.initial;
-      this.style.display = 'none';
-      if (component) {
-        this.$in(component);
+  return a['ax-appkit-transition'](null, {
+    $init: (el) => {
+      el.style.display = 'none';
+      if (options.initial) {
+        el.$in(options.initial);
       }
     },
-    $in: function (component) {
+    $in: (el) => (component) => {
       // Show el before inserting content. For any $init functions
       // that rely on visible elements, such as resizing functions that
       // need to access el height/width.
-      this.style.display = options.display || 'block';
-      this.$nodes = [component];
-      x.lib.animate.fade.in(this, {
+      el.style.display = options.display || 'block';
+      el.$nodes = [component];
+      x.lib.animate.fade.in(el, {
         duration: duration,
         display: options.display,
         complete: () => {
-          if (options.complete) options.complete(this);
+          if (options.complete) options.complete(el);
         },
       });
     },
-    $to: function (component) {
-      if (this.style.opacity == '1') {
-        x.lib.animate.fade.out(this, {
+    $to: (el) => (component) => {
+      if (el.style.opacity == '1') {
+        x.lib.animate.fade.out(el, {
           duration: duration,
-          complete: () => this.$in(component),
+          complete: () => el.$in(component),
         });
       } else {
-        this.$in(component);
+        el.$in(component);
       }
     },
     ...options.transitionTag,

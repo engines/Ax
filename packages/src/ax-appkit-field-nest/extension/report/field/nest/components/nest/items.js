@@ -11,7 +11,7 @@ ax.extension.report.field.nest.components.nest.items = function (f, options) {
       reportOptions: f.reportOptions,
     });
 
-    return a['|appkit-report-nest-item'](reportFn(ff), options.itemTag);
+    return a['ax-appkit-report-nest-item'](reportFn(ff), options.itemTag);
   }.bind(this);
 
   let itemsData;
@@ -25,15 +25,15 @@ ax.extension.report.field.nest.components.nest.items = function (f, options) {
     itemsData = [];
   }
 
-  return a['|appkit-report-nest-items'](
+  return a['ax-appkit-report-nest-items'](
     itemsData.length
       ? itemsData.map(item)
       : a['i.placeholder'](
           ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
         ),
     {
-      $count: function () {
-        return this.$$(':scope > |appkit-report-nest-item').$$.length;
+      $count: (el) => () => {
+        return el.$$(':scope > ax-appkit-report-nest-item').$$.length;
       },
       ...options.itemsTag,
     }

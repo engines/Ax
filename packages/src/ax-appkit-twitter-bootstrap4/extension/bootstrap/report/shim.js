@@ -1,20 +1,16 @@
 ax.extension.bootstrap.report.shim = {
   field: (r, target) => (options = {}) => {
-    let vertical = ax.is.undefined(options.vertical)
-      ? r.reportOptions.vertical
-      : options.vertical;
+    let horizontal = ax.is.undefined(options.horizontal)
+      ? r.reportOptions.horizontal
+      : options.horizontal;
 
     let fieldTagClass, headerTagClass, bodyTagClass;
 
     if (
       options.as == 'one' ||
-      options.control == 'one' ||
       options.as == 'many' ||
-      options.control == 'many' ||
       options.as == 'table' ||
-      options.control == 'table' ||
-      options.as == 'nest' ||
-      options.control == 'nest'
+      options.as == 'nest'
     ) {
       fieldTagClass = 'd-block mb-0';
     } else if (options.as == 'hidden') {
@@ -23,13 +19,13 @@ ax.extension.bootstrap.report.shim = {
       fieldTagClass = 'd-block mb-1';
     }
 
-    if (vertical) {
-      headerTagClass = '';
-      bodyTagClass = '';
-    } else {
+    if (horizontal) {
       fieldTagClass = fieldTagClass + ' form-row';
       headerTagClass = 'd-inline-block align-top mt-2 col-sm-4';
       bodyTagClass = 'd-inline-block col-sm-8';
+    } else {
+      headerTagClass = '';
+      bodyTagClass = '';
     }
 
     return target({
@@ -81,11 +77,11 @@ ax.extension.bootstrap.report.shim = {
         ...options.inputTag,
       },
       labelTag: {
-        class: 'custom-control-label',
+        class: 'custom-control-label text-dark',
         ...options.labelTag,
       },
       checkboxTag: {
-        class: 'd-block p-2',
+        class: 'form-control h-100',
         ...options.checkboxTag,
       },
     }),
@@ -102,11 +98,11 @@ ax.extension.bootstrap.report.shim = {
         ...options.inputTag,
       },
       labelTag: {
-        class: 'custom-control-label',
+        class: 'custom-control-label text-dark',
         ...options.labelTag,
       },
       checkboxesTag: {
-        class: 'd-block p-2',
+        class: 'form-control h-100',
         ...options.checkboxesTag,
       },
     }),
@@ -123,11 +119,11 @@ ax.extension.bootstrap.report.shim = {
         ...options.inputTag,
       },
       labelTag: {
-        class: 'custom-control-label',
+        class: 'custom-control-label text-dark',
         ...options.labelTag,
       },
       radiosTag: {
-        class: 'd-block p-2',
+        class: 'form-control h-100',
         ...options.radiosTag,
       },
     }),
@@ -136,7 +132,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       stringTag: {
-        class: 'form-control text-dark bg-white h-100',
+        class: 'form-control h-100 text-dark bg-white h-100',
         ...options.stringTag,
       },
     }),
@@ -145,7 +141,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       selectTag: {
-        class: 'form-control text-dark h-100',
+        class: 'form-control h-100 text-dark bg-white',
         ...options.selectTag,
       },
     }),
@@ -153,9 +149,9 @@ ax.extension.bootstrap.report.shim = {
   text: (r, target) => (options = {}) =>
     target({
       ...options,
-      textTag: {
-        class: 'form-control text-dark bg-white h-100',
-        ...options.textTag,
+      textareaTag: {
+        class: 'form-control text-dark bg-white',
+        ...options.textareaTag,
       },
     }),
 
@@ -163,7 +159,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       outputTag: {
-        class: 'form-control text-dark bg-white h-100',
+        class: 'form-control h-100 text-dark bg-white',
         ...options.outputTag,
       },
     }),
@@ -191,7 +187,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         booleanTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.booleanTag,
         },
       }),
@@ -199,18 +195,18 @@ ax.extension.bootstrap.report.shim = {
     json: (r, target) => (options = {}) =>
       target({
         ...options,
-        jsonTag: {
-          class: 'form-control text-dark h-100',
-          ...options.jsonTag,
+        preTag: {
+          class: 'form-control h-100 mb-0 text-dark bg-white',
+          ...options.preTag,
         },
       }),
 
     preformatted: (r, target) => (options = {}) =>
       target({
         ...options,
-        preformattedTag: {
-          class: 'form-control text-dark bg-white h-100',
-          ...options.preformattedTag,
+        preTag: {
+          class: 'form-control h-100 mb-0 text-dark bg-white',
+          ...options.preTag,
         },
       }),
 
@@ -227,7 +223,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         colorTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.colorTag,
         },
       }),
@@ -236,7 +232,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         datetimeTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.datetimeTag,
         },
       }),
@@ -245,7 +241,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         numberTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.numberTag,
         },
       }),
@@ -254,7 +250,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         telTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.telTag,
         },
       }),
@@ -263,7 +259,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         emailTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.emailTag,
         },
       }),
@@ -272,7 +268,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         countryTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.countryTag,
         },
       }),
@@ -281,7 +277,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         languageTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.languageTag,
         },
       }),
@@ -290,7 +286,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         timezoneTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.timezoneTag,
         },
       }),
@@ -299,7 +295,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         urlTag: {
-          class: 'form-control text-dark',
+          class: 'form-control text-dark bg-white',
           ...options.urlTag,
         },
       }),

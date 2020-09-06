@@ -2,13 +2,8 @@ ax.extension.time = function (options = {}) {
   const a = ax.a;
 
   let timeTag = {
-    $init: function () {
-      this.$tock();
-      setInterval(this.$tock, 1000);
-    },
-    $tock: function () {
-      this.$text = new Date().toLocaleTimeString();
-    },
+    $init: (el) => setInterval(el.$render, 1000),
+    $text: () => new Date().toLocaleTimeString(),
     ...options.timeTag,
   };
 

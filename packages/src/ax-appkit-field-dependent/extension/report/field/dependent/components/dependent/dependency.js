@@ -11,21 +11,23 @@ ax.extension.report.field.dependent.components.dependent.dependency = (
     selector = `[data-name='${name}']`;
   }
 
-  let search = options.search || '^|appkit-report';
+  let search = options.search || '^ax-appkit-report';
 
   let target = el.$(search).$(selector);
   let targetDependency;
 
   if (target) {
-    targetDependency = target.$('^|appkit-report-field-dependent');
+    targetDependency = target.$('^ax-appkit-report-field-dependent');
   }
 
   if (targetDependency) {
     return targetDependency;
   } else {
     console.error(
-      `Report field failed to find a dependency target using selector:`,
-      selector
+      'Report field failed to find a dependency target using selector:',
+      selector,
+      'from options',
+      options
     );
   }
 };

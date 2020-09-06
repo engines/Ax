@@ -17,19 +17,28 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
     label: '✖',
     confirm: confirmation,
     onclick: function (e, el) {
-      var target = el.$('^|appkit-form-nest-item');
-      let parent = target.parentElement;
-      let index = Array.prototype.indexOf.call(parent.children, target);
-      target.remove();
+      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemElements = itemsElement.$itemElements();
+      let item;
+      for (item of itemElements) {
+        if (item.contains(el)) break;
+      }
+      let parent = item.parentElement;
+      let index = Array.prototype.indexOf.call(parent.children, item);
+      item.remove();
       (ax.x.lib.tabable.next(parent) || window.document.body).focus();
       let length = parent.children.length;
-      parent.$send('ax.appkit.form.nest.item.remove', {
-        detail: {
-          target: el,
-          index: index,
-          length: length,
-        },
-      });
+      itemsElement.$('^form').$rescope();
+      // itemsElement.focus();
+      itemsElement.$send('ax.appkit.form.nest.items.change');
+
+      // parent.$send('ax.appkit.form.nest.item.remove', {
+      //   detail: {
+      //     target: item,
+      //     index: index,
+      //     length: length,
+      //   },
+      // });
     },
     ...options,
   });

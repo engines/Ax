@@ -1,7 +1,7 @@
 ax.extension.lib.tabable.next = function (element) {
   let elements = Array.from(window.document.querySelectorAll('*'));
 
-  // start search at last child element
+  // start search at last child node
   element = Array.from(element.querySelectorAll('*')).slice(-1)[0] || element;
 
   let index = elements.indexOf(element);

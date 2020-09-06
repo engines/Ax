@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script>
+
+
+  /**
+   * Creates an HTML element and inserts it in the DOM.
+   * The target for the insertion is the document.body, unless options.target
+   * specifies otherwise. options.target can be a selector string or an element.
+   * The default insertion method is to append a child. Set options.method
+   * 'replaceWith' to replace the target, or 'prependChild' to prepend a child.
+   */
+  let ax = function (component, options = {}) {
+    let element = ax.element(component);
+    let insert = () => ax.insert(element, options);
+
+    // Ensure that the document is ready.
+    if (
+      window.document.readyState == 'interactive' ||
+      window.document.readyState == 'complete'
+    ) {
+      insert();
+    } else {
+      window.document.addEventListener('DOMContentLoaded', insert);
+    }
+
+    return element;
+  };
+
+  /**
+   * Process style definitions.
+   */
+  ax.css = function (styles) {
+    if (ax.is.string(styles)) {
+      return styles;
+    } else {
+      return ax.css.rules(styles);
+    }
+  };
+
+  /**
+   * Element Pre-processor.
+   * The pre-processor accepts various component types
+   * and infers properties for element.
+   */
+  ax.element = function (component) {
+    if (ax.is.null(component)) return null;
+    if (ax.is.node(component)) return component;
+    if (ax.is.nodelist(component)) return ax.element.nodelist(component);
+    if (ax.is.array(component)) return ax.element.array(component);
+    if (ax.is.object(component)) return ax.element.object(component);
+    if (ax.is.tag(component)) return ax.element.tag(component);
+    if (ax.is.function(component)) return ax.element.function(component);
+    if (ax.is.undefined(component)) return ax.element.undefined();
+    return ax.element.text(component);
+  };
+
+  /**
+   * Extension loader.
+   * Use this method to load Ax Extensions that are are imported as ES6 modules.
+   * For example:
+   * import ax from '@engines/ax'
+   * import axCore from '@engines/ax-appkit-core'
+   * import axChartjs from '@engines/ax-appkit-chartjs'
+   * import "chart.js/dist/Chart.css";
+   * import Chart from 'chart.js';
+   * ax.extend( axCore, [axChartjs, {Chart: Chart}] ).
+   */
+  ax.extend = function () {
+    for (let extension of arguments) {
+      if (ax.is.array(extension)) {
+        extension[0].extend(this, extension[1] || {})
+      } else {
+        extension.extend(this);
+      }
+    }
+  };
+
+  /**
+   * Extension namespace.
+   * Extensions are installed here.
+   */
+  ax.extension = {
+    lib: {},
+  };
+
+  /**
+   * Inserts an element in the DOM.
+   */
+  ax.insert = function (element, options = {}) {
+    let target = options.target;
+    if (ax.is.string(target)) {
+      target = window.document.querySelector(target);
+    } else if (ax.is.undefined(target)) {
+      target = window.document.body;
+    }
+    let method = options.method || 'appendChild';
+    target[method](element);
+  };
+
+  /**
+   * Check value is of a data type.
+   */
+  ax.is = {};
+
+  /**
+   * Convert string from camelCase to kebab-case.
+   */
+  ax.kebab = (string) =>
+    (string[0].match(/[A-Z]/) ? '-' : '') +
+    string.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
+
+  /**
+   * Creates a <link> tag in <head>.
+   */
+  ax.link = function (attributes = {}) {
+    ax.insert(
+      ax.element.create({
+        $tag: 'link',
+        ...attributes,
+      }),
+      {
+        target: 'head',
+      }
+    );
+  };
+
+  /**
+   * Creates a <script> tag in <head>.
+   */
+  ax.script = function (attributes = {}) {
+    ax.insert(
+      ax.element.create({
+        $tag: 'script',
+        ...attributes,
+      }),
+      {
+        target: 'head',
+      }
+    );
+  };
+
+  /**
+   * Creates a <style> tag in <head> and inserts styles.
+   * styles can be a string or an object.
+   */
+  ax.style = function (styles) {
+    ax.insert(
+      ax.element.create({
+        $tag: 'style',
+        $html: this.css(styles),
+      }),
+      {
+        target: 'head',
+      }
+    );
+  };
+
+  /**
+   * Tag Builder namespace.
+   * The Tag Builder creates arbitrary HTML elements.
+   * It is instantiated as `ax.a`.
+   */
+  ax.tag = {};
+
+  /**
+   * Throw an error.
+   */
+  ax.throw = function (...args) {
+    throw new Error(args);
+  };
+
+  /**
+   * Convert Ax Style Definitions to css style rules.
+   */
+  ax.css.rules = function (styles, selectors = []) {
+    if (selectors[0] && selectors[0][0] == '@') {
+      return ax.css.rules.at(styles, selectors);
+    } else if (ax.is.object(styles)) {
+      return ax.css.rules.object(styles, selectors);
+    } else {
+      return '';
+    }
+  };
+
+  /**
+   * Create element from an array of components.
+   */
+  ax.element.array = function (array) {
+    return ax.element.create({
+      $nodes: array,
+    });
+  };
+
+  /**
+   * Create element from Ax component properties.
+   */
+  ax.element.create = function (properties) {
+
+    if (ax.is.not.object(properties)) return null;
+
+    properties = {
+      $tag: 'span',
+      ...properties,
+    };
+
+    let element;
+
+    if (ax.is.array(properties.$tag)) {
+      element = window.document.createElementNS(...properties.$tag);
+    } else {
+      element = window.document.createElement(properties.$tag);
+    }
+
+    if (properties.$shadow) element.attachShadow({mode: 'open'})
+
+    element.$ax = properties;
+
+    return ax.element.create.properties(element);
+  };
+
+  /**
+   * Create element for a function.
+   * Function is called with the Ax Tag Builder and Extensions.
+   * The result, which can be any valid component, is fed back
+   * into the Factory.
+   */
+  ax.element.function = function (fn) {
+    return ax.element(fn(ax.a, ax.x));
+  };
+
+  /**
+   * Create element for a nodelist.
+   */
+  ax.element.nodelist = function (nodelist) {
+    return ax.element.create({
+      $nodes: Array.from(nodelist),
+    });
+  };
+
+  /**
+   * Create element for an object.
+   */
+  ax.element.object = function (object) {
+    return ax.element.create({
+      $tag: 'pre',
+      $text: JSON.stringify(object, null, 2),
+    });
+  };
+
+  /**
+   * Creates elements from raw HTML.
+   */
+  ax.element.raw = function (html) {
+    let jig = window.document.createElement('div');
+    jig.innerHTML = html;
+    return jig.childNodes;
+  };
+
+  /**
+   * Create element for an uncalled Tag Builder function.
+   * e.g: a.br or a.hr
+   */
+  ax.element.tag = (tag) => tag(null);
+
+  /**
+   * Create element for text.
+   */
+  ax.element.text = (text) =>
+    window.document.createTextNode(text);
+
+  /**
+   * Create element for undefined content.
+   */
+  ax.element.undefined = function () {
+    return ax.element.create({
+      $text: 'UNDEFINED',
+      $init: (el) => console.warn('Component is undefined:', el),
+    });
+  };
+
+  /**
+   * Alias for shortcut to Ax Extensions.
+   */
+  ax.x = ax.extension;
+
+  /**
+   * Determines whether value is an array.
+   */
+  ax.is.array = function (value) {
+    return value instanceof Array;
+  };
+
+  /**
+   * Determines whether value is boolean.
+   */
+  ax.is.boolean = function (value) {
+    return typeof value === 'boolean';
+  };
+
+  /**
+   * Determines whether value is a class.
+   */
+  ax.is.class = function (value) {
+    return this.function(value) && ('' + value).slice(0, 5) === 'class';
+  };
+
+  /**
+   * Determines whether value is false.
+   */
+  ax.is.false = function (value) {
+    return value === false;
+  };
+
+  /**
+   * Determines whether value is a function.
+   */
+  ax.is.function = function (value) {
+    return typeof value === 'function';
+  };
+
+  /**
+   * Determines whether value is an HTML node.
+   */
+  ax.is.node = function (value) {
+    return value instanceof Node;
+  };
+
+  /**
+   * Determines whether value is an HTML node list.
+   */
+  ax.is.nodelist = function (value) {
+    return value instanceof NodeList;
+  };
+
+  /**
+   * Determines whether value is not a type.
+   */
+  ax.is.not = new Proxy(
+    {},
+    {
+      get: (target, property, receiver) => {
+        if (ax.is.function(ax.is[property])) {
+          return (value) => !ax.is[property](value);
+        } else {
+          console.error(`ax.is does not support .${property}()`);
+        }
+      },
+    }
+  );
+
+  /**
+   * Determines whether value is null.
+   */
+  ax.is.null = function (value) {
+    return value === null;
+  };
+
+  /**
+   * Determines whether value is number.
+   */
+  ax.is.number = function (value) {
+    return typeof value === 'number';
+  };
+
+  /**
+   * Determines whether value is an object.
+   */
+  ax.is.object = function (value) {
+    return typeof value === 'object';
+  };
+
+  /**
+   * Determines whether value is a Promise.
+   */
+  ax.is.promise = function (value) {
+    return value instanceof Promise;
+  };
+
+  /**
+   * Determines whether value is a string.
+   */
+  ax.is.string = function (value) {
+    return typeof value === 'string';
+  };
+
+  /**
+   * Determines whether value is a Tag Builder Proxy function.
+   */
+  ax.is.tag = function (value) {
+    return '' + ax.a.tagProxyFunction === '' + value;
+  };
+
+  /**
+   * Determines whether value is true.
+   */
+  ax.is.true = function (value) {
+    return value === true;
+  };
+
+  /**
+   * Determines whether value is undefined.
+   */
+  ax.is.undefined = function (value) {
+    return value === void 0;
+  };
+
+  /**
+   * Tag Builder proxy namespace.
+   */
+  ax.tag.proxy = {};
+
+  /**
+   * Handle @ rules.
+   */
+  ax.css.rules.at = function (styleSpec, selectors) {
+    let atRule = selectors.shift();
+    let rules = this.rules(styleSpec, selectors);
+    rules = '\t' + rules.split('\n').join('\n\t');
+    return `${atRule} {\n${rules}\n}\n\n`;
+  };
+
+  /**
+   * Convert an object containing Ax Style Definition to css style rules.
+   */
+  ax.css.rules.object = function (styles, selectors = []) {
+    let result = ax.css.rules.rule(styles, selectors);
+
+    for (let selectorList of Object.keys(styles)) {
+      let selected = styles[selectorList];
+      for (let selector of selectorList.split(',')) {
+        selector = selector.trim();
+        selector = selector.replace(
+          /\|([a-zA-Z0-9-_]+)/,
+          (match) => `[data-ax-pseudotag="${ax.kebab(match.replace(/^\|/, ''))}"]`
+        );
+        selector = selector.replace(/^([a-zA-Z0-9-_]+)/, (match) =>
+          ax.kebab(match)
+        );
+        result += ax.css.rules(selected, selectors.concat(selector));
+      }
+    }
+
+    return result;
+  };
+
+  /**
+   * Convert Ax Style Definition to a css style rule.
+   */
+  ax.css.rules.rule = function (object, selectors) {
+    var result = '';
+    for (let property of Object.keys(object)) {
+      if (ax.is.not.object(object[property])) {
+        result += '\t' + ax.kebab(property) + ': ' + object[property] + ';\n';
+      }
+    }
+    if (result === '') return '';
+    return selectors.join(' ').replace(/\s*&\s*/g, '') + ' {\n' + result + '}\n';
+  };
+
+  /**
+   * Append init script to element.
+   */
+  ax.element.create.init = function (element) {
+    if (ax.is.function(element.$ax.$init)) {
+      element.appendChild(
+        ax.element.create({
+          $tag: 'script',
+          type: 'text/javascript',
+          $html:
+            '(function(){' +
+            'let script=window.document.currentScript;' +
+            'let element=script.parentElement;' +
+            'script.remove();' +
+            'element.$ax.$init.call(element, element, element.$state);' +
+            '})()',
+        })
+      );
+    }
+
+    return element;
+  };
+
+  /**
+   * Render active element, with reactive properties.
+   */
+  ax.element.create.properties = function (element) {
+    return this.init(
+      this.properties.render(
+        this.properties.events(
+          this.properties.accessors(
+            this.properties.tools(
+              this.properties.define(element)
+            )
+          )
+        )
+      )
+      .$render()
+    );
+  };
+
+  /**
+   * Line-up the attributes for an element.
+   */
+  ax.tag.proxy.attributes = function (property, attributes = {}) {
+    // if the property starts with a word, use the word as nodename
+    // if the property has a '|' word, use as pseudotag
+    // if the property has a '#' word, use as id
+    // if the property has '.' words, use as class
+    // if the property has '[]' attrs, use as attributes
+    // e.g. div#myTagId.btn.btn-primary
+
+    if (ax.is.not.string(property)) {
+      console.error('Expecting a string but got', property)
+    }
+
+    let nodename = (property.match(/^([\w-]+)/) || [])[1];
+    let pseudotag = (property.match(/\|([\w-]+)/) || [])[1];
+    let id = (property.match(/#([\w-]+)/) || [])[1];
+    let classes = property.match(/\.[\w-]+/g) || [];
+    let attrs = property.match(/\[.*?\]/g) || [];
+
+    if (nodename) attributes.$tag = attributes.$tag || nodename;
+    if (pseudotag) attributes.$pseudotag = attributes.$pseudotag || pseudotag;
+    if (id) attributes.id = attributes.id || id;
+    for (let klass of classes) {
+      attributes.class = `${klass.replace('.', '')} ${
+        attributes.class || ''
+      }`.trim();
+    }
+    for (let attr of attrs) {
+      let match = attr.match(/^\[([\w-]+)\=(.*)\]/);
+      attributes[match[1]] = JSON.parse(match[2]);
+    }
+    return attributes;
+  };
+
+  /**
+   * Set Ax content property based on component type.
+   */
+  ax.tag.proxy.component = function (component) {
+    // if (ax.is.tag(component))
+    //   return {
+    //     $nodes: [component],
+    //   };
+    // if (ax.is.function(component))
+    //   // Handle functions here because
+    //   // the Factory expects any function for $node to be a
+    //   // content function.
+    //   return {
+    //     $nodes: [component(ax.a, ax.x)],
+    //   };
+    if (ax.is.string(component))
+      return {
+        $text: component,
+      };
+    if (ax.is.array(component))
+      return {
+        $nodes: component,
+      };
+    if (ax.is.null(component)) return {};
+    return {
+      $nodes: [component],
+    };
+  };
+
+  /**
+   * Tag Builder proxy function.
+   * Accepts an HTML fragment or an object of Ax component properties.
+   * Returns an element.
+   */
+  ax.tag.proxy.function = ax.element.create;
+
+  /**
+   * Tag Builder proxy shim.
+   * Creates arbitrary HTML elements.
+   */
+  ax.tag.proxy.shim = {
+    get: (target, property) => (component, attributes) => {
+      if (property == '!') {
+        return ax.element.raw(component)
+      }
+      return ax.element.create({
+        ...ax.tag.proxy.attributes(property, attributes || {}),
+        ...ax.tag.proxy.component(component),
+      });
+    },
+  };
+
+  /**
+   * Add methods to element.
+   */
+  ax.element.create.properties.accessors = function (element) {
+    return this.accessors.nodes(
+      this.accessors.html(
+        this.accessors.text(
+          this.accessors.on(
+            this.accessors.off(
+              this.accessors.send(
+                this.accessors.state(element)))
+          )
+        )
+      )
+    );
+  };
+
+  /**
+   * Set properties on element.
+   */
+  ax.element.create.properties.define = function (element) {
+
+    for (let property in element.$ax) {
+      if (element.$ax.hasOwnProperty(property)) {
+        if (property[0].match(/[a-zA-Z]/)) {
+          let value = element.$ax[property];
+          if (ax.is.not.undefined(value)) {
+            if (property == 'style') {
+              this.define.style(element, value);
+            } else {
+              this.define.attribute(element, property, value);
+            }
+          }
+        } else if (property == '$pseudotag') {
+          element.dataset.axPseudotag = element.$ax.$pseudotag;
+        } else {
+          if (
+            !property.match(
+              /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$state|\$send|\$on|\$off|\$render|\$ax|$events|\$|\$\$|\$shadow)$/
+            )
+          ) {
+            let customAttribute = element.$ax[property];
+            if (ax.is.function(customAttribute)) {
+              element[property] = customAttribute.bind(element);
+            } else {
+              element[property] = customAttribute;
+            }
+          }
+        }
+      }
+    }
+
+    return element;
+  };
+
+  /**
+   * Add initial events to element.
+   */
+  ax.element.create.properties.events = function (element) {
+    element.$events = {};
+
+    for (let handle in element.$ax.$on) {
+      element.$events[handle] = (e) =>
+        element.$ax.$on[handle].call(element, e, element, element.$state);
+      element.addEventListener(handle.split(':')[0], element.$events[handle]);
+    }
+
+    return element;
+  };
+
+  /**
+   * Add appropriate render function to element.
+   */
+  ax.element.create.properties.render = function (element) {
+    let render = this.render;
+
+    element.$render = function () {
+      render.shadow(render.empty(element));
+      if (element.$ax.hasOwnProperty('$text')) {
+        return render.text(element);
+      } else if (element.$ax.hasOwnProperty('$html')) {
+        return render.html(element);
+      } else if (element.$ax.hasOwnProperty('$nodes')) {
+        return render.nodes(element);
+      } else {
+        return element;
+      }
+    };
+
+    return element;
+  };
+
+  /**
+   * Add traverse and query tools to element.
+   */
+  ax.element.create.properties.tools = function (element) {
+    element.$ = this.tools.traverse;
+    element.$$ = this.tools.query;
+
+    return element;
+  };
+
+  /**
+   * Tag Builder proxy instantiation.
+   */
+  ax.a = new Proxy(ax.tag.proxy.function, ax.tag.proxy.shim);
+
+  /**
+   * Get HTML content, or set new HTML content.
+   */
+  ax.element.create.properties.accessors.html = function (element) {
+    let accessors = this;
+
+    Object.defineProperty(element, '$html', {
+      get: function () {
+        return element.$ax.$html;
+      },
+      set: function (html) {
+        accessors.html.set(element, html);
+      },
+    });
+
+    return element;
+  };
+
+  /**
+   * Get nodes content, or set new nodes content.
+   */
+  ax.element.create.properties.accessors.nodes = function (element) {
+    let accessors = this;
+
+    Object.defineProperty(element, '$nodes', {
+      get: function () {
+        return element.$ax.$nodes;
+      },
+      set: function (nodes) {
+        accessors.nodes.set(element, nodes);
+      },
+    });
+
+    return element;
+  };
+
+  /**
+   * Remove an event listener.
+   */
+  ax.element.create.properties.accessors.off = function (element) {
+    element.$off = function (handle) {
+      if(ax.is.array(handle)) {
+        while (element.$events.length) {
+          element.$off(handle[0])
+        }
+      } else {
+        element.removeEventListener(handle.split(':')[0], element.$events[handle]);
+        delete element.$events[handle];
+      }
+    };
+
+    return element;
+  };
+
+  /**
+   * Add an event listener.
+   */
+  ax.element.create.properties.accessors.on = function (element) {
+    element.$on = function (handlers) {
+      for (let handle in handlers) {
+        element.$off(handle);
+        element.$events[handle] = (e) =>
+          handlers[handle].call(element, e, element, element.$state);
+        element.addEventListener(handle.split(':')[0], element.$events[handle]);
+      }
+    };
+
+    return element;
+  };
+
+  /**
+   * Send an event from the element.
+   */
+  ax.element.create.properties.accessors.send = function (element) {
+    element.$send = function (type, options = {}) {
+      return element.dispatchEvent(
+        new CustomEvent(type, {
+          detail: options.detail || {},
+          bubbles: options.bubbles == false ? false : true,
+          cancelable: options.cancelable == false ? false : true,
+        })
+      );
+    };
+
+    return element;
+  };
+
+  /**
+   * Get element state, or set element state.
+   */
+  ax.element.create.properties.accessors.state = function (element) {
+    let accessors = this;
+
+    Object.defineProperty(element, '$state', {
+      get: () => element.$ax.$state,
+      set: (state) => accessors.state.set(element, state),
+    });
+
+    return element;
+  };
+
+  /**
+   * Get text content, or set new text content.
+   */
+  ax.element.create.properties.accessors.text = function (element) {
+    let accessors = this;
+
+    Object.defineProperty(element, '$text', {
+      get: function () {
+        return element.$ax.$text;
+      },
+      set: function (text) {
+        accessors.text.set(element, text);
+      },
+    });
+
+    return element;
+  };
+
+  /**
+   * Define attribute on element, with value
+   * being a string or an object.
+   */
+  ax.element.create.properties.define.attribute = function (element, key, value) {
+    this.attribute.set(element, [key], value);
+    // if (ax.is.object(value)) {
+    // } else {
+    //   element.setAttribute(key, value)
+    // }
+  };
+
+  // /**
+  //  * Define data attribute on element, with data
+  //  * being a string or an object.
+  //  */
+  // ax.element.create.properties.define.data = function (element, data) {
+  //   if (ax.is.object(data)) {
+  //     this.data.attribute(element, ['data'], data);
+  //   } else {
+  //     element.setAttribute('data', value)
+  //   }
+  // };
+
+  /**
+   * Define style attribute on element, with style
+   * being a string or an object.
+   */
+  ax.element.create.properties.define.style = function (element, style) {
+    if (ax.is.object(style)) {
+      let result = '';
+      for (let key of Object.keys(style)) {
+        let kebab = ax.kebab(key);
+        result += kebab + ': ' + style[key] + '; ';
+      }
+      element.setAttribute('style', result)
+    } else {
+      element.setAttribute('style', style)
+    }
+  };
+
+  /**
+   * Clear exisitng children from element.
+   */
+  ax.element.create.properties.render.empty = function (element) {
+
+    ax.element.create.properties.render.empty.exit(element);
+
+    return element;
+  };
+
+  /**
+   * Add raw HTML to element.
+   */
+  ax.element.create.properties.render.html = function (element) {
+    // Get content for the element.
+    let html = element.$ax.$html;
+
+    if (ax.is.function(html)) {
+      html = html.call(element, element, element.$state);
+    }
+
+    let root = element.shadowRoot || element;
+
+    root.innerHTML = html;
+
+    return element;
+  };
+
+  /**
+   * Add child nodes to element.
+   */
+  ax.element.create.properties.render.nodes = function (element) {
+    // Get content for the element.
+    let nodes = element.$ax.$nodes;
+
+    if (ax.is.function(nodes)) {
+      nodes = nodes.call(element, element, element.$state);
+    }
+
+    let root = element.shadowRoot || element;
+
+    // Add content
+    if (ax.is.array(nodes)) {
+      nodes.forEach(function (node) {
+        node = ax.element(node);
+        if (node != null) root.appendChild(node);
+      });
+    } else {
+      let node = ax.element(nodes);
+      if (node != null) root.appendChild(node);
+    }
+
+    return element;
+  };
+
+  /**
+   * Attach shadow DOM to element and insert styles.
+   */
+  ax.element.create.properties.render.shadow = function (element) {
+
+    if (element.$ax.$shadow) {
+      if (ax.is.array(element.$ax.$shadow)) {
+        for (let s of element.$ax.$shadow) {
+          element.shadowRoot.appendChild(
+            ax.a.style(ax.css(s))
+          )
+        }
+      } else if (ax.is.not.true(element.$ax.$shadow)) {
+        element.shadowRoot.appendChild(
+          ax.a.style(ax.css(element.$ax.$shadow))
+        )
+      }
+    }
+
+    return element;
+  };
+
+  /**
+   * Add text to element.
+   */
+  ax.element.create.properties.render.text = function (element) {
+    // Get content for the element.
+    let text = element.$ax.$text;
+
+    // Resolve content function, if there is one.
+    if (ax.is.function(text)) {
+      text = text.call(element, element, element.$state);
+    }
+
+    let root = element.shadowRoot || element;
+
+    // Add new content
+    root.appendChild(window.document.createTextNode(text));
+
+    return element;
+  };
+
+  /**
+   * Query Tool, for collecting and operating on groups of elements.
+   */
+  ax.element.create.properties.tools.query = function (selector) {
+    selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
+
+    let collection = Array.from(this.querySelectorAll(selector));
+
+    return ax.element.create.properties.tools.query.proxy(collection);
+  };
+
+  /**
+   * Traverse Tool, for traversing the DOM.
+   */
+  ax.element.create.properties.tools.traverse = function (...selectors) {
+    let result = this;
+    let traverse = ax.element.create.properties.tools.traverse;
+    selectors.forEach(function (selector) {
+      if (ax.is.array(selector)) {
+        result = result.$(...selector);
+      } else if (/,\s*/.test(selector)) {
+        // comma is OR
+        let selectors = selector.split(/,\s*/);
+        let selected;
+        for (let i in selectors) {
+          selected = traverse.select(result, selectors[i]);
+          if (selected) break;
+        }
+        result = selected;
+      } else if (/^\S+$/.test(selector)) {
+        // string contains a single selector
+        result = traverse.select(result, selector);
+      } else {
+        // string contains multiple selectors
+        selectors = selector.match(/(\S+)/g);
+        result = result.$(...selectors);
+      }
+    });
+    return result;
+  };
+
+  /**
+   * Render html content.
+   */
+  ax.element.create.properties.accessors.html.set = function (element, html) {
+    delete element.$ax.$text;
+    delete element.$ax.$nodes;
+    element.$ax.$html = html;
+    element.$render();
+
+    return element;
+  };
+
+  /**
+   * Render nodes content.
+   */
+  ax.element.create.properties.accessors.nodes.set = function (element, nodes) {
+    delete element.$ax.$text;
+    delete element.$ax.$html;
+    element.$ax.$nodes = nodes;
+    element.$render();
+
+    return element;
+  };
+
+  /**
+   * Update state and render new content.
+   */
+  ax.element.create.properties.accessors.state.set = function (element, state) {
+
+    element.$ax.$state = state;
+
+    if (element.$ax.$update) {
+      element.$ax.$update.call(element, element, state) && element.$render();
+    } else {
+      element.$render();
+    }
+
+    return element;
+
+  };
+
+  /**
+   * Render text content.
+   */
+  ax.element.create.properties.accessors.text.set = function (element, text) {
+    delete element.$ax.$html;
+    delete element.$ax.$nodes;
+    element.$ax.$text = text;
+    element.$render();
+
+    return element;
+  };
+
+  /**
+   * Make a data attribute from a string or object.
+   */
+  ax.element.create.properties.define.attribute.set = function (element, keys, value) {
+    const define = ax.element.create.properties.define;
+    if (ax.is.object(value)) {
+      for (let key of Object.keys(value)) {
+        let kebab = ax.kebab(key);
+        define.attribute.set(element, keys.concat(key), value[key]);
+      }
+    } else {
+      let kebab = keys.join('-');
+      element.setAttribute(kebab, value)
+    }
+  };
+
+  /**
+   * Recursive removal of event handlers and call of $exit functions.
+   */
+  ax.element.create.properties.render.empty.exit = function (element) {
+
+    while (element.childNodes.length) {
+      let child = element.lastChild;
+      if (child.$ax) {
+        if (ax.is.function(child.$ax.$exit)) {
+          element.$ax.$exit.call(child, child, child.$state)
+        }
+        if (ax.is.object(child.$events)) child.$off(Object.keys(child.$events))
+        ax.element.create.properties.render.empty(child);
+        element.removeChild(child);
+        delete child
+      }
+    }
+
+
+  };
+
+  /**
+   * Instantiate the Query Tool proxy.
+   */
+  ax.element.create.properties.tools.query.proxy = function (collection, pending = []) {
+    return new Proxy(function () {}, this.proxy.shim(collection, pending));
+  };
+
+  /**
+   * Select an element based on traversal instruction.
+   */
+  ax.element.create.properties.tools.traverse.select = function (element, selector) {
+    selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
+    if (!element) {
+      return null;
+    } else if (/^\s*\^/.test(selector)) {
+      selector = selector.replace(/^\s*\^\s*/, '');
+      if (selector) {
+        return element.closest(selector);
+      } else {
+        return element.parentElement;
+      }
+    } else if (/^\s*$/.test(selector)) {
+      return element;
+    } else {
+      return element.querySelector(selector);
+    }
+  };
+
+  /**
+   * Query Tool shim.
+   */
+  ax.element.create.properties.tools.query.proxy.shim = function (collection, pending) {
+    return {
+      get: ax.element.create.properties.tools.query.proxy.shim.get(collection, pending),
+      set: ax.element.create.properties.tools.query.proxy.shim.set(collection, pending),
+      apply: ax.element.create.properties.tools.query.proxy.shim.apply(
+        collection,
+        pending
+      ),
+    };
+  };
+
+  /**
+   * Apply a function to selected elements.
+   */
+  ax.element.create.properties.tools.query.proxy.shim.apply = function (
+    collection,
+    pending
+  ) {
+    return function (target, receiver, args) {
+      collection.forEach(function (node, i) {
+        collection[i] = pending[i].call(node, ...args);
+      });
+
+      return ax.element.create.properties.tools.query.proxy(collection);
+    };
+  };
+
+  /**
+   * Get values from selected elements.
+   */
+  ax.element.create.properties.tools.query.proxy.shim.get = function (
+    collection,
+    pending
+  ) {
+    return function (target, property, receiver) {
+      if (/^\d+$/.test(property)) return collection[property];
+      if (/^\$\$$/.test(property)) return collection;
+      if (/^toArray$/.test(property)) return collection;
+      if (/^forEach$/.test(property)) return (fn) => collection.forEach(fn);
+      if (/^toString$/.test(property)) return () => collection.toString();
+
+      collection.forEach(function (node, i) {
+        let result = node[property];
+        if (ax.is.undefined(result)) {
+          console.error(`Ax query for '${property}' is undefined on:`, node);
+        } else if (ax.is.function(result)) {
+          pending[i] = result;
+        } else {
+          collection[i] = result;
+        }
+      });
+
+      return ax.element.create.properties.tools.query.proxy(collection, pending);
+    };
+  };
+
+  /**
+   * Set a value on selected elements.
+   */
+  ax.element.create.properties.tools.query.proxy.shim.set = function (
+    collection,
+    pending
+  ) {
+    return function (target, property, value, receiver) {
+      collection.forEach(function (node) {
+        node[property] = value;
+      });
+
+      return true;
+    };
+  };
+
+
+  </script>
+</head>
+<body>
+<script>
+ax((a,x) => a({
+  $nodes: () => [
+    a.h1('h1')
+  ],
+  $init: (el) => setInterval(el.$render,1)
+}));
+</script>
+</body>
+</html>

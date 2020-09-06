@@ -5,15 +5,19 @@ ax.extension.form.field.nest.components.nest.items.down = function (
   return f.button({
     label: '⏷',
     onclick: function (e, el) {
-      var target = options.itemTarget
-        ? options.itemTarget(el)
-        : el.$('^|appkit-form-nest-item');
-      var next = target.nextSibling;
-      var parent = target.parentElement;
+      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemElements = itemsElement.$itemElements();
+      let item;
+      for (item of itemElements) {
+        if (item.contains(el)) break;
+      }
+      var next = item.nextSibling;
+      var parent = item.parentElement;
       if (next) {
-        parent.insertBefore(target, next.nextSibling);
-        el.focus();
-        this.$send('ax.appkit.form.nest.item.move');
+        parent.insertBefore(item, next.nextSibling);
+        el.$('^form').$rescope();
+        // el.focus();
+        itemsElement.$send('ax.appkit.form.nest.items.change');
       }
     },
     ...options,

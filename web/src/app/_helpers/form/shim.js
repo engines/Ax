@@ -19,7 +19,7 @@
 //         } )
 //
 //     },
-//     markdown: ( f, target ) => ( options={} ) => (a,x) => x.simplemde.form.control( f, options ),
+//     markdown: ( f, target ) => ( options={} ) => (a,x) => x.easymde.form.control( f, options ),
 //
 //     table: ( f, target ) => ( options={} ) => target( {
 //       ...options,
