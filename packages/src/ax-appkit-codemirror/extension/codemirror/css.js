@@ -1,5 +1,6 @@
 ax.style({
   'ax-appkit-codemirror': {
+    display: 'block',
     'div.CodeMirror': {
       minHeight: '2em',
       borderRadius: 'unset',
@@ -13,9 +14,6 @@ ax.style({
     'div.CodeMirror.disabled': {
       backgroundColor: '#e9ecef',
     },
-  },
-  'ax-appkit-codemirror-control': {
-    display: 'block',
     '&.fullscreen': {
       position: 'fixed',
       top: '0',

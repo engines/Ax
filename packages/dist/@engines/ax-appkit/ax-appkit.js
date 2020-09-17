@@ -1542,7 +1542,7 @@ ax.extension.router.element.open = (options) => (el) => (
 };
 
 ax.extension.router.interface.load = (config) =>
-  function (locator = null, query = {}, anchor = null) {
+  function (locator = '', query = {}, anchor = null) {
     let path = window.location.pathname;
 
     if (locator) {
@@ -1653,27 +1653,27 @@ ax.extension.router.interface.mount = (config) => {
 };
 
 ax.extension.router.interface.open = (config) => (
-  locator = null,
+  locator = '',
   query = {},
   anchor = null
 ) => {
-  if (locator) {
-    let path = window.location.pathname;
+  // if (locator) {
+  let path = window.location.pathname;
 
-    if (locator[0] == '/') {
-      path = locator;
-    } else if (locator) {
-      if (path.match(/\/$/)) {
-        path = `${path}${locator}`;
-      } else {
-        path = `${path}/${locator}`;
-      }
+  if (locator[0] == '/') {
+    path = locator;
+  } else if (locator) {
+    if (path.match(/\/$/)) {
+      path = `${path}${locator}`;
+    } else {
+      path = `${path}/${locator}`;
     }
-
-    config.router.$open(path, query, anchor);
-  } else {
-    config.router.$go();
   }
+
+  config.router.$open(path, query, anchor);
+  // } else {
+  //   config.router.$go();
+  // }
 };
 
 ax.extension.form.factory.select.options = function (options) {

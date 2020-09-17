@@ -1,5 +1,5 @@
 ax.extension.router.interface.load = (config) =>
-  function (locator = null, query = {}, anchor = null) {
+  function (locator = '', query = {}, anchor = null) {
     let path = window.location.pathname;
 
     if (locator) {

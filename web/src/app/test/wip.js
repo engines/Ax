@@ -1,5 +1,11 @@
 export default (router) => (a, x) => [
 
+  x.codemirror({
+    value: 'let i = 0;\n',
+    lineNumbers: true,
+    mode: 'javascript'
+  }),
+
   x.form({
     shims: [
       x.form.field.shim,

@@ -32,6 +32,10 @@ ax.style({
       display: 'block',
       height: '300px',
     },
+    '.terminal.xterm': {
+      border: '1px solid #ccc',
+      padding: '1px',
+    },
   },
   'ax-appkit-xtermjs-toolbar': {
     display: 'block',
