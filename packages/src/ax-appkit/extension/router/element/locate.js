@@ -1,4 +1,5 @@
 ax.extension.router.element.locate = (el) => (path, query, anchor) => {
+
   path = path || '/';
 
   query = x.lib.query.stringify(query);

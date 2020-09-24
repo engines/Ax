@@ -5,11 +5,4 @@ ax.extension.router.element.load = (el) => (path, query, anchor) => {
     r.$load(path, query, anchor);
   });
 
-  el.$send('ax.appkit.router.load', {
-    detail: {
-      path: path,
-      query: query,
-      anchor: anchor,
-    },
-  });
 };

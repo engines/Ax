@@ -1455,16 +1455,10 @@ ax.extension.router.element.load = (el) => (path, query, anchor) => {
     r.$load(path, query, anchor);
   });
 
-  el.$send('ax.appkit.router.load', {
-    detail: {
-      path: path,
-      query: query,
-      anchor: anchor,
-    },
-  });
 };
 
 ax.extension.router.element.locate = (el) => (path, query, anchor) => {
+
   path = path || '/';
 
   query = x.lib.query.stringify(query);
@@ -1532,13 +1526,6 @@ ax.extension.router.element.open = (options) => (el) => (
 
   el.$locate(path, query, anchor);
 
-  el.$send('ax.appkit.router.open', {
-    detail: {
-      path: path,
-      query: query,
-      anchor: anchor,
-    },
-  });
 };
 
 ax.extension.router.interface.load = (config) =>
@@ -1608,11 +1595,6 @@ ax.extension.router.interface.mount = (config) => {
       },
 
       $load: (el) => (path, query, anchor) => {
-        // let toLocation = {
-        //   path: path,
-        //   query: query,
-        //   anchor: anchor,
-        // };
 
         config.path = path;
         config.query = query;
@@ -1626,25 +1608,32 @@ ax.extension.router.interface.mount = (config) => {
           locatedView.matched &&
           el.$matched
         ) {
-          // let location = toLocation;
           let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
-
           routes.forEach((r) => {
             r.$load(path, query, anchor);
           });
         } else {
           el.$scope = locatedView.scope;
-
+          el.$matched = locatedView.matched;
           if (transition) {
+
+            if (!el.$('ax-appkit-router-view')) debugger
+
+            // Disable pointer events on outgoing view
+            el.$('ax-appkit-router-view').style.pointerEvents = 'none';
             el.$('ax-appkit-transition').$to(locatedView.component);
           } else {
             el.$nodes = locatedView.component;
           }
-
-          el.$matched = locatedView.matched;
         }
+        el.$send('ax.appkit.router.load', {
+          detail: {
+            path: path,
+            query: query,
+            anchor: anchor,
+          },
+        });
       },
-
       ...options.mountTag,
     };
 
@@ -1881,7 +1870,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view']([component(controller)], {
+    component = ax.a['ax-appkit-router-view'](component(controller), {
       $init: (el) => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
@@ -1893,7 +1882,9 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
         }
       },
     });
-  }
+  } else {
+    component = ax.a['ax-appkit-router-view'](component)
+  };
 
   return {
     matched: !!matched,

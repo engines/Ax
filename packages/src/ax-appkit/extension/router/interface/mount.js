@@ -46,11 +46,6 @@ ax.extension.router.interface.mount = (config) => {
       },
 
       $load: (el) => (path, query, anchor) => {
-        // let toLocation = {
-        //   path: path,
-        //   query: query,
-        //   anchor: anchor,
-        // };
 
         config.path = path;
         config.query = query;
@@ -64,25 +59,32 @@ ax.extension.router.interface.mount = (config) => {
           locatedView.matched &&
           el.$matched
         ) {
-          // let location = toLocation;
           let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
-
           routes.forEach((r) => {
             r.$load(path, query, anchor);
           });
         } else {
           el.$scope = locatedView.scope;
-
+          el.$matched = locatedView.matched;
           if (transition) {
+
+            if (!el.$('ax-appkit-router-view')) debugger
+
+            // Disable pointer events on outgoing view
+            el.$('ax-appkit-router-view').style.pointerEvents = 'none';
             el.$('ax-appkit-transition').$to(locatedView.component);
           } else {
             el.$nodes = locatedView.component;
           }
-
-          el.$matched = locatedView.matched;
         }
+        el.$send('ax.appkit.router.load', {
+          detail: {
+            path: path,
+            query: query,
+            anchor: anchor,
+          },
+        });
       },
-
       ...options.mountTag,
     };
 

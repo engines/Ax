@@ -57,7 +57,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view']([component(controller)], {
+    component = ax.a['ax-appkit-router-view'](component(controller), {
       $init: (el) => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
@@ -69,7 +69,9 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
         }
       },
     });
-  }
+  } else {
+    component = ax.a['ax-appkit-router-view'](component)
+  };
 
   return {
     matched: !!matched,

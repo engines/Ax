@@ -9,11 +9,4 @@ ax.extension.router.element.open = (options) => (el) => (
 
   el.$locate(path, query, anchor);
 
-  el.$send('ax.appkit.router.open', {
-    detail: {
-      path: path,
-      query: query,
-      anchor: anchor,
-    },
-  });
 };
