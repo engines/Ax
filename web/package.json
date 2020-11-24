@@ -24,7 +24,7 @@
     "chart.js": "^2.9.3",
     "codemirror": "^5.54.0",
     "dompurify": "^2.0.11",
-    "highlight.js": "^10.0.3",
+    "highlight.js": "^10.1.2",
     "jquery": "^3.5.1",
     "markedjs": "^10.0.0",
     "popper.js": "^1.16.1"
