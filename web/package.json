@@ -23,7 +23,7 @@
     "bootstrap": "^4.5.0",
     "chart.js": "^2.9.3",
     "codemirror": "^5.54.0",
-    "dompurify": "^2.0.11",
+    "dompurify": "^2.0.17",
     "highlight.js": "^10.0.3",
     "jquery": "^3.5.1",
     "markedjs": "^10.0.0",
