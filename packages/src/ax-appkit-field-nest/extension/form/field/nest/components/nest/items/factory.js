@@ -8,7 +8,7 @@ ax.extension.form.field.nest.components.nest.items.factory = function (
     object: options.object,
     formOptions: options.formOptions,
     index: options.index,
-    unindexed: options.unindexed,
+    collection: options.collection,
     singular: options.singular,
     remove: (options) => this.remove(f, options),
     up: (options) => this.up(f, options),

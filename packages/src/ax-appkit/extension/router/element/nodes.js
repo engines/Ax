@@ -5,7 +5,7 @@ ax.extension.router.element.nodes = (options) => (el) => {
     path: start.path,
     query: start.query,
     anchor: start.anchor,
-    scope: options.scope, // || '',
+    scope: options.scope,
     default: options.default,
     home: options.home,
     lazy: options.lazy,

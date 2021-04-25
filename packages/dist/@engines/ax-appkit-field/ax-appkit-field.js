@@ -74,7 +74,7 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {
-      return el.$$('ax-appkit-form-control').value.$$;
+      return el.$$('ax-appkit-form-control').$value().$$;
     },
 
     $focus: (el) => () => {
@@ -136,7 +136,9 @@ ax.extension.form.field.control = function (f, options = {}) {
 
   let object = f.object || {};
 
-  if (ax.is.not.undefined(object[key])) {
+  if (ax.is.function(options.value)) {
+    options.value = options.value(object[key]);
+  } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
 
@@ -144,6 +146,10 @@ ax.extension.form.field.control = function (f, options = {}) {
     ...options,
     name: name,
     ...options.control,
+    controlTag: {
+      $key: key,
+      ...(options.control || {}).controlTag,
+    },
   };
 
   if (options.collection) {
@@ -315,7 +321,7 @@ ax.extension.form.field.hint = function (options = {}) {
 
   return options.hint
     ? a['ax-appkit-form-field-hint'](a.small(options.hint), options.hintTag)
-    : null;
+    : a._;
 };
 
 ax.extension.form.field.label = function (options = {}) {
@@ -418,8 +424,6 @@ ax.extension.report.field.collection = function (f, control, options = {}) {
   );
 };
 
-ax.extension.report.field = {};
-
 ax.extension.report.field.control = function (r, options = {}) {
   let controlFn = r.controls[options.as || 'output'];
   if (!controlFn) {
@@ -433,7 +437,9 @@ ax.extension.report.field.control = function (r, options = {}) {
 
   let object = r.object || {};
 
-  if (key && ax.is.not.undefined(object[key])) {
+  if (ax.is.function(options.value)) {
+    options.value = options.value(object[key]);
+  } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
 
@@ -606,7 +612,7 @@ ax.extension.report.field.label = function (options = {}) {
   let x = ax.x;
   let lib = x.lib;
 
-  if (ax.is.boolean(options.label) && !options.label) return null;
+  if (ax.is.false(options.label)) return null;
   let label = options.label || lib.text.labelize(options.key);
   if (!label) return null;
   let component = a.label(label, options.labelTag);
@@ -1020,7 +1026,8 @@ ax.extension.form.field.controls.radios = function (f, options) {
     },
 
     $value: (el) => () => {
-      return el.$('input:checked').value;
+      let checked = el.$('input:checked');
+      return checked ? checked.value : '';
     },
 
     $focus: (el) => () => {

@@ -22,6 +22,11 @@ ax.extension.form.field.nest.sortable =
 ax.extension.form.field.nest.lib = {};
 
 ax.extension.form.field.nest.shim = {
+  controls: {
+    nest: (f, target) => (options = {}) =>
+      ax.x.form.field.nest.components.nest(f, options),
+  },
+
   form: (f, target) => (options = {}) =>
     target({
       ...options,
@@ -31,17 +36,27 @@ ax.extension.form.field.nest.shim = {
             .unnested(el, 'ax-appkit-form-nest')
             .forEach((target) => target.$rescope());
         },
-        // $on: {
-        //   'ax.appkit.form.nest.item.move: rescope': (e, el) => el.$rescope(),
-        //   ...(options.formTag || {}).$on
-        // },
         ...options.formTag,
       },
     }),
 
-  controls: {
-    nest: (f, target) => (options = {}) =>
-      ax.x.form.field.nest.components.nest(f, options),
+  field: (f, target) => (options = {}) => {
+    if (options.collection) {
+      if (
+        options.as == 'one' ||
+        options.as == 'many' ||
+        options.as == 'table' ||
+        options.as == 'nest'
+      ) {
+        options.collection = false;
+        options.items = {
+          singular: options.singular,
+          collection: true,
+          ...options.items,
+        };
+      }
+    }
+    return target(options);
   },
 };
 
@@ -59,22 +74,12 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   let x = ax.x;
 
   let nestForm = options.form || (() => null);
-  console.log('nest opts', options);
   let ff = this.nest.factory({
     scope: options.name, // name is the scope for child items
     object: options.value,
     singular: options.singular,
-    unindexed: options.unindexed,
     formOptions: f.formOptions,
   });
-  let rebasedName = function (name, scope, index) {
-    let pattern = `^${scope.replace(/(\[|\])/g, '\\$1')}\\[\\d*\\](.*)$`;
-    let regex = new RegExp(pattern);
-    let match = name.match(regex);
-    if (!match) return scope;
-    let i = options.unindexed ? '' : index;
-    return `${scope}[${i}]${match[1]}`;
-  };
 
   let nestTagOptions = {
     name: ff.scope,
@@ -101,21 +106,32 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   };
 
   let controlTagOptions = {
-    $value: (el) => () => el.$('|ax-appkit-form-nest-items').$count(),
-    $controls: (el) => () => {
-      return x.lib.unnested(el, 'ax-appkit-form-control');
+    $value: (el) => () => {
+      let controls = el.$controls();
+      let object = {};
+      for (let control of controls) {
+        if (control.$ax.$pseudotag == 'ax-appkit-form-nest-items') {
+          object = control.$value();
+          break;
+        }
+        object[control.$key] = control.$value();
+      }
+      return object;
     },
-    $buttons: (el) => () => {
-      return el.$$('button').$$;
+    $controls: (el) => () => {
+      return x.lib.unnested(
+        el,
+        'ax-appkit-form-control, |ax-appkit-form-nest-items'
+      );
     },
     $disable: (el) => () => {
-      let controls = [...el.$controls(), ...el.$buttons()];
+      let controls = el.$controls();
       for (let i in controls) {
         controls[i].$disable && controls[i].$disable();
       }
     },
     $enable: (el) => () => {
-      let controls = [...el.$controls(), ...el.$buttons()];
+      let controls = el.$controls();
       for (let i in controls) {
         controls[i].$enable && controls[i].$enable();
       }
@@ -132,11 +148,6 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
     controlTagOptions
   );
 };
-
-// ax.extension.form.field.nest.lib.rescopeForm = (el) => () => {
-//   let nests = ax.x.lib.unnested(el, 'ax-appkit-form-nest');
-//   nests.forEach((target) => target.$rescope());
-// }
 
 ax.extension.report.field.nest.components.nest = function (r, options = {}) {
   let a = ax.a;
@@ -206,7 +217,7 @@ ax.extension.form.field.nest.components.nest.factory = function (options) {
     formOptions: options.formOptions,
     items: (options = {}) => this.items(ff, options),
     add: (options = {}) => this.add(ff, options),
-    unindexed: options.unindexed,
+    collection: options.collection,
     singular: options.singular,
   });
 
@@ -219,27 +230,35 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
 
   let formFn = options.form || (() => null);
   let item = function (itemData, index) {
-    let i = f.unindexed ? '' : index;
-    let scope = `${f.scope}[${i}]`; // f.scope ? `${f.scope}[${i}]` : `${i}`;
+    let i = options.collection ? '' : index;
+    let scope = `${f.scope}[${i}]`;
     let ff = this.items.factory({
       scope: scope,
       object: itemData,
       index: index,
-      singular: f.singular,
-      unindexed: f.unindexed,
+      singular: options.singular,
+      collection: options.collection,
       formOptions: f.formOptions,
     });
 
     return a['li|ax-appkit-form-nest-item'](formFn(ff), {
-      // $itemsElement: (el) => () => {
-      //   let selector = x.lib.object.dig(options, ['itemsTag', '$tag']) || 'ax-appkit-form-nest-items'
-      //   return el.$(`^${selector}`)
-      // },
       name: scope,
+
+      $controls: (el) => () => {
+        return ax.x.lib.unnested(el, 'ax-appkit-form-control');
+      },
+      $value: (el) => () => {
+        let controls = el.$controls();
+        object = {};
+        for (let control of controls) {
+          object[control.$key] = control.$value();
+        }
+        return object;
+      },
 
       $rescope: (el) => (oldScope, newScope, index) => {
         let oldName = el.getAttribute('name');
-        let i = ff.unindexed ? '' : index;
+        let i = f.collection ? '' : index;
         let newName = `${newScope}[${i}]`;
         ff.index = index;
         ff.scope = newName;
@@ -285,6 +304,16 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       return el.$itemElements().length;
     },
 
+    $value: (el) => () => {
+      let elements = el.$itemElements();
+      let values = elements.map((element) => element.$value());
+      if (options.collection) {
+        return values;
+      } else {
+        return { ...values };
+      }
+    },
+
     $rescope: (el) => (oldScope, newScope) => {
       let oldName = el.getAttribute('name');
       let newName = oldName.replace(oldScope, newScope);
@@ -294,25 +323,9 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       });
     },
 
-    // $rescopeItems: (el) => () => {
-    //   el.$itemElements().forEach(function (item, index) {
-    //     item.$rescopeItem(f.scope, index);
-    //   });
-    // },
     $itemElements: (el) => () =>
       x.lib.unnested(el, '|ax-appkit-form-nest-item'),
     ...options.itemsTag,
-    // $on: {
-    //   'ax.appkit.form.nest.item.move': (e, el) => {
-    //     e.stopPropagation();
-    //     el.$rescopeItems();
-    //   },
-    //   'ax.appkit.form.nest.item.remove': (e, el) => {
-    //     e.stopPropagation();
-    //     el.$rescopeItems();
-    //   },
-    //   ...(options.itemsTag || {}).$on,
-    // },
   });
 };
 
@@ -390,7 +403,6 @@ ax.extension.form.field.nest.components.nest.items.down = function (
       if (next) {
         parent.insertBefore(item, next.nextSibling);
         el.$('^form').$rescope();
-        // el.focus();
         itemsElement.$send('ax.appkit.form.nest.items.change');
       }
     },
@@ -408,7 +420,7 @@ ax.extension.form.field.nest.components.nest.items.factory = function (
     object: options.object,
     formOptions: options.formOptions,
     index: options.index,
-    unindexed: options.unindexed,
+    collection: options.collection,
     singular: options.singular,
     remove: (options) => this.remove(f, options),
     up: (options) => this.up(f, options),
@@ -449,16 +461,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
       (ax.x.lib.tabable.next(parent) || window.document.body).focus();
       let length = parent.children.length;
       itemsElement.$('^form').$rescope();
-      // itemsElement.focus();
       itemsElement.$send('ax.appkit.form.nest.items.change');
-
-      // parent.$send('ax.appkit.form.nest.item.remove', {
-      //   detail: {
-      //     target: item,
-      //     index: index,
-      //     length: length,
-      //   },
-      // });
     },
     ...options,
   });
@@ -482,7 +485,6 @@ ax.extension.form.field.nest.components.nest.items.up = function (
       if (previous) {
         parent.insertBefore(item, previous);
         el.$('^form').$rescope();
-        // el.focus();
         itemsElement.$send('ax.appkit.form.nest.items.change');
       }
     },

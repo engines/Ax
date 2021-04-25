@@ -11,5 +11,5 @@ ax.extension.router.element = (options) => {
     ...options.routerTag,
   };
 
-  return a['ax-appkit-router'](null, routerTag);
+  return a['ax-appkit-router']([], routerTag);
 };

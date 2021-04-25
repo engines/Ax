@@ -1,22 +1,23 @@
-ax.extension.router.interface.mount = (config) => {
+ax.extension.router.interface.mount = (setup) => {
   return (options = {}) => {
     let a = ax.a;
     let x = ax.x;
 
-    config.default = options.default || config.default;
-    config.routes = options.routes || {};
+    let config = {
+      ...setup,
+      default: options.default || setup.default,
+      routes: options.routes || {},
+      transition: ax.is.undefined(options.transition)
+        ? setup.transition
+        : options.transition,
+      lazy: ax.is.undefined(options.lazy) ? setup.lazy : options.lazy,
+    };
 
     let init;
     let component;
     let matched;
-    let transition = ax.x.router.interface.mount.transition(
-      ax.is.undefined(options.transition)
-        ? config.transition
-        : options.transition
-    );
+    let transition = ax.x.router.interface.mount.transition(config.transition);
     let view = ax.x.router.interface.mount.view;
-
-    let lazy = ax.is.undefined(options.lazy) ? config.lazy : options.lazy;
 
     if (transition) {
       init = (el) => {
@@ -46,7 +47,6 @@ ax.extension.router.interface.mount = (config) => {
       },
 
       $load: (el) => (path, query, anchor) => {
-
         config.path = path;
         config.query = query;
         config.anchor = anchor;
@@ -54,7 +54,7 @@ ax.extension.router.interface.mount = (config) => {
         let locatedView = view(config, el);
 
         if (
-          lazy &&
+          config.lazy &&
           el.$scope == locatedView.scope &&
           locatedView.matched &&
           el.$matched
@@ -67,8 +67,7 @@ ax.extension.router.interface.mount = (config) => {
           el.$scope = locatedView.scope;
           el.$matched = locatedView.matched;
           if (transition) {
-
-            if (!el.$('ax-appkit-router-view')) debugger
+            if (!el.$('ax-appkit-router-view')) debugger;
 
             // Disable pointer events on outgoing view
             el.$('ax-appkit-router-view').style.pointerEvents = 'none';

@@ -281,7 +281,7 @@ class AxAppkitFetch {
     this.headers = options.headers;
     this.body = options.body;
     this.placeholder = options.placeholder || null;
-    this.fetch = options.fetch || {};
+    // this.fetch = options.fetch || {};
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -299,7 +299,7 @@ class AxAppkitFetch {
         'method',
         'headers',
         'body',
-        'fetch',
+        // 'fetch',
       ].map((key) => (is.array(options[key]) ? options[key].length : 0))
     );
   }
@@ -315,11 +315,17 @@ class AxAppkitFetch {
   }
 
   init() {
+    // No fetches when url is empty array.
+    if (is.array(this.url) && this.url.length == 0) {
+      this.renderSuccessResult([]);
+      this.callComplete();
+      return;
+    }
     this.performFetches()
       .then((responses) => this.buildResults(responses))
       .then((results) => this.preprocessResults(results))
       .then((results) => this.renderResults(results))
-      .catch((error) => this.renderError(error))
+      .catch((error) => this.renderCatch(error))
       .finally(() => this.callComplete());
   }
 
@@ -409,11 +415,10 @@ class AxAppkitFetch {
     let bodies = results.map((result) => result.body);
     let responses = results.map((result) => result.response);
     if (this.errorCallback) {
-      if (this.multiple) {
-        this.errorCallback(bodies, this.element, responses);
-      } else {
-        this.errorCallback(bodies[0], this.element, responses[0]);
-      }
+      let body = this.multiple ? bodies : bodies[0];
+      let response = this.multiple ? responses : responses[0];
+      let returnedElement = this.errorCallback(body, this.element, response);
+      if (returnedElement) this.element.$nodes = returnedElement;
     } else {
       this.element.$nodes = a['ax-appkit-fetch-response.error'](bodies);
     }
@@ -423,22 +428,26 @@ class AxAppkitFetch {
     let bodies = results.map((result) => result.body);
     let responses = results.map((result) => result.response);
     if (this.successCallback) {
-      if (this.multiple) {
-        this.successCallback(bodies, this.element, responses);
-      } else {
-        this.successCallback(bodies[0], this.element, responses[0]);
-      }
+      let body = this.multiple ? bodies : bodies[0];
+      let response = this.multiple ? responses : responses[0];
+      let returnedElement = this.successCallback(body, this.element, response);
+      if (returnedElement) this.element.$nodes = returnedElement;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.success'](bodies);
+      this.element.$nodes = a['ax-appkit-fetch-response.success'](
+        a.pre(JSON.stringify(this.multiple ? bodies : bodies[0], null, 2))
+      );
     }
   }
 
-  renderError(error) {
+  renderCatch(error) {
     console.error(error);
     if (this.catchCallback) {
-      this.catchCallback(error, this.element);
+      let returnedElement = this.catchCallback(error, this.element);
+      if (returnedElement) this.element.$nodes = returnedElement;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.error'](error.message);
+      this.element.$nodes = a['ax-appkit-fetch-response.error'](
+        a.pre(error.message)
+      );
     }
   }
 
@@ -635,7 +644,7 @@ ax.extension.router.element = (options) => {
     ...options.routerTag,
   };
 
-  return a['ax-appkit-router'](null, routerTag);
+  return a['ax-appkit-router']([], routerTag);
 };
 
 ax.extension.router.interface = (config) => {
@@ -653,6 +662,7 @@ ax.extension.router.interface = (config) => {
   };
   result.load = ax.x.router.interface.load(config);
   result.open = ax.x.router.interface.open(config);
+
   result.mount = ax.x.router.interface.mount(config);
 
   return result;
@@ -695,6 +705,7 @@ ax.extension.transition.fade = function (options = {}) {
         el.$in(component);
       }
     },
+    id: options.id,
     ...options.transitionTag,
   });
 };
@@ -718,8 +729,8 @@ ax.extension.form.factory.cancel = (f, options = {}) => {
     name: options.name,
     value: options.value,
     onclick: onclick,
-    to: options.to,
     title: options.title,
+    class: options.class,
     buttonTag: options.buttonTag,
     ...options.button,
   };
@@ -800,9 +811,6 @@ ax.extension.form.factory.form = (f, options = {}) => {
     $formData: (el) => () => {
       return new FormData(el);
     },
-    $data: (el) => () => {
-      return x.lib.form.data.objectify(el.$formData());
-    },
     ...options.formTag,
   };
 
@@ -813,7 +821,7 @@ ax.extension.form.factory.input = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let datalist = null;
+  let datalist = a._;
   let datalistId;
 
   if (options.datalist) {
@@ -851,7 +859,7 @@ ax.extension.form.factory.input = function (options = {}) {
   };
 
   return a['ax-appkit-form-input-wrapper'](
-    [a.input(null, inputTagOptions), datalist],
+    [a.input([], inputTagOptions), datalist],
     options.wrapperTag
   );
 };
@@ -941,6 +949,7 @@ ax.extension.form.factory.submit = (f, options = {}) => {
     value: options.value,
     onclick: options.onclick,
     title: options.title,
+    class: options.class,
     buttonTag: options.buttonTag,
     ...options.button,
   };
@@ -1054,50 +1063,12 @@ ax.extension.lib.name.dismantle = (string) =>
   );
 
 ax.extension.lib.object.assign = function (object, keys, value) {
-  let key = keys[0];
-  let depth = keys.length;
-
-  if (depth === 1) {
-    // Assign the value if no nesting.
-
-    if (key === '' && ax.is.array(object)) {
-      object.push(value);
-    } else if (key) {
-      object[key] = value;
-    }
+  if (keys.length) {
+    let key = keys.shift();
+    object[key] = this.assign(object[key] || {}, keys, value);
+    return object;
   } else {
-    // Assign nested value
-
-    // Look ahead to next key
-    let next = keys[1];
-
-    if (key === '') {
-      // Build a collection
-      let index = object.length - 1;
-      let current = object[index];
-      if (
-        ax.is.object(current) &&
-        (depth > 2 || ax.is.undefined(current[next]))
-      ) {
-        // Add to current item
-        key = index;
-      } else {
-        // Start building next item
-        key = index + 1;
-      }
-    }
-
-    // Create empty object if needed
-    if (ax.is.undefined(object[key])) {
-      if (next === '') {
-        object[key] = [];
-      } else {
-        object[key] = {};
-      }
-    }
-
-    // Do next layer of nesting
-    this.assign(object[key], keys.slice(1), value);
+    return value;
   }
 };
 
@@ -1454,11 +1425,9 @@ ax.extension.router.element.load = (el) => (path, query, anchor) => {
   mounted.forEach((r) => {
     r.$load(path, query, anchor);
   });
-
 };
 
 ax.extension.router.element.locate = (el) => (path, query, anchor) => {
-
   path = path || '/';
 
   query = x.lib.query.stringify(query);
@@ -1495,7 +1464,7 @@ ax.extension.router.element.nodes = (options) => (el) => {
     path: start.path,
     query: start.query,
     anchor: start.anchor,
-    scope: options.scope, // || '',
+    scope: options.scope,
     default: options.default,
     home: options.home,
     lazy: options.lazy,
@@ -1525,7 +1494,6 @@ ax.extension.router.element.open = (options) => (el) => (
   }
 
   el.$locate(path, query, anchor);
-
 };
 
 ax.extension.router.interface.load = (config) =>
@@ -1547,25 +1515,26 @@ ax.extension.router.interface.load = (config) =>
     config.router.$load(path, query, anchor);
   };
 
-ax.extension.router.interface.mount = (config) => {
+ax.extension.router.interface.mount = (setup) => {
   return (options = {}) => {
     let a = ax.a;
     let x = ax.x;
 
-    config.default = options.default || config.default;
-    config.routes = options.routes || {};
+    let config = {
+      ...setup,
+      default: options.default || setup.default,
+      routes: options.routes || {},
+      transition: ax.is.undefined(options.transition)
+        ? setup.transition
+        : options.transition,
+      lazy: ax.is.undefined(options.lazy) ? setup.lazy : options.lazy,
+    };
 
     let init;
     let component;
     let matched;
-    let transition = ax.x.router.interface.mount.transition(
-      ax.is.undefined(options.transition)
-        ? config.transition
-        : options.transition
-    );
+    let transition = ax.x.router.interface.mount.transition(config.transition);
     let view = ax.x.router.interface.mount.view;
-
-    let lazy = ax.is.undefined(options.lazy) ? config.lazy : options.lazy;
 
     if (transition) {
       init = (el) => {
@@ -1595,7 +1564,6 @@ ax.extension.router.interface.mount = (config) => {
       },
 
       $load: (el) => (path, query, anchor) => {
-
         config.path = path;
         config.query = query;
         config.anchor = anchor;
@@ -1603,7 +1571,7 @@ ax.extension.router.interface.mount = (config) => {
         let locatedView = view(config, el);
 
         if (
-          lazy &&
+          config.lazy &&
           el.$scope == locatedView.scope &&
           locatedView.matched &&
           el.$matched
@@ -1616,8 +1584,7 @@ ax.extension.router.interface.mount = (config) => {
           el.$scope = locatedView.scope;
           el.$matched = locatedView.matched;
           if (transition) {
-
-            if (!el.$('ax-appkit-router-view')) debugger
+            if (!el.$('ax-appkit-router-view')) debugger;
 
             // Disable pointer events on outgoing view
             el.$('ax-appkit-router-view').style.pointerEvents = 'none';
@@ -1646,7 +1613,6 @@ ax.extension.router.interface.open = (config) => (
   query = {},
   anchor = null
 ) => {
-  // if (locator) {
   let path = window.location.pathname;
 
   if (locator[0] == '/') {
@@ -1660,9 +1626,6 @@ ax.extension.router.interface.open = (config) => (
   }
 
   config.router.$open(path, query, anchor);
-  // } else {
-  //   config.router.$go();
-  // }
 };
 
 ax.extension.form.factory.select.options = function (options) {
@@ -1808,6 +1771,8 @@ ax.extension.router.interface.mount.transition = (transition) => {
     return ax.x.transition[name](options);
   } else if (ax.is.function(transition)) {
     return transition();
+  } else {
+    return transition;
   }
 };
 
@@ -1856,7 +1821,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
   }
 
   if (ax.is.function(component)) {
-    let controller = ax.x.router.interface({
+    let router = ax.x.router.interface({
       path: config.path,
       query: config.query,
       anchor: config.anchor,
@@ -1870,7 +1835,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view'](component(controller), {
+    component = ax.a['ax-appkit-router-view'](component(router), {
       $init: (el) => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
@@ -1883,8 +1848,8 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       },
     });
   } else {
-    component = ax.a['ax-appkit-router-view'](component)
-  };
+    component = ax.a['ax-appkit-router-view'](component);
+  }
 
   return {
     matched: !!matched,
@@ -1950,7 +1915,7 @@ ax.extension.router.interface.mount.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\\/|^\\.]*)';
+      pattern = '([^\\/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';
@@ -1959,7 +1924,7 @@ ax.extension.router.interface.mount.view.match.regexp = (route) => {
       pattern = '(\\/?)';
     } else {
       paramKey = capture.slice(1);
-      pattern = '([^\\/|^\\.]*)';
+      pattern = '([^\\/]*)';
     }
     paramKeys.push(paramKey);
     routeRegexp = routeRegexp.replace(capture, pattern);

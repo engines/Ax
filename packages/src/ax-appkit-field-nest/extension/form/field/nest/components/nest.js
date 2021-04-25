@@ -3,22 +3,12 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   let x = ax.x;
 
   let nestForm = options.form || (() => null);
-  console.log('nest opts', options);
   let ff = this.nest.factory({
     scope: options.name, // name is the scope for child items
     object: options.value,
     singular: options.singular,
-    unindexed: options.unindexed,
     formOptions: f.formOptions,
   });
-  let rebasedName = function (name, scope, index) {
-    let pattern = `^${scope.replace(/(\[|\])/g, '\\$1')}\\[\\d*\\](.*)$`;
-    let regex = new RegExp(pattern);
-    let match = name.match(regex);
-    if (!match) return scope;
-    let i = options.unindexed ? '' : index;
-    return `${scope}[${i}]${match[1]}`;
-  };
 
   let nestTagOptions = {
     name: ff.scope,
@@ -45,21 +35,32 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   };
 
   let controlTagOptions = {
-    $value: (el) => () => el.$('|ax-appkit-form-nest-items').$count(),
-    $controls: (el) => () => {
-      return x.lib.unnested(el, 'ax-appkit-form-control');
+    $value: (el) => () => {
+      let controls = el.$controls();
+      let object = {};
+      for (let control of controls) {
+        if (control.$ax.$pseudotag == 'ax-appkit-form-nest-items') {
+          object = control.$value();
+          break;
+        }
+        object[control.$key] = control.$value();
+      }
+      return object;
     },
-    $buttons: (el) => () => {
-      return el.$$('button').$$;
+    $controls: (el) => () => {
+      return x.lib.unnested(
+        el,
+        'ax-appkit-form-control, |ax-appkit-form-nest-items'
+      );
     },
     $disable: (el) => () => {
-      let controls = [...el.$controls(), ...el.$buttons()];
+      let controls = el.$controls();
       for (let i in controls) {
         controls[i].$disable && controls[i].$disable();
       }
     },
     $enable: (el) => () => {
-      let controls = [...el.$controls(), ...el.$buttons()];
+      let controls = el.$controls();
       for (let i in controls) {
         controls[i].$enable && controls[i].$enable();
       }

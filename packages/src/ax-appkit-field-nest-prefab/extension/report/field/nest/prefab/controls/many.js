@@ -1,20 +1,20 @@
-ax.extension.report.field.nest.prefab.controls.many = function (f, options) {
+ax.extension.report.field.nest.prefab.controls.many = function (r, options) {
   let a = ax.a;
 
-  return f.controls.nest({
+  return r.controls.nest({
     ...options,
-    report: (ff) => (a, x) =>
+    report: (rr) => (a, x) =>
       a['ax-appkit-report-nest-many-wrapper'](
         [
-          ff.items({
+          rr.items({
             ...options,
-            report: (fff) => [
+            report: (rrr) => [
               a['ax-appkit-report-nest-many-item-header'](
                 null,
                 options.itemHeaderTag
               ),
               a['ax-appkit-report-nest-many-item-body'](
-                options.report(fff),
+                options.report(rrr),
                 options.itemBodyTag
               ),
             ],

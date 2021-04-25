@@ -8,6 +8,7 @@ ax.extension.form.factory.submit = (f, options = {}) => {
     value: options.value,
     onclick: options.onclick,
     title: options.title,
+    class: options.class,
     buttonTag: options.buttonTag,
     ...options.button,
   };

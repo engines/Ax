@@ -13,7 +13,7 @@ ax.extension.router.interface.mount.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\\/|^\\.]*)';
+      pattern = '([^\\/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';
@@ -22,7 +22,7 @@ ax.extension.router.interface.mount.view.match.regexp = (route) => {
       pattern = '(\\/?)';
     } else {
       paramKey = capture.slice(1);
-      pattern = '([^\\/|^\\.]*)';
+      pattern = '([^\\/]*)';
     }
     paramKeys.push(paramKey);
     routeRegexp = routeRegexp.replace(capture, pattern);

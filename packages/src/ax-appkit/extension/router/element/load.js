@@ -4,5 +4,4 @@ ax.extension.router.element.load = (el) => (path, query, anchor) => {
   mounted.forEach((r) => {
     r.$load(path, query, anchor);
   });
-
 };

@@ -9,11 +9,17 @@ ax.extension.form.async = (target, options = {}) =>
             $controls: (el) => () => {
               return ax.x.lib.unnested(el, 'ax-appkit-form-control');
             },
-            $buttons: (el) => () => {
-              return el.$$('button').$$;
+            $value: (el) => () => {
+              let controls = el.$controls();
+              let object = {};
+              for (let control of controls) {
+                object[control.$key] = control.$value();
+              }
+              return object;
             },
             $disable: (el) => () => {
-              let controls = [...el.$controls(), ...el.$buttons()];
+              el.style.pointerEvents = 'none';
+              let controls = el.$controls();
               for (let i in controls) {
                 ax.x.lib.element.visible(controls[i]) &&
                   controls[i].$disable &&
@@ -21,7 +27,8 @@ ax.extension.form.async = (target, options = {}) =>
               }
             },
             $enable: (el) => () => {
-              let controls = [...el.$controls(), ...el.$buttons()];
+              el.style.pointerEvents = 'unset';
+              let controls = el.$controls();
               for (let i in controls) {
                 ax.x.lib.element.visible(controls[i]) &&
                   controls[i].$enable &&
@@ -53,7 +60,7 @@ ax.extension.form.async = (target, options = {}) =>
             formEl.$enable && formEl.$enable();
             var windowTop = window.scrollY;
             var windowBottom = windowTop + window.innerHeight;
-            var outputTop = outputEl.offsetTop;
+            var outputTop = outputEl.offsetParent.offsetTop;
             var outputBottom = outputTop + outputEl.offsetHeight;
             if (outputBottom > windowBottom || outputTop < windowTop) {
               outputEl.scrollIntoView();
@@ -62,8 +69,6 @@ ax.extension.form.async = (target, options = {}) =>
           };
 
           let submission = {
-            formData: formData,
-            data: ax.x.lib.form.data.objectify(formData),
             form: formEl,
             output: outputEl,
             submitter: submitter,

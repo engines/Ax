@@ -263,6 +263,27 @@ ax.extension.bootstrap.form.shim = {
             ...(options.dragOffButton || {}).buttonTag,
           },
         },
+        upButton: {
+          ...options.upButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.upButton || {}).buttonTag,
+          },
+        },
+        downButton: {
+          ...options.downButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.downButton || {}).buttonTag,
+          },
+        },
+        removeButton: {
+          ...options.removeButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.removeButton || {}).buttonTag,
+          },
+        },
       });
     } else {
       return target(options);
@@ -343,6 +364,27 @@ ax.extension.bootstrap.form.shim = {
           class: 'btn btn-danger mr-1',
           ...options.deleteTag,
         },
+        upButton: {
+          ...options.upButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.upButton || {}).buttonTag,
+          },
+        },
+        downButton: {
+          ...options.downButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.downButton || {}).buttonTag,
+          },
+        },
+        removeButton: {
+          ...options.removeButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.removeButton || {}).buttonTag,
+          },
+        },
       }),
     many: (f, target) => (options = {}) => {
       let horizontal = ax.is.undefined(options.horizontal)
@@ -381,6 +423,27 @@ ax.extension.bootstrap.form.shim = {
         deleteTag: {
           class: 'btn btn-danger mr-1',
           ...options.deleteTag,
+        },
+        upButton: {
+          ...options.upButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.upButton || {}).buttonTag,
+          },
+        },
+        downButton: {
+          ...options.downButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.downButton || {}).buttonTag,
+          },
+        },
+        removeButton: {
+          ...options.removeButton,
+          buttonTag: {
+            class: 'btn',
+            ...(options.removeButton || {}).buttonTag,
+          },
         },
       });
     },

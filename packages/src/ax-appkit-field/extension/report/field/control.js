@@ -11,7 +11,9 @@ ax.extension.report.field.control = function (r, options = {}) {
 
   let object = r.object || {};
 
-  if (key && ax.is.not.undefined(object[key])) {
+  if (ax.is.function(options.value)) {
+    options.value = options.value(object[key]);
+  } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
 

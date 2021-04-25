@@ -3,7 +3,7 @@ ax.extension.report.field.label = function (options = {}) {
   let x = ax.x;
   let lib = x.lib;
 
-  if (ax.is.boolean(options.label) && !options.label) return null;
+  if (ax.is.false(options.label)) return null;
   let label = options.label || lib.text.labelize(options.key);
   if (!label) return null;
   let component = a.label(label, options.labelTag);

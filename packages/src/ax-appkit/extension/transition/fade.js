@@ -35,6 +35,7 @@ ax.extension.transition.fade = function (options = {}) {
         el.$in(component);
       }
     },
+    id: options.id,
     ...options.transitionTag,
   });
 };

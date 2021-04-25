@@ -15,11 +15,11 @@ ax.node.create.properties.render.nodes = function (element) {
   if (ax.is.array(nodes)) {
     nodes.forEach(function (node) {
       node = ax.node(node);
-      if (node != null) root.appendChild(node);
+      if (node != null && node.tagName != '_') root.appendChild(node);
     });
   } else {
     let node = ax.node(nodes);
-    if (node != null) root.appendChild(node);
+    if (node != null && node.tagName != '_') root.appendChild(node);
   }
 
   return element;

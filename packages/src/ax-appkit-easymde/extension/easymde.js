@@ -30,24 +30,6 @@ ax.extension.easymde = (options = {}) => (a, x) =>
             // ESC pressed - move focus forward
             ax.x.lib.tabable.next(e.target).focus();
           }
-
-          // if (
-          //   el.$('div.CodeMirror').classList.contains('CodeMirror-fullscreen')
-          // ) {
-          //   // EasyMDE closes fullscreen when ESC pressed.
-          //   el.$easymde.codemirror.focus();
-          // } else {
-          //   if (e.target.nodeName === 'TEXTAREA') {
-          //     // if (e.keyCode == 27 && e.shiftKey) {
-          //     //   // shift+ESC pressed - move focus backward
-          //     //   ax.x.lib.tabable.previous(e.target).focus();
-          //     // } else
-          //     if (e.keyCode == 27) {
-          //       // ESC pressed - move focus forward
-          //       ax.x.lib.tabable.next(e.target).focus();
-          //     }
-          //   }
-          // }
         },
         ...(options.textareaTag || {}).$on,
       },

@@ -30,7 +30,6 @@ ax.extension.markedjs = function (options = {}) {
 
   return a({
     $tag: options.inline ? 'span' : 'div',
-    // $pseudotag: 'ax-appkit-markedjs',
     $html: html,
     ...options.markedjsTag,
   });

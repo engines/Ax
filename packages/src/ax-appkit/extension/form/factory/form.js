@@ -11,9 +11,6 @@ ax.extension.form.factory.form = (f, options = {}) => {
     $formData: (el) => () => {
       return new FormData(el);
     },
-    $data: (el) => () => {
-      return x.lib.form.data.objectify(el.$formData());
-    },
     ...options.formTag,
   };
 

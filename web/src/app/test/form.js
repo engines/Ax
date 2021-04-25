@@ -59,7 +59,7 @@ export default (router) => (a, x) => [
       f.field({key: 'input', help: 'This is **help**.'}),
       f.field({key: 'hidden', as: 'hidden', hint: 'This is a hint', }),
       f.field({key: 'input2', dependent: {key: 'input', value: 'some value'}, help: 'This is **help**.'}),
-      // f.field({key: 'color', type: 'color'}),
+      f.field({key: 'color', type: 'color', collection: true, moveable: true, removeable: true, addable: true, }),
       // f.field({key: 'email', type: 'email'}),
       // f.field({key: 'number', type: 'number'}),
       // f.field({key: 'tel', type: 'tel'}),
@@ -109,10 +109,37 @@ export default (router) => (a, x) => [
         ff.field({key: 'number', type: 'number', hint: 'This is a hint'}),
         ff.field({key: 'email', type: 'email', hint: 'This is a hint'}),
       ], hint: 'This is a hint'}),
-      f.field({key: 'many', collection: true, as: 'many', moveable: true, form: (ff) => [
-        ff.field({key: 'height', type: 'number', hint: 'This is a hint'}),
-        ff.field({key: 'weight', type: 'number', hint: 'This is a hint'}),
-      ], hint: 'This is a hint'}),
+      f.field({
+        key: 'many',
+        // collection: true,
+        as: 'many',
+        moveable: true,
+        removeable: true,
+        addable: true,
+        draggable: true,
+        deletable: true,
+        form: (ff) => [
+          ff.field({key: 'height', type: 'number', hint: 'This is a hint'}),
+          ff.field({key: 'weight', type: 'number', hint: 'This is a hint'}),
+
+          ff.field({
+            key: 'many',
+            // collection: true,
+            as: 'table',
+            moveable: true,
+            removeable: true,
+            addable: true,
+            draggable: true,
+            deletable: true,
+            form: (fff) => [
+              fff.field({key: 'height', type: 'number', hint: 'This is a hint'}),
+              fff.field({key: 'weight', type: 'number', hint: 'This is a hint'}),
+            ],
+          }),
+
+        ],
+        hint: 'This is a hint'
+      }),
       f.submit(),
     ],
   }),

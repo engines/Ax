@@ -16,7 +16,6 @@ ax.extension.codemirror.toolbar = function (options = {}) {
                 el.$text = '🗖';
                 el.$('^body').style.overflowY = 'unset';
                 wrapper.classList.remove('fullscreen');
-                // editor.style.height = '';
                 codemirror.focus();
               } else {
                 el.$text = '🗗';

@@ -7,5 +7,7 @@ ax.extension.router.interface.mount.transition = (transition) => {
     return ax.x.transition[name](options);
   } else if (ax.is.function(transition)) {
     return transition();
+  } else {
+    return transition;
   }
 };

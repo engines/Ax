@@ -4,27 +4,35 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
 
   let formFn = options.form || (() => null);
   let item = function (itemData, index) {
-    let i = f.unindexed ? '' : index;
-    let scope = `${f.scope}[${i}]`; // f.scope ? `${f.scope}[${i}]` : `${i}`;
+    let i = options.collection ? '' : index;
+    let scope = `${f.scope}[${i}]`;
     let ff = this.items.factory({
       scope: scope,
       object: itemData,
       index: index,
-      singular: f.singular,
-      unindexed: f.unindexed,
+      singular: options.singular,
+      collection: options.collection,
       formOptions: f.formOptions,
     });
 
     return a['li|ax-appkit-form-nest-item'](formFn(ff), {
-      // $itemsElement: (el) => () => {
-      //   let selector = x.lib.object.dig(options, ['itemsTag', '$tag']) || 'ax-appkit-form-nest-items'
-      //   return el.$(`^${selector}`)
-      // },
       name: scope,
+
+      $controls: (el) => () => {
+        return ax.x.lib.unnested(el, 'ax-appkit-form-control');
+      },
+      $value: (el) => () => {
+        let controls = el.$controls();
+        object = {};
+        for (let control of controls) {
+          object[control.$key] = control.$value();
+        }
+        return object;
+      },
 
       $rescope: (el) => (oldScope, newScope, index) => {
         let oldName = el.getAttribute('name');
-        let i = ff.unindexed ? '' : index;
+        let i = f.collection ? '' : index;
         let newName = `${newScope}[${i}]`;
         ff.index = index;
         ff.scope = newName;
@@ -70,6 +78,16 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       return el.$itemElements().length;
     },
 
+    $value: (el) => () => {
+      let elements = el.$itemElements();
+      let values = elements.map((element) => element.$value());
+      if (options.collection) {
+        return values;
+      } else {
+        return { ...values };
+      }
+    },
+
     $rescope: (el) => (oldScope, newScope) => {
       let oldName = el.getAttribute('name');
       let newName = oldName.replace(oldScope, newScope);
@@ -79,24 +97,8 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       });
     },
 
-    // $rescopeItems: (el) => () => {
-    //   el.$itemElements().forEach(function (item, index) {
-    //     item.$rescopeItem(f.scope, index);
-    //   });
-    // },
     $itemElements: (el) => () =>
       x.lib.unnested(el, '|ax-appkit-form-nest-item'),
     ...options.itemsTag,
-    // $on: {
-    //   'ax.appkit.form.nest.item.move': (e, el) => {
-    //     e.stopPropagation();
-    //     el.$rescopeItems();
-    //   },
-    //   'ax.appkit.form.nest.item.remove': (e, el) => {
-    //     e.stopPropagation();
-    //     el.$rescopeItems();
-    //   },
-    //   ...(options.itemsTag || {}).$on,
-    // },
   });
 };

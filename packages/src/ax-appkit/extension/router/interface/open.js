@@ -3,7 +3,6 @@ ax.extension.router.interface.open = (config) => (
   query = {},
   anchor = null
 ) => {
-  // if (locator) {
   let path = window.location.pathname;
 
   if (locator[0] == '/') {
@@ -17,7 +16,4 @@ ax.extension.router.interface.open = (config) => (
   }
 
   config.router.$open(path, query, anchor);
-  // } else {
-  //   config.router.$go();
-  // }
 };

@@ -11,7 +11,9 @@ ax.extension.form.field.control = function (f, options = {}) {
 
   let object = f.object || {};
 
-  if (ax.is.not.undefined(object[key])) {
+  if (ax.is.function(options.value)) {
+    options.value = options.value(object[key]);
+  } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
 
@@ -19,6 +21,10 @@ ax.extension.form.field.control = function (f, options = {}) {
     ...options,
     name: name,
     ...options.control,
+    controlTag: {
+      $key: key,
+      ...(options.control || {}).controlTag,
+    },
   };
 
   if (options.collection) {

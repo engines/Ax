@@ -44,7 +44,7 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {
-      return el.$$('ax-appkit-form-control').value.$$;
+      return el.$$('ax-appkit-form-control').$value().$$;
     },
 
     $focus: (el) => () => {

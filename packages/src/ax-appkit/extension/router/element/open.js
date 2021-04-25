@@ -8,5 +8,4 @@ ax.extension.router.element.open = (options) => (el) => (
   }
 
   el.$locate(path, query, anchor);
-
 };

@@ -2,7 +2,7 @@ ax.extension.form.factory.input = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let datalist = null;
+  let datalist = a._;
   let datalistId;
 
   if (options.datalist) {
@@ -40,7 +40,7 @@ ax.extension.form.factory.input = function (options = {}) {
   };
 
   return a['ax-appkit-form-input-wrapper'](
-    [a.input(null, inputTagOptions), datalist],
+    [a.input([], inputTagOptions), datalist],
     options.wrapperTag
   );
 };

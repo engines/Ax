@@ -28,7 +28,6 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
       x.form.factory.select.options({
         value: value,
         selections: selections,
-        // placeholder: '𝍣 Keys',
       }),
       {
         $on: {

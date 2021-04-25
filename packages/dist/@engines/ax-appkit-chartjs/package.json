@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit-chartjs",
+  "version": "0.0.10",
   "description": "An Ax extension for Chart.js.",
   "main": "ax-appkit-chartjs.js",
   "repository": {

@@ -46,10 +46,6 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
       }),
     ]),
     {
-      // $init: (el) => {
-      //   el.$valid()
-      // },
-
       $value: (el) => () => {
         return el.$('textarea').$codemirror.getValue();
       },
@@ -70,40 +66,7 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
         }
       },
 
-      // $validity: (el) => () => {
-      //   return el.$('textarea').validity;
-      // },
-      //
-      // $valid: (el) => () => {
-      //   el.$('.CodeMirror textarea').setCustomValidity('');
-      //   if (el.$validity().valid) {
-      //     return true;
-      //   } else {
-      //     if (options.invalid) {
-      //       if (ax.is.function(options.invalid)) {
-      //         let invalidMessage = options.invalid(el.$value, el.$validity);
-      //         if (invalidMessage) {
-      //           el.$('.CodeMirror textarea').setCustomValidity(invalidMessage);
-      //         }
-      //       } else {
-      //         el.$('.CodeMirror textarea').setCustomValidity(options.invalid);
-      //       }
-      //     }
-      //     return false;
-      //   }
-      // },
-
       ...options.controlTag,
-
-      // $on: {
-      //   // 'input: check validity': (e, el) => {
-      //   //   el.$valid();
-      //   // },
-      //   'input: send control change event': (e, el) => {
-      //     el.$send('ax.appkit.form.control.change');
-      //   },
-      //   ...(options.controlTag || {}).$on,
-      // },
     }
   );
 };

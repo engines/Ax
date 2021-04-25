@@ -43,7 +43,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
   }
 
   if (ax.is.function(component)) {
-    let controller = ax.x.router.interface({
+    let router = ax.x.router.interface({
       path: config.path,
       query: config.query,
       anchor: config.anchor,
@@ -57,7 +57,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view'](component(controller), {
+    component = ax.a['ax-appkit-router-view'](component(router), {
       $init: (el) => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
@@ -70,8 +70,8 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       },
     });
   } else {
-    component = ax.a['ax-appkit-router-view'](component)
-  };
+    component = ax.a['ax-appkit-router-view'](component);
+  }
 
   return {
     matched: !!matched,

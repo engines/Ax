@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit-easymde",
+  "version": "0.0.10",
   "description": "An Ax extension for EasyMDE.",
   "main": "ax-appkit-easymde.js",
   "repository": {

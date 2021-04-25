@@ -61,6 +61,7 @@ ax.extension.panes = function (options = {}) {
       a['ax-appkit-panes-drag'](null, {
         $on: {
           mousedown: (e, el) => {
+            e.preventDefault();
             el.$('^ax-appkit-panes').classList.add('dragable');
             window.document.addEventListener('mousemove', move);
             window.document.addEventListener('mouseup', clear);

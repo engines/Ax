@@ -281,7 +281,6 @@ ax.is.number = function (value) {
  * Determines whether value is an object.
  */
 ax.is.object = function (value) {
-  // return typeof value === 'object';
   return value && value.constructor === Object;
 };
 
@@ -378,6 +377,7 @@ ax.node.nodelist = function (nodelist) {
  * Create element for an object.
  */
 ax.node.object = function (object) {
+  console.log(object);
   return ax.node.create({
     $tag: 'pre',
     $text: JSON.stringify(object, null, 2),
@@ -544,7 +544,8 @@ ax.tag.proxy.component = function (component) {
  * Accepts an HTML fragment or an object of Ax component properties.
  * Returns an element.
  */
-ax.tag.proxy.function = ax.node.create;
+ax.tag.proxy.function = (arg) =>
+  ax.is.object(arg) ? ax.node.create(arg) : ax.node.raw(arg);
 
 /**
  * Tag Builder proxy shim.
@@ -552,12 +553,10 @@ ax.tag.proxy.function = ax.node.create;
  */
 ax.tag.proxy.shim = {
   get: (target, property) => (component, attributes) => {
-    if (property == '!') {
-      return ax.node.raw(component);
-    }
+    if (property == '!') return ax.node.raw(component);
     return ax.node.create({
-      ...ax.tag.proxy.attributes(property, attributes || {}),
       ...ax.tag.proxy.component(component),
+      ...ax.tag.proxy.attributes(property, attributes || {}),
     });
   },
 };
@@ -923,11 +922,11 @@ ax.node.create.properties.render.nodes = function (element) {
   if (ax.is.array(nodes)) {
     nodes.forEach(function (node) {
       node = ax.node(node);
-      if (node != null) root.appendChild(node);
+      if (node != null && node.tagName != '_') root.appendChild(node);
     });
   } else {
     let node = ax.node(nodes);
-    if (node != null) root.appendChild(node);
+    if (node != null && node.tagName != '_') root.appendChild(node);
   }
 
   return element;

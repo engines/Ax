@@ -27,23 +27,12 @@ ax.extension.easymde.form.control = function (f, options) {
         el.$send('ax.appkit.form.control.change');
       },
       'keydown: check for editor exit': (e, el) => {
-        // if (
-        //   el.$('div.CodeMirror').classList.contains('CodeMirror-fullscreen')
-        // ) {
-        //   // EasyMDE closes fullscreen when ESC pressed.
-        //   el.$focus();
-        // } else {
         if (e.target.nodeName === 'TEXTAREA') {
-          // if (e.keyCode == 27 && e.shiftKey) {
-          //   // shift+ESC pressed - move focus backward
-          //   ax.x.lib.tabable.previous(e.target).focus();
-          // } else
           if (e.keyCode == 27) {
             // ESC pressed - move focus forward
             ax.x.lib.tabable.next(e.target).focus();
           }
         }
-        // }
       },
       ...(options.controlTag || {}).$on,
     },

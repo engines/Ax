@@ -16,7 +16,6 @@ ax.extension.form.field.nest.components.nest.items.down = function (
       if (next) {
         parent.insertBefore(item, next.nextSibling);
         el.$('^form').$rescope();
-        // el.focus();
         itemsElement.$send('ax.appkit.form.nest.items.change');
       }
     },

@@ -7,7 +7,7 @@ class AxAppkitFetch {
     this.headers = options.headers;
     this.body = options.body;
     this.placeholder = options.placeholder || null;
-    this.fetch = options.fetch || {};
+    // this.fetch = options.fetch || {};
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -25,7 +25,7 @@ class AxAppkitFetch {
         'method',
         'headers',
         'body',
-        'fetch',
+        // 'fetch',
       ].map((key) => (is.array(options[key]) ? options[key].length : 0))
     );
   }
@@ -41,11 +41,17 @@ class AxAppkitFetch {
   }
 
   init() {
+    // No fetches when url is empty array.
+    if (is.array(this.url) && this.url.length == 0) {
+      this.renderSuccessResult([]);
+      this.callComplete();
+      return;
+    }
     this.performFetches()
       .then((responses) => this.buildResults(responses))
       .then((results) => this.preprocessResults(results))
       .then((results) => this.renderResults(results))
-      .catch((error) => this.renderError(error))
+      .catch((error) => this.renderCatch(error))
       .finally(() => this.callComplete());
   }
 
@@ -135,11 +141,10 @@ class AxAppkitFetch {
     let bodies = results.map((result) => result.body);
     let responses = results.map((result) => result.response);
     if (this.errorCallback) {
-      if (this.multiple) {
-        this.errorCallback(bodies, this.element, responses);
-      } else {
-        this.errorCallback(bodies[0], this.element, responses[0]);
-      }
+      let body = this.multiple ? bodies : bodies[0];
+      let response = this.multiple ? responses : responses[0];
+      let returnedElement = this.errorCallback(body, this.element, response);
+      if (returnedElement) this.element.$nodes = returnedElement;
     } else {
       this.element.$nodes = a['ax-appkit-fetch-response.error'](bodies);
     }
@@ -149,22 +154,26 @@ class AxAppkitFetch {
     let bodies = results.map((result) => result.body);
     let responses = results.map((result) => result.response);
     if (this.successCallback) {
-      if (this.multiple) {
-        this.successCallback(bodies, this.element, responses);
-      } else {
-        this.successCallback(bodies[0], this.element, responses[0]);
-      }
+      let body = this.multiple ? bodies : bodies[0];
+      let response = this.multiple ? responses : responses[0];
+      let returnedElement = this.successCallback(body, this.element, response);
+      if (returnedElement) this.element.$nodes = returnedElement;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.success'](bodies);
+      this.element.$nodes = a['ax-appkit-fetch-response.success'](
+        a.pre(JSON.stringify(this.multiple ? bodies : bodies[0], null, 2))
+      );
     }
   }
 
-  renderError(error) {
+  renderCatch(error) {
     console.error(error);
     if (this.catchCallback) {
-      this.catchCallback(error, this.element);
+      let returnedElement = this.catchCallback(error, this.element);
+      if (returnedElement) this.element.$nodes = returnedElement;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.error'](error.message);
+      this.element.$nodes = a['ax-appkit-fetch-response.error'](
+        a.pre(error.message)
+      );
     }
   }
 

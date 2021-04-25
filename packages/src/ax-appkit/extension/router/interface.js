@@ -13,6 +13,7 @@ ax.extension.router.interface = (config) => {
   };
   result.load = ax.x.router.interface.load(config);
   result.open = ax.x.router.interface.open(config);
+
   result.mount = ax.x.router.interface.mount(config);
 
   return result;

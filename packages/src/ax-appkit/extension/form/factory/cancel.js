@@ -11,8 +11,8 @@ ax.extension.form.factory.cancel = (f, options = {}) => {
     name: options.name,
     value: options.value,
     onclick: onclick,
-    to: options.to,
     title: options.title,
+    class: options.class,
     buttonTag: options.buttonTag,
     ...options.button,
   };

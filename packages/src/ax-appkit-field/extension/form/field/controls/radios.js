@@ -7,7 +7,8 @@ ax.extension.form.field.controls.radios = function (f, options) {
     },
 
     $value: (el) => () => {
-      return el.$('input:checked').value;
+      let checked = el.$('input:checked');
+      return checked ? checked.value : '';
     },
 
     $focus: (el) => () => {

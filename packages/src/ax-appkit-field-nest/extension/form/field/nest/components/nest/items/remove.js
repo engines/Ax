@@ -29,16 +29,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
       (ax.x.lib.tabable.next(parent) || window.document.body).focus();
       let length = parent.children.length;
       itemsElement.$('^form').$rescope();
-      // itemsElement.focus();
       itemsElement.$send('ax.appkit.form.nest.items.change');
-
-      // parent.$send('ax.appkit.form.nest.item.remove', {
-      //   detail: {
-      //     target: item,
-      //     index: index,
-      //     length: length,
-      //   },
-      // });
     },
     ...options,
   });

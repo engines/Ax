@@ -1,4 +1,9 @@
 ax.extension.form.field.nest.shim = {
+  controls: {
+    nest: (f, target) => (options = {}) =>
+      ax.x.form.field.nest.components.nest(f, options),
+  },
+
   form: (f, target) => (options = {}) =>
     target({
       ...options,
@@ -8,16 +13,26 @@ ax.extension.form.field.nest.shim = {
             .unnested(el, 'ax-appkit-form-nest')
             .forEach((target) => target.$rescope());
         },
-        // $on: {
-        //   'ax.appkit.form.nest.item.move: rescope': (e, el) => el.$rescope(),
-        //   ...(options.formTag || {}).$on
-        // },
         ...options.formTag,
       },
     }),
 
-  controls: {
-    nest: (f, target) => (options = {}) =>
-      ax.x.form.field.nest.components.nest(f, options),
+  field: (f, target) => (options = {}) => {
+    if (options.collection) {
+      if (
+        options.as == 'one' ||
+        options.as == 'many' ||
+        options.as == 'table' ||
+        options.as == 'nest'
+      ) {
+        options.collection = false;
+        options.items = {
+          singular: options.singular,
+          collection: true,
+          ...options.items,
+        };
+      }
+    }
+    return target(options);
   },
 };
