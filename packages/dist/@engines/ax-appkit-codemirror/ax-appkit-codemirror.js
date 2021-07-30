@@ -241,13 +241,16 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
         el.$('textarea').$codemirror.focus();
       },
 
+      $enabled: !options.disabled,
       $disable: (el) => () => {
+        el.$enabled = false;
         el.$$('.CodeMirror').classList.add('disabled');
         el.$$('textarea').setAttribute('disabled', 'disabled');
       },
 
       $enable: (el) => () => {
         if (!options.disabled) {
+          el.$enabled = true;
           el.$$('.CodeMirror').classList.remove('disabled');
           el.$$('textarea').removeAttribute('disabled');
         }
@@ -364,7 +367,7 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
     );
   };
 
-  if (ax.is.false(keymap)) {
+  if (!keymap) {
     component = null;
   } else if (ax.is.string(keymap)) {
     component = a.label(keymapLabel(keymap));
@@ -402,30 +405,26 @@ ax.extension.codemirror.toolbar.mode = function (options = {}) {
 
     if (ax.is.undefined(selections)) {
       selections = Object.keys(x.codemirror.CodeMirror.modes); // List of installed language modes
-      selections.shift(); // remove null
+      selections.shift(); // remove 'null'
     }
 
-    if (ax.is.object(selections) && Object.entries(selections).length > 0) {
-      component = a.select(
-        x.form.factory.select.options({
-          placeholder: '𝍣 Mode',
-          value: mode.value,
-          selections: selections,
-        }),
-        {
-          name: selectName,
-          $on: {
-            'change: set editor mode': (e, el) => {
-              el.$(
-                '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
-              ).$codemirror.setOption('mode', el.value);
-            },
+    component = a.select(
+      x.form.factory.select.options({
+        placeholder: '𝍣 Mode',
+        value: mode.value,
+        selections: selections,
+      }),
+      {
+        name: selectName,
+        $on: {
+          'change: set editor mode': (e, el) => {
+            el.$(
+              '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
+            ).$codemirror.setOption('mode', el.value);
           },
-        }
-      );
-    } else {
-      component = null;
-    }
+        },
+      }
+    );
   } else {
     component = null;
   }

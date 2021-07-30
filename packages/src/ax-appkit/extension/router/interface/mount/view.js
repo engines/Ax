@@ -15,7 +15,13 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
   for (let i in routesKeys) {
     let routesKey = routesKeys[i];
 
-    matched = ax.x.router.interface.mount.view.match(routesKey, scopedpath);
+    for (let key of routesKey.split(',')) {
+      matched = ax.x.router.interface.mount.view.match(key.trim(), scopedpath);
+      if (matched) {
+        matched.key = routesKey;
+        break;
+      }
+    }
 
     if (matched) {
       component = config.routes[routesKey];
@@ -33,17 +39,17 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
 
   if (!matched) {
     component = ax.is.undefined(config.default)
-      ? (router) => {
+      ? (route) => {
           let message = `'${scopedpath}' not found`;
           let el = config.mounts[config.mounts.length - 1];
-          console.warn(message, router);
+          console.warn(message, route);
           return (a, x) => a['.error'](message);
         }
       : config.default;
   }
 
   if (ax.is.function(component)) {
-    let router = ax.x.router.interface({
+    let route = ax.x.router.interface({
       path: config.path,
       query: config.query,
       anchor: config.anchor,
@@ -57,15 +63,17 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view'](component(router), {
+    component = ax.a['ax-appkit-router-view'](component(route), {
       $init: (el) => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
-          if (!anchored)
+          if (!anchored) {
             console.warn(
               `Router cannot find #${config.anchor} to scroll into view.`
             );
-          if (anchored) anchored.scrollIntoView();
+          } else {
+            anchored.scrollIntoView();
+          }
         }
       },
     });
@@ -74,7 +82,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
   }
 
   return {
-    matched: !!matched,
+    matched: matched,
     component: component,
     scope: scope,
   };

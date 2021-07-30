@@ -1,23 +1,39 @@
 ax.extension.form.async = (target, options = {}) =>
-  ax.a['ax-appkit-asyncform'](
-    [
+  ax.a['ax-appkit-asyncform'](null, {
+    $nodes: () => [
       ax.a['ax-appkit-asyncform-output'],
       ax.a['ax-appkit-asyncform-body'](
         target({
           ...options,
           formTag: {
-            $controls: (el) => () => {
-              return ax.x.lib.unnested(el, 'ax-appkit-form-control');
-            },
+            method: options.method,
+            $controls: (el) => () =>
+              ax.x.lib.unnested(el, 'ax-appkit-form-control'),
+            $output: (el) => () =>
+              options.digest ? options.digest(el.$value()) : el.$value(),
             $value: (el) => () => {
-              let controls = el.$controls();
+              let controls = ax.x.lib
+                .unnested(
+                  el,
+                  'ax-appkit-form-control:not(.ax-appkit-form-control-without-value), |ax-appkit-form-nest-items'
+                )
+                .filter((control) => control.$enabled);
               let object = {};
               for (let control of controls) {
-                object[control.$key] = control.$value();
+                object[control.$key] = control.$output();
               }
-              return object;
+              if (options.scope) {
+                let result = {};
+                let keys = ax.x.lib.name.dismantle(options.scope);
+                result[keys] = object;
+                return result;
+              } else {
+                return object;
+              }
             },
+            $enabled: true,
             $disable: (el) => () => {
+              el.$enabled = false;
               el.style.pointerEvents = 'none';
               let controls = el.$controls();
               for (let i in controls) {
@@ -27,6 +43,7 @@ ax.extension.form.async = (target, options = {}) =>
               }
             },
             $enable: (el) => () => {
+              el.$enabled = true;
               el.style.pointerEvents = 'unset';
               let controls = el.$controls();
               for (let i in controls) {
@@ -40,94 +57,12 @@ ax.extension.form.async = (target, options = {}) =>
         })
       ),
     ],
-    {
-      ...options.asyncformTag,
-      $on: {
-        'submit: async submit': (e, el) => {
-          e.preventDefault();
-
-          let formEl = el.$('form');
-          let outputEl = el.$('ax-appkit-asyncform-output');
-          let formData = formEl.$formData();
-
-          let submitter = formEl.$('[type="submit"]:focus');
-          if (submitter && submitter.name) {
-            formData.append(submitter.name, submitter.value);
-          }
-          formEl.$disable && formEl.$disable();
-
-          let completeFn = () => {
-            formEl.$enable && formEl.$enable();
-            var windowTop = window.scrollY;
-            var windowBottom = windowTop + window.innerHeight;
-            var outputTop = outputEl.offsetParent.offsetTop;
-            var outputBottom = outputTop + outputEl.offsetHeight;
-            if (outputBottom > windowBottom || outputTop < windowTop) {
-              outputEl.scrollIntoView();
-            }
-            el.$send('ax.appkit.form.async.complete');
-          };
-
-          let submission = {
-            form: formEl,
-            output: outputEl,
-            submitter: submitter,
-            complete: completeFn,
-          };
-
-          if (ax.is.function(options.action)) {
-            options.action(submission, el) && completeFn();
-          } else {
-            let body;
-            let headers;
-            // Do not send empty form data. Some web servers don't like it.
-            if (Array.from(formData.entries()).length > 0) {
-              if (options.encode == 'json') {
-                body = ax.x.lib.form.data.stringify(formData);
-                headers = {
-                  'Content-Type': 'application/json',
-                  ...options.headers,
-                };
-              } else if (options.encode == 'urlencoded') {
-                body = ax.x.lib.form.data.urlencoded(formData);
-                headers = {
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                  ...options.headers,
-                };
-              } else if (ax.is.function(options.encode)) {
-                body = options.encode(formData);
-                headers = options.headers;
-              } else {
-                body = formData;
-                headers = options.headers;
-              }
-            }
-
-            outputEl.$nodes = [
-              ax.x.fetch({
-                url: formEl.getAttribute('action'),
-                body: body,
-                method: formEl.getAttribute('method'),
-                headers: headers,
-                ...(options.success
-                  ? {
-                      success: (result, fetchEl, response) =>
-                        options.success(result, el, response, {
-                          ...submission,
-                          fetch: fetchEl,
-                        }),
-                    }
-                  : {}),
-                when: options.when,
-                error: options.error,
-                catch: options.catch,
-                complete: completeFn,
-                ...options.fetch,
-              }),
-            ];
-          }
-        },
-        ...(options.asyncformTag || {}).$on,
+    ...options.asyncformTag,
+    $on: {
+      'submit: async submit': (e, el) => {
+        e.preventDefault();
+        setTimeout(() => ax.extension.form.async.submit(e, el, options), 0);
       },
-    }
-  );
+      ...(options.asyncformTag || {}).$on,
+    },
+  });

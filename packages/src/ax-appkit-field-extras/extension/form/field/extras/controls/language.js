@@ -2,6 +2,14 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
+  let selectOptions = {
+    ...options,
+    value: options.value,
+    selections: x.lib.locale.languages,
+    placeholder: options.placeholder || ' ',
+    ...options.select,
+  };
+
   let controlTagOptions = {
     $value: (el) => () => {
       return el.$('select').value;
@@ -10,12 +18,16 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
       el.$('select').focus();
     },
 
+    $enabled: !selectOptions.disabled,
+
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('select').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!selectOptions.disabled) {
+        el.$enabled = true;
         el.$('select').removeAttribute('disabled');
       }
     },
@@ -31,14 +43,6 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
       },
       ...(options.controlTag || {}).$on,
     },
-  };
-
-  let selectOptions = {
-    ...options,
-    value: options.value,
-    selections: x.lib.locale.languages,
-    placeholder: options.placeholder || ' ',
-    ...options.select,
   };
 
   return a['ax-appkit-form-control'](

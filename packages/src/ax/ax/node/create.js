@@ -21,5 +21,18 @@ ax.node.create = function (properties) {
 
   element.$ax = properties;
 
-  return ax.node.create.properties(element);
+  try {
+    return ax.node.create.properties(element);
+  } catch (e) {
+    if (properties.$catch) {
+      return ax.node(properties.$catch(e));
+    } else {
+      console.error(
+        `Ax failed to render element with properties: `,
+        properties,
+        e
+      );
+      return null;
+    }
+  }
 };

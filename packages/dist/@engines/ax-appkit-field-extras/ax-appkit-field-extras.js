@@ -758,6 +758,14 @@ ax.extension.form.field.extras.controls.country = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
+  let selectOptions = {
+    ...options,
+    value: options.value,
+    selections: x.lib.locale.countries,
+    placeholder: options.placeholder || ' ',
+    ...options.select,
+  };
+
   let controlTagOptions = {
     $value: (el) => () => {
       return el.$('select').value;
@@ -766,12 +774,15 @@ ax.extension.form.field.extras.controls.country = (f, options = {}) => {
       el.$('select').focus();
     },
 
+    $enabled: !selectOptions.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('select').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!selectOptions.disabled) {
+        el.$enabled = true;
         el.$('select').removeAttribute('disabled');
       }
     },
@@ -787,14 +798,6 @@ ax.extension.form.field.extras.controls.country = (f, options = {}) => {
       },
       ...(options.controlTag || {}).$on,
     },
-  };
-
-  let selectOptions = {
-    ...options,
-    value: options.value,
-    selections: x.lib.locale.countries,
-    placeholder: options.placeholder || ' ',
-    ...options.select,
   };
 
   return a['ax-appkit-form-control'](
@@ -807,6 +810,14 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
+  let selectOptions = {
+    ...options,
+    value: options.value,
+    selections: x.lib.locale.languages,
+    placeholder: options.placeholder || ' ',
+    ...options.select,
+  };
+
   let controlTagOptions = {
     $value: (el) => () => {
       return el.$('select').value;
@@ -815,12 +826,16 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
       el.$('select').focus();
     },
 
+    $enabled: !selectOptions.disabled,
+
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('select').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!selectOptions.disabled) {
+        el.$enabled = true;
         el.$('select').removeAttribute('disabled');
       }
     },
@@ -836,14 +851,6 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
       },
       ...(options.controlTag || {}).$on,
     },
-  };
-
-  let selectOptions = {
-    ...options,
-    value: options.value,
-    selections: x.lib.locale.languages,
-    placeholder: options.placeholder || ' ',
-    ...options.select,
   };
 
   return a['ax-appkit-form-control'](
@@ -885,13 +892,15 @@ ax.extension.form.field.extras.controls.multiselect = function (
       el.$('select').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$$('ax-appkit-form-multiselect-selected-item-remove').$disable();
       el.$('select').setAttribute('disabled', 'disabled');
     },
-
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$$('ax-appkit-form-multiselect-selected-item-remove').$enable();
         el.$('select').removeAttribute('disabled');
       }
@@ -1035,7 +1044,9 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
       el.$inputs()[0].focus();
     },
 
+    $enabled: !inputOptions.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       for (let input of el.$inputs()) {
         input.setAttribute('disabled', 'disabled');
       }
@@ -1043,6 +1054,7 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
 
     $enable: (el) => () => {
       if (!inputOptions.disabled) {
+        el.$enabled = true;
         for (let input of el.$inputs()) {
           input.removeAttribute('disabled');
         }
@@ -1118,7 +1130,9 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       let select = el.$('ax-appkit-control-selectinput-select select');
       let input = el.$('ax-appkit-control-selectinput-input input');
       let hiddeninput = el.$('ax-appkit-control-selectinput-hiddeninput input');
@@ -1128,6 +1142,7 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
     },
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         let select = el.$('ax-appkit-control-selectinput-select select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(
@@ -1186,6 +1201,7 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
             selections: selections,
             placeholder: options.placeholder,
             disabled: options.disabled,
+            required: options.required,
             ...options.select,
           })
         ),
@@ -1216,6 +1232,14 @@ ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
+  let selectOptions = {
+    ...options,
+    value: options.value || Intl.DateTimeFormat().resolvedOptions().timeZone,
+    selections: x.lib.locale.timezones,
+    placeholder: options.placeholder || ' ',
+    ...options.select,
+  };
+
   let controlTagOptions = {
     $value: (el) => () => {
       return el.$('select').value;
@@ -1224,12 +1248,15 @@ ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
       el.$('select').focus();
     },
 
+    $enabled: !selectOptions.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('select').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!selectOptions.disabled) {
+        el.$enabled = true;
         el.$('select').removeAttribute('disabled');
       }
     },
@@ -1245,14 +1272,6 @@ ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
       },
       ...(options.controlTag || {}).$on,
     },
-  };
-
-  let selectOptions = {
-    ...options,
-    value: options.value || Intl.DateTimeFormat().resolvedOptions().timeZone,
-    selections: x.lib.locale.timezones,
-    placeholder: options.placeholder || ' ',
-    ...options.select,
   };
 
   return a['ax-appkit-form-control'](
@@ -1978,10 +1997,13 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
                       }
                     },
                   },
+                  $enabled: true,
                   $disable: (el) => () => {
+                    el.$enabled = false;
                     el.$('button').disabled = 'disabled';
                   },
                   $enable: (el) => () => {
+                    el.$enabled = true;
                     el.$('button').removeAttribute('disabled');
                   },
                 }

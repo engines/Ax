@@ -1,6 +1,5 @@
 ax.extension.router.element.init = (el) => {
-  const pop = () => el.$go();
-  window.addEventListener('popstate', pop);
+  window.addEventListener('popstate', el.$go);
   el.$send('ax.appkit.router.load', {
     detail: el.$location(),
   });

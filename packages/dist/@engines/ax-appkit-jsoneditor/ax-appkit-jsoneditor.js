@@ -32,7 +32,7 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
     $init: (el) => {
       let jsoneditorOptions = {
         onEditable: (node) => {
-          return !el.$disabled; // Do not allow editing when disabled.
+          return el.$enabled; // Do not allow editing when disabled.
         },
         onChange: () => {
           el.$stash();
@@ -70,12 +70,13 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
     $focus: (el) => () => {
       el.$('.jsoneditor-tree button').focus();
     },
+    $enabled: !options.disabled,
     $disable: (el) => () => {
-      el.$disabled = true;
+      el.$enabled = false;
     },
     $enable: (el) => () => {
       if (!options.disabled) {
-        el.$disabled = false;
+        el.$enabled = true;
       }
     },
     $on: {

@@ -55,9 +55,9 @@ ax.extension.router.interface.mount = (setup) => {
 
         if (
           config.lazy &&
-          el.$scope == locatedView.scope &&
+          el.$matched &&
           locatedView.matched &&
-          el.$matched
+          el.$scope == locatedView.scope
         ) {
           let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
           routes.forEach((r) => {
@@ -66,23 +66,26 @@ ax.extension.router.interface.mount = (setup) => {
         } else {
           el.$scope = locatedView.scope;
           el.$matched = locatedView.matched;
-          if (transition) {
-            if (!el.$('ax-appkit-router-view')) debugger;
+          let component = a['ax-appkit-router-load'](locatedView.component, {
+            $init: () => {
+              el.$send('ax.appkit.router.load', {
+                detail: {
+                  path: path,
+                  query: query,
+                  anchor: anchor,
+                },
+              });
+            },
+          });
 
+          if (transition) {
             // Disable pointer events on outgoing view
             el.$('ax-appkit-router-view').style.pointerEvents = 'none';
-            el.$('ax-appkit-transition').$to(locatedView.component);
+            el.$('ax-appkit-transition').$to(component);
           } else {
-            el.$nodes = locatedView.component;
+            el.$nodes = component;
           }
         }
-        el.$send('ax.appkit.router.load', {
-          detail: {
-            path: path,
-            query: query,
-            anchor: anchor,
-          },
-        });
       },
       ...options.mountTag,
     };

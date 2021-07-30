@@ -54,11 +54,11 @@ ax.css = function (...styles) {
  * Use this method to load Ax Extensions that are are imported as ES6 modules.
  * For example:
  * import ax from '@engines/ax'
- * import axCore from '@engines/ax-appkit-core'
+ * import axAppkit from '@engines/ax-appkit'
  * import axChartjs from '@engines/ax-appkit-chartjs'
  * import "chart.js/dist/Chart.css";
  * import Chart from 'chart.js';
- * ax.extend( axCore, [axChartjs, {Chart: Chart}] ).
+ * ax.extend( axAppkit, [axChartjs, {Chart: Chart}] ).
  */
 ax.extend = function () {
   for (let extension of arguments) {
@@ -351,7 +351,20 @@ ax.node.create = function (properties) {
 
   element.$ax = properties;
 
-  return ax.node.create.properties(element);
+  try {
+    return ax.node.create.properties(element);
+  } catch (e) {
+    if (properties.$catch) {
+      return ax.node(properties.$catch(e));
+    } else {
+      console.error(
+        `Ax failed to render element with properties: `,
+        properties,
+        e
+      );
+      return null;
+    }
+  }
 };
 
 /**
@@ -377,7 +390,6 @@ ax.node.nodelist = function (nodelist) {
  * Create element for an object.
  */
 ax.node.object = function (object) {
-  console.log(object);
   return ax.node.create({
     $tag: 'pre',
     $text: JSON.stringify(object, null, 2),
@@ -611,7 +623,7 @@ ax.node.create.properties.define = function (element) {
       } else {
         if (
           !property.match(
-            /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$state|\$send|\$on|\$off|\$update|\$render|\$ax|$events|\$|\$\$|\$shadow)$/
+            /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$state|\$send|\$on|\$off|\$update|\$render|\$ax|$events|\$catch|\$|\$\$|\$shadow)$/
           )
         ) {
           let customAttribute = element.$ax[property];
@@ -672,7 +684,7 @@ ax.node.create.properties.init = function (element) {
  */
 ax.node.create.properties.render = function (element) {
   element.$render = () => {
-    if (element.$ax.$update) {
+    if (!!element.$ax.$update) {
       element.$ax.$update(element, element.$state) &&
         this.apply(this.render.empty(element));
     } else {

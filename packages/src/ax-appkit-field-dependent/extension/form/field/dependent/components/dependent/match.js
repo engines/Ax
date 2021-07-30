@@ -3,7 +3,7 @@ ax.extension.form.field.dependent.components.dependent.match = function (
 ) {
   let field = options.field;
 
-  if (field.$match()) {
+  if (field && field.$match()) {
     let fieldValue = field.$value();
 
     if (options.value) {

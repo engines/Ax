@@ -60,10 +60,13 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
                       }
                     },
                   },
+                  $enabled: true,
                   $disable: (el) => () => {
+                    el.$enabled = false;
                     el.$('button').disabled = 'disabled';
                   },
                   $enable: (el) => () => {
+                    el.$enabled = true;
                     el.$('button').removeAttribute('disabled');
                   },
                 }

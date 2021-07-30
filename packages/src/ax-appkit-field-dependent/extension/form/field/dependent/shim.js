@@ -1,26 +1,12 @@
 ax.extension.form.field.dependent.shim = {
-  field: (f, target) => (options = {}) => {
-    return ax.x.form.field.dependent.components.dependent({
-      body: target(options),
-      scope: f.scope,
-      dependent: options.dependent,
-    });
-  },
+  field: (f, target) => (options = {}) =>
+    ax.x.form.field.dependent.components.dependent(f, target, options),
 
-  fieldset: (f, target) => (options = {}) => {
-    return ax.x.form.field.dependent.components.dependent({
-      body: target(options),
-      scope: f.scope,
-      dependent: options.dependent,
-    });
-  },
+  fieldset: (f, target) => (options = {}) =>
+    ax.x.form.field.dependent.components.dependent(f, target, options),
 
-  dependent: (f, target) => (options = {}) => {
-    return ax.x.form.field.dependent.components.dependent({
-      scope: f.scope,
-      ...options,
-    });
-  },
+  dependent: (f, target) => (options = {}) =>
+    ax.x.form.field.dependent.components.dependent(f, target, options),
 
   form: (f, target) => (options = {}) =>
     target({
@@ -28,10 +14,14 @@ ax.extension.form.field.dependent.shim = {
       formTag: {
         ...options.formTag,
         $init: (el) => {
-          options.formTag &&
-            options.formTag.$init &&
-            options.formTag.$init.bind(el)(arguments);
+          options.formTag && options.formTag.$init && options.formTag.$init(el);
           el.$checkDependents();
+        },
+        $on: {
+          'ax.appkit.form.async.complete: check dependents': (e, el) => {
+            el.$checkDependents();
+          },
+          ...(options.formTag || {}).$on,
         },
         $checkDependents: (el) => () => {
           let dependents = ax.x.lib.unnested(

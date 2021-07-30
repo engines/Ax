@@ -14,12 +14,15 @@ ax.extension.form.field.controls.input = function (f, options) {
       el.$('input').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('input').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$('input').removeAttribute('disabled');
       }
     },
@@ -35,7 +38,11 @@ ax.extension.form.field.controls.input = function (f, options) {
       } else {
         if (options.invalid) {
           if (ax.is.function(options.invalid)) {
-            let invalidMessage = options.invalid(el.$value, el.$validity());
+            let invalidMessage = options.invalid(
+              el.$value(),
+              el.$validity(),
+              el
+            );
             if (invalidMessage) {
               el.$('input').setCustomValidity(invalidMessage);
             }

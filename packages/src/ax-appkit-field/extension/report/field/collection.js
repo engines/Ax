@@ -31,7 +31,7 @@ ax.extension.report.field.collection = function (f, control, options = {}) {
       return options.value;
     },
     $focus: (el) => () => {
-      el.$('ax-appkit-report-control').focus();
+      el.$('ax-appkit-control-collection ax-appkit-report-control').$focus();
     },
     ...options.controlTag,
   };

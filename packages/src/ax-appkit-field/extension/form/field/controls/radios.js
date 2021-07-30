@@ -19,7 +19,10 @@ ax.extension.form.field.controls.radios = function (f, options) {
       return el.$$('input').$$;
     },
 
+    $enabled: !options.disabled,
+
     $disable: (el) => () => {
+      el.$enabled = false;
       for (let input of el.$inputs()) {
         input.setAttribute('disabled', 'disabled');
       }
@@ -27,6 +30,7 @@ ax.extension.form.field.controls.radios = function (f, options) {
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         for (let input of el.$inputs()) {
           if (!input.$ax.disabled) {
             input.removeAttribute('disabled');

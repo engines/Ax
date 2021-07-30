@@ -7,7 +7,7 @@ class AxAppkitFetch {
     this.headers = options.headers;
     this.body = options.body;
     this.placeholder = options.placeholder || null;
-    // this.fetch = options.fetch || {};
+    this.id = options.fetchTagId || null;
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -18,15 +18,9 @@ class AxAppkitFetch {
 
   determineMultiple(options) {
     return Math.max(
-      ...[
-        'url',
-        'method',
-        'query',
-        'method',
-        'headers',
-        'body',
-        // 'fetch',
-      ].map((key) => (is.array(options[key]) ? options[key].length : 0))
+      ...['url', 'method', 'query', 'method', 'headers', 'body'].map((key) =>
+        is.array(options[key]) ? options[key].length : 0
+      )
     );
   }
 
@@ -36,6 +30,7 @@ class AxAppkitFetch {
         this.element = el;
         this.init();
       },
+      id: this.fetchTagId,
       ...this.fetchTag,
     });
   }
@@ -146,7 +141,7 @@ class AxAppkitFetch {
       let returnedElement = this.errorCallback(body, this.element, response);
       if (returnedElement) this.element.$nodes = returnedElement;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.error'](bodies);
+      this.element.$nodes = () => a['ax-appkit-fetch-response.error'](bodies);
     }
   }
 
@@ -156,8 +151,21 @@ class AxAppkitFetch {
     if (this.successCallback) {
       let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
-      let returnedElement = this.successCallback(body, this.element, response);
-      if (returnedElement) this.element.$nodes = returnedElement;
+      try {
+        let returnedElement = this.successCallback(
+          body,
+          this.element,
+          response
+        );
+        if (returnedElement) {
+          this.element.$nodes = () => returnedElement;
+        } else {
+          this.element.$nodes = [];
+        }
+      } catch (e) {
+        console.error(e);
+        this.element.$nodes = [];
+      }
     } else {
       this.element.$nodes = a['ax-appkit-fetch-response.success'](
         a.pre(JSON.stringify(this.multiple ? bodies : bodies[0], null, 2))
@@ -169,7 +177,7 @@ class AxAppkitFetch {
     console.error(error);
     if (this.catchCallback) {
       let returnedElement = this.catchCallback(error, this.element);
-      if (returnedElement) this.element.$nodes = returnedElement;
+      if (returnedElement) this.element.$nodes = () => returnedElement;
     } else {
       this.element.$nodes = a['ax-appkit-fetch-response.error'](
         a.pre(error.message)

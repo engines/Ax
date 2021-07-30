@@ -41,7 +41,7 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
     );
   };
 
-  if (ax.is.false(keymap)) {
+  if (!keymap) {
     component = null;
   } else if (ax.is.string(keymap)) {
     component = a.label(keymapLabel(keymap));

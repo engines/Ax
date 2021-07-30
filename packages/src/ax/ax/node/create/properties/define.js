@@ -18,7 +18,7 @@ ax.node.create.properties.define = function (element) {
       } else {
         if (
           !property.match(
-            /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$state|\$send|\$on|\$off|\$update|\$render|\$ax|$events|\$|\$\$|\$shadow)$/
+            /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$state|\$send|\$on|\$off|\$update|\$render|\$ax|$events|\$catch|\$|\$\$|\$shadow)$/
           )
         ) {
           let customAttribute = element.$ax[property];

@@ -4,13 +4,17 @@ ax.extension.easymde.form.control = function (f, options) {
 
   let controlTagOptions = {
     $value: (el) => () => {
-      return el.$$('textarea').value();
+      return el.$('textarea').value;
     },
+
+    $enabled: true,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$$('.CodeMirror').classList.add('disabled');
       el.$$('textarea').setAttribute('disabled', 'disabled');
     },
     $enable: (el) => () => {
+      el.$enabled = true;
       // el.$('ax-appkit-control-easymde').$refresh();
       el.$$('.CodeMirror').classList.remove('disabled');
       el.$$('textarea').removeAttribute('disabled');

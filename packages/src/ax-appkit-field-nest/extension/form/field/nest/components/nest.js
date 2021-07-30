@@ -4,29 +4,49 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
 
   let nestForm = options.form || (() => null);
   let ff = this.nest.factory({
-    scope: options.name, // name is the scope for child items
+    parent: f,
+    scope: f.scope ? `${f.scope}[${options.key}]` : options.key,
+    indexedScope:
+      f.indexedScope || f.scope
+        ? `${f.indexedScope || f.scope}[${options.key}]`
+        : options.key,
     object: options.value,
     singular: options.singular,
+    collection: options.collection,
     formOptions: f.formOptions,
   });
 
   let nestTagOptions = {
     name: ff.scope,
 
-    $rescope: (el) => (oldScope, newScope) => {
-      let oldName = el.getAttribute('name');
-      let newName = oldName.replace(oldScope, newScope);
-      ff.scope = newName;
+    $rescope: (el) => (
+      oldScope,
+      newScope,
+      oldIndexedScope,
+      newIndexedScope
+    ) => {
+      let oldName = oldScope ? `${oldScope}[${options.key}]` : options.key;
+      let oldIndexedName =
+        oldIndexedScope || oldScope
+          ? `${oldIndexedScope || oldScope}[${options.key}]`
+          : options.key;
+      let newName = newScope ? `${newScope}[${options.key}]` : oldName;
+      let newIndexedName = newIndexedScope
+        ? `${newIndexedScope}[${options.key}]`
+        : oldIndexedName;
+
       el.setAttribute('name', newName);
-      let rescopable = x.lib.unnested(el, `[name^="${oldName}"]`);
+      ff.scope = newName;
+      ff.indexedScope = newIndexedName;
+
+      let rescopable = x.lib.unnested(
+        el,
+        `[name^="${oldName}"], [name^="${oldIndexedName}"]`
+      );
+
       rescopable.forEach((target) => {
         if (ax.is.function(target.$rescope)) {
-          target.$rescope(oldName, newName);
-        } else {
-          target.setAttribute(
-            'name',
-            target.getAttribute('name').replace(oldName, newName)
-          );
+          target.$rescope(oldName, newName, oldIndexedName, newIndexedName);
         }
       });
     },
@@ -35,38 +55,48 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   };
 
   let controlTagOptions = {
-    $value: (el) => () => {
-      let controls = el.$controls();
-      let object = {};
-      for (let control of controls) {
-        if (control.$ax.$pseudotag == 'ax-appkit-form-nest-items') {
-          object = control.$value();
-          break;
-        }
-        object[control.$key] = control.$value();
-      }
-      return object;
-    },
     $controls: (el) => () => {
       return x.lib.unnested(
         el,
         'ax-appkit-form-control, |ax-appkit-form-nest-items'
       );
     },
+    $value: (el) => () => {
+      let controls = ax.x.lib
+        .unnested(
+          el,
+          'ax-appkit-form-control:not(.ax-appkit-form-control-without-value), |ax-appkit-form-nest-items'
+        )
+        .filter((control) => control.$enabled);
+      let object = {};
+      for (let control of controls) {
+        if (control.$ax.$pseudotag == 'ax-appkit-form-nest-items') {
+          object = control.$value();
+          break;
+        }
+        object[control.$key] = control.$output();
+      }
+      return object;
+    },
+    $enabled: true,
     $disable: (el) => () => {
+      el.$enabled = false;
       let controls = el.$controls();
       for (let i in controls) {
         controls[i].$disable && controls[i].$disable();
       }
     },
     $enable: (el) => () => {
+      el.$enabled = true;
       let controls = el.$controls();
       for (let i in controls) {
         controls[i].$enable && controls[i].$enable();
       }
     },
     $focus: (el) => () => {
-      let first = el.$('ax-appkit-form-control');
+      let first = el.$(
+        'ax-appkit-form-control:not(.ax-appkit-form-control-not-focusable)'
+      );
       if (first) first.$focus();
     },
     ...options.controlTag,

@@ -31,13 +31,15 @@ ax.extension.form.field.extras.controls.multiselect = function (
       el.$('select').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$$('ax-appkit-form-multiselect-selected-item-remove').$disable();
       el.$('select').setAttribute('disabled', 'disabled');
     },
-
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$$('ax-appkit-form-multiselect-selected-item-remove').$enable();
         el.$('select').removeAttribute('disabled');
       }

@@ -1,6 +1,6 @@
 {
   "name": "@engines/ax",
-  "version": "0.0.10",
+  "version": "0.0.16",
   "description": "Ax Function is for creating dynamic web content.",
   "main": "ax.js",
   "repository": {

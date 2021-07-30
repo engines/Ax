@@ -14,6 +14,16 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
             form: (fff) => [
               a['ax-appkit-form-nest-many-item-header'](
                 [
+                  options.itemTitle
+                    ? a['ax-appkit-form-nest-many-item-title'](null, {
+                        $nodes: () => options.itemTitle(fff),
+                        name: fff.scope,
+                        $rescope: (el) => () => {
+                          el.$render();
+                        },
+                        ...options.itemTitleTag,
+                      })
+                    : null,
                   a['ax-appkit-form-nest-many-item-buttons'](
                     [
                       options.moveable ? fff.up(options.upButton) : null,
@@ -22,7 +32,7 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
                         ? fff.remove(options.removeButton)
                         : null,
                     ],
-                    options.itemMenuTag
+                    options.itemButtonsTag
                   ),
                 ],
                 options.itemHeaderTag

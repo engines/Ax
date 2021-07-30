@@ -18,12 +18,15 @@ ax.extension.form.field.controls.checkbox = function (f, options) {
       el.$('input').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('input').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$('input').removeAttribute('disabled');
       }
     },

@@ -240,9 +240,9 @@ ax.extension.bootstrap.form.shim = {
           class: 'd-inline-block float-right',
           ...options.itemHeaderTag,
         },
-        itemMenuTag: {
+        itemButtonsTag: {
           class: 'btn-group',
-          ...options.itemMenuTag,
+          ...options.itemButtonsTag,
         },
         itemBodyTag: {
           class: 'd-inline-block float-left',
@@ -255,34 +255,6 @@ ax.extension.bootstrap.form.shim = {
         dragButtonsTag: {
           class: 'float-right',
           ...options.dragButtonsTag,
-        },
-        dragOffButton: {
-          ...options.dragOffButton,
-          buttonTag: {
-            class: 'btn btn-warning',
-            ...(options.dragOffButton || {}).buttonTag,
-          },
-        },
-        upButton: {
-          ...options.upButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.upButton || {}).buttonTag,
-          },
-        },
-        downButton: {
-          ...options.downButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.downButton || {}).buttonTag,
-          },
-        },
-        removeButton: {
-          ...options.removeButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.removeButton || {}).buttonTag,
-          },
         },
       });
     } else {
@@ -341,9 +313,9 @@ ax.extension.bootstrap.form.shim = {
           class: 'pl-1 pt-0 pr-0 pb-0',
           ...options.hintTdTag,
         },
-        itemMenuTag: {
+        itemButtonsTag: {
           class: 'btn-group float-right',
-          ...options.itemMenuTag,
+          ...options.itemButtonsTag,
         },
         footerTag: {
           class: 'mb-1 mt-0 d-block',
@@ -364,27 +336,6 @@ ax.extension.bootstrap.form.shim = {
           class: 'btn btn-danger mr-1',
           ...options.deleteTag,
         },
-        upButton: {
-          ...options.upButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.upButton || {}).buttonTag,
-          },
-        },
-        downButton: {
-          ...options.downButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.downButton || {}).buttonTag,
-          },
-        },
-        removeButton: {
-          ...options.removeButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.removeButton || {}).buttonTag,
-          },
-        },
       }),
     many: (f, target) => (options = {}) => {
       let horizontal = ax.is.undefined(options.horizontal)
@@ -401,9 +352,13 @@ ax.extension.bootstrap.form.shim = {
           class: 'clearfix',
           ...options.itemHeaderTag,
         },
-        itemMenuTag: {
-          class: `btn-group float-right ${horizontal ? 'mb-1' : 'mb-0 mt-2'}`,
-          ...options.itemMenuTag,
+        itemTitleTag: {
+          class: 'float-left',
+          ...options.itemTitleTag,
+        },
+        itemButtonsTag: {
+          class: `btn-group float-right ${horizontal ? 'mb-1' : 'mb-0'}`,
+          ...options.itemButtonsTag,
         },
         footerTag: {
           class: 'mb-1 d-block',
@@ -424,27 +379,27 @@ ax.extension.bootstrap.form.shim = {
           class: 'btn btn-danger mr-1',
           ...options.deleteTag,
         },
-        upButton: {
-          ...options.upButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.upButton || {}).buttonTag,
-          },
-        },
-        downButton: {
-          ...options.downButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.downButton || {}).buttonTag,
-          },
-        },
-        removeButton: {
-          ...options.removeButton,
-          buttonTag: {
-            class: 'btn',
-            ...(options.removeButton || {}).buttonTag,
-          },
-        },
+        // upButton: {
+        //   ...options.upButton,
+        //   buttonTag: {
+        //     class: 'btn',
+        //     ...(options.upButton || {}).buttonTag,
+        //   },
+        // },
+        // downButton: {
+        //   ...options.downButton,
+        //   buttonTag: {
+        //     class: 'btn',
+        //     ...(options.downButton || {}).buttonTag,
+        //   },
+        // },
+        // removeButton: {
+        //   ...options.removeButton,
+        //   buttonTag: {
+        //     class: 'btn',
+        //     ...(options.removeButton || {}).buttonTag,
+        //   },
+        // },
       });
     },
     selectinput: (f, target) => (options = {}) =>
@@ -604,7 +559,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       stringTag: {
-        class: 'form-control h-100 text-dark bg-white h-100',
+        class: 'form-control h-100 text-dark bg-transparent h-100',
         ...options.stringTag,
       },
     }),
@@ -613,7 +568,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       selectTag: {
-        class: 'form-control h-100 text-dark bg-white',
+        class: 'form-control h-100 text-dark bg-transparent',
         ...options.selectTag,
       },
     }),
@@ -622,7 +577,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       textareaTag: {
-        class: 'form-control text-dark bg-white',
+        class: 'form-control text-dark bg-transparent',
         ...options.textareaTag,
       },
     }),
@@ -631,7 +586,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       outputTag: {
-        class: 'form-control h-100 text-dark bg-white',
+        class: 'form-control h-100 text-dark bg-transparent',
         ...options.outputTag,
       },
     }),
@@ -659,7 +614,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         booleanTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.booleanTag,
         },
       }),
@@ -668,7 +623,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         preTag: {
-          class: 'form-control h-100 mb-0 text-dark bg-white',
+          class: 'form-control h-100 mb-0 text-dark bg-transparent',
           ...options.preTag,
         },
       }),
@@ -677,7 +632,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         preTag: {
-          class: 'form-control h-100 mb-0 text-dark bg-white',
+          class: 'form-control h-100 mb-0 text-dark bg-transparent',
           ...options.preTag,
         },
       }),
@@ -686,7 +641,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         passwordTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.passwordTag,
         },
       }),
@@ -695,7 +650,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         colorTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.colorTag,
         },
       }),
@@ -704,7 +659,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         datetimeTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.datetimeTag,
         },
       }),
@@ -713,7 +668,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         numberTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.numberTag,
         },
       }),
@@ -722,7 +677,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         telTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.telTag,
         },
       }),
@@ -731,7 +686,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         emailTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.emailTag,
         },
       }),
@@ -740,7 +695,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         countryTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.countryTag,
         },
       }),
@@ -749,7 +704,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         languageTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.languageTag,
         },
       }),
@@ -758,7 +713,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         timezoneTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.timezoneTag,
         },
       }),
@@ -767,7 +722,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         urlTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.urlTag,
         },
       }),

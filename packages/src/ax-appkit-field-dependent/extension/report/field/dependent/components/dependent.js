@@ -2,7 +2,9 @@ ax.extension.report.field.dependent.components.dependent = function (options) {
   let a = ax.a;
   let x = ax.x;
 
-  let optionsCollection = x.form.field.dependent.collect(options);
+  let optionsCollection = x.form.field.dependent.components.dependent.collect(
+    options
+  );
 
   let dependentTag = {
     $init: (el) => {

@@ -60,13 +60,15 @@ ax.extension.check = function (options = {}) {
   let inputId =
     x.lib.object.dig(options, ['inputTag', 'id']) || x.lib.uuid.generate();
 
+  let checkedValue = options.checked || 'on';
+
   let inputTagOptions = {
     type: options.type || 'checkbox',
     name: options.name,
-    value: options.checked === '' ? '' : options.checked || 'on',
+    value: checkedValue,
     required: options.required,
     onclick: options.readonly ? 'return false' : 'return true',
-    checked: options.value ? 'checked' : undefined,
+    checked: options.value == checkedValue ? 'checked' : undefined,
     ...options.inputTag,
     id: inputId,
   };
@@ -281,7 +283,7 @@ class AxAppkitFetch {
     this.headers = options.headers;
     this.body = options.body;
     this.placeholder = options.placeholder || null;
-    // this.fetch = options.fetch || {};
+    this.id = options.fetchTagId || null;
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -292,15 +294,9 @@ class AxAppkitFetch {
 
   determineMultiple(options) {
     return Math.max(
-      ...[
-        'url',
-        'method',
-        'query',
-        'method',
-        'headers',
-        'body',
-        // 'fetch',
-      ].map((key) => (is.array(options[key]) ? options[key].length : 0))
+      ...['url', 'method', 'query', 'method', 'headers', 'body'].map((key) =>
+        is.array(options[key]) ? options[key].length : 0
+      )
     );
   }
 
@@ -310,6 +306,7 @@ class AxAppkitFetch {
         this.element = el;
         this.init();
       },
+      id: this.fetchTagId,
       ...this.fetchTag,
     });
   }
@@ -420,7 +417,7 @@ class AxAppkitFetch {
       let returnedElement = this.errorCallback(body, this.element, response);
       if (returnedElement) this.element.$nodes = returnedElement;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.error'](bodies);
+      this.element.$nodes = () => a['ax-appkit-fetch-response.error'](bodies);
     }
   }
 
@@ -430,8 +427,21 @@ class AxAppkitFetch {
     if (this.successCallback) {
       let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
-      let returnedElement = this.successCallback(body, this.element, response);
-      if (returnedElement) this.element.$nodes = returnedElement;
+      try {
+        let returnedElement = this.successCallback(
+          body,
+          this.element,
+          response
+        );
+        if (returnedElement) {
+          this.element.$nodes = () => returnedElement;
+        } else {
+          this.element.$nodes = [];
+        }
+      } catch (e) {
+        console.error(e);
+        this.element.$nodes = [];
+      }
     } else {
       this.element.$nodes = a['ax-appkit-fetch-response.success'](
         a.pre(JSON.stringify(this.multiple ? bodies : bodies[0], null, 2))
@@ -443,7 +453,7 @@ class AxAppkitFetch {
     console.error(error);
     if (this.catchCallback) {
       let returnedElement = this.catchCallback(error, this.element);
-      if (returnedElement) this.element.$nodes = returnedElement;
+      if (returnedElement) this.element.$nodes = () => returnedElement;
     } else {
       this.element.$nodes = a['ax-appkit-fetch-response.error'](
         a.pre(error.message)
@@ -885,7 +895,7 @@ ax.extension.form.factory.radios = function (options = {}) {
       return x.check({
         type: 'radio',
         name: options.name,
-        value: value == selection.value ? true : false,
+        value: value,
         label: label,
         checked: selection.value,
         required: options.required,
@@ -1412,8 +1422,7 @@ ax.extension.router.element.go = (el) => () => {
 };
 
 ax.extension.router.element.init = (el) => {
-  const pop = () => el.$go();
-  window.addEventListener('popstate', pop);
+  window.addEventListener('popstate', el.$go);
   el.$send('ax.appkit.router.load', {
     detail: el.$location(),
   });
@@ -1421,7 +1430,6 @@ ax.extension.router.element.init = (el) => {
 
 ax.extension.router.element.load = (el) => (path, query, anchor) => {
   let mounted = x.lib.unnested(el, 'ax-appkit-router-mount');
-
   mounted.forEach((r) => {
     r.$load(path, query, anchor);
   });
@@ -1572,9 +1580,9 @@ ax.extension.router.interface.mount = (setup) => {
 
         if (
           config.lazy &&
-          el.$scope == locatedView.scope &&
+          el.$matched &&
           locatedView.matched &&
-          el.$matched
+          el.$scope == locatedView.scope
         ) {
           let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
           routes.forEach((r) => {
@@ -1583,23 +1591,26 @@ ax.extension.router.interface.mount = (setup) => {
         } else {
           el.$scope = locatedView.scope;
           el.$matched = locatedView.matched;
-          if (transition) {
-            if (!el.$('ax-appkit-router-view')) debugger;
+          let component = a['ax-appkit-router-load'](locatedView.component, {
+            $init: () => {
+              el.$send('ax.appkit.router.load', {
+                detail: {
+                  path: path,
+                  query: query,
+                  anchor: anchor,
+                },
+              });
+            },
+          });
 
+          if (transition) {
             // Disable pointer events on outgoing view
             el.$('ax-appkit-router-view').style.pointerEvents = 'none';
-            el.$('ax-appkit-transition').$to(locatedView.component);
+            el.$('ax-appkit-transition').$to(component);
           } else {
-            el.$nodes = locatedView.component;
+            el.$nodes = component;
           }
         }
-        el.$send('ax.appkit.router.load', {
-          detail: {
-            path: path,
-            query: query,
-            anchor: anchor,
-          },
-        });
       },
       ...options.mountTag,
     };
@@ -1624,7 +1635,6 @@ ax.extension.router.interface.open = (config) => (
       path = `${path}/${locator}`;
     }
   }
-
   config.router.$open(path, query, anchor);
 };
 
@@ -1793,7 +1803,13 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
   for (let i in routesKeys) {
     let routesKey = routesKeys[i];
 
-    matched = ax.x.router.interface.mount.view.match(routesKey, scopedpath);
+    for (let key of routesKey.split(',')) {
+      matched = ax.x.router.interface.mount.view.match(key.trim(), scopedpath);
+      if (matched) {
+        matched.key = routesKey;
+        break;
+      }
+    }
 
     if (matched) {
       component = config.routes[routesKey];
@@ -1811,17 +1827,17 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
 
   if (!matched) {
     component = ax.is.undefined(config.default)
-      ? (router) => {
+      ? (route) => {
           let message = `'${scopedpath}' not found`;
           let el = config.mounts[config.mounts.length - 1];
-          console.warn(message, router);
+          console.warn(message, route);
           return (a, x) => a['.error'](message);
         }
       : config.default;
   }
 
   if (ax.is.function(component)) {
-    let router = ax.x.router.interface({
+    let route = ax.x.router.interface({
       path: config.path,
       query: config.query,
       anchor: config.anchor,
@@ -1835,15 +1851,17 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view'](component(router), {
+    component = ax.a['ax-appkit-router-view'](component(route), {
       $init: (el) => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
-          if (!anchored)
+          if (!anchored) {
             console.warn(
               `Router cannot find #${config.anchor} to scroll into view.`
             );
-          if (anchored) anchored.scrollIntoView();
+          } else {
+            anchored.scrollIntoView();
+          }
         }
       },
     });
@@ -1852,7 +1870,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
   }
 
   return {
-    matched: !!matched,
+    matched: matched,
     component: component,
     scope: scope,
   };

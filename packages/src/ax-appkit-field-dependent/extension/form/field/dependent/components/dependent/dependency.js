@@ -11,16 +11,9 @@ ax.extension.form.field.dependent.components.dependent.dependency = (
   }
 
   let search = options.search || '^form';
-
   let target = el.$(search).$(selector);
-  let targetDependency;
-
   if (target) {
-    targetDependency = target.$('^ax-appkit-form-field-dependent');
-  }
-
-  if (targetDependency) {
-    return targetDependency;
+    return target;
   } else {
     console.error(
       el,

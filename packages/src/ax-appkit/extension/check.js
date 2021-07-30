@@ -5,13 +5,15 @@ ax.extension.check = function (options = {}) {
   let inputId =
     x.lib.object.dig(options, ['inputTag', 'id']) || x.lib.uuid.generate();
 
+  let checkedValue = options.checked || 'on';
+
   let inputTagOptions = {
     type: options.type || 'checkbox',
     name: options.name,
-    value: options.checked === '' ? '' : options.checked || 'on',
+    value: checkedValue,
     required: options.required,
     onclick: options.readonly ? 'return false' : 'return true',
-    checked: options.value ? 'checked' : undefined,
+    checked: options.value == checkedValue ? 'checked' : undefined,
     ...options.inputTag,
     id: inputId,
   };

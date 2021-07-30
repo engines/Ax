@@ -11,8 +11,8 @@ ax.extension.form.field.control = function (f, options = {}) {
 
   let object = f.object || {};
 
-  if (ax.is.function(options.value)) {
-    options.value = options.value(object[key]);
+  if (ax.is.function(options.ingest)) {
+    options.value = options.ingest(object[key]);
   } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
@@ -23,6 +23,8 @@ ax.extension.form.field.control = function (f, options = {}) {
     ...options.control,
     controlTag: {
       $key: key,
+      $output: (el) => () =>
+        options.digest ? options.digest(el.$value()) : el.$value(),
       ...(options.control || {}).controlTag,
     },
   };

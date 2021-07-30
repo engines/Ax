@@ -16,11 +16,14 @@ ax.extension.form.field.controls.textarea = (f, options = {}) => {
       el.$('textarea').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('textarea').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
+      el.$enabled = true;
       if (!options.disabled) {
         el.$('textarea').removeAttribute('disabled');
       }

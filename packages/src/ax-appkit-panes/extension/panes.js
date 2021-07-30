@@ -6,7 +6,7 @@ ax.extension.panes = function (options = {}) {
   let orientation = options.vertical ? 'vertical' : 'horizontal';
 
   function move(e) {
-    let el = e.target.$('^ax-appkit-panes');
+    let el = e.target.closest('ax-appkit-panes');
 
     let percent,
       vertical = options.vertical;
@@ -50,7 +50,7 @@ ax.extension.panes = function (options = {}) {
   }
 
   function clear(e) {
-    e.target.$('^ax-appkit-panes').classList.remove('dragable');
+    e.target.closest('ax-appkit-panes').classList.remove('dragable');
     window.document.removeEventListener('mousemove', move);
     window.document.removeEventListener('mouseup', clear);
   }

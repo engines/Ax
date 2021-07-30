@@ -18,10 +18,13 @@ ax.extension.form.field.button = (target, options = {}) =>
   target({
     ...options,
     buttonTag: {
+      $enabled: true,
       $disable: (el) => () => {
+        el.$enabled = false;
         el.disabled = 'disabled';
       },
       $enable: (el) => () => {
+        el.$enabled = true;
         el.removeAttribute('disabled');
       },
       ...options.buttonTag,
@@ -53,7 +56,7 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
                   })
                 : null,
             ],
-            options.itemMenuTag
+            options.itemButtonsTag
           ),
           options.itemHeaderTag
         ),
@@ -82,7 +85,10 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
       if (first) setTimeout(first.$focus, 0);
     },
 
+    $enabled: !options.disabled,
+
     $disable: (el) => () => {
+      el.$enabled = false;
       let controls = el.$$('ax-appkit-form-control').$$;
       for (let control of controls) {
         control.$disable();
@@ -91,6 +97,7 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         let controls = el.$$('ax-appkit-form-control').$$;
         for (let control of controls) {
           control.$enable();
@@ -136,8 +143,8 @@ ax.extension.form.field.control = function (f, options = {}) {
 
   let object = f.object || {};
 
-  if (ax.is.function(options.value)) {
-    options.value = options.value(object[key]);
+  if (ax.is.function(options.ingest)) {
+    options.value = options.ingest(object[key]);
   } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
@@ -148,6 +155,8 @@ ax.extension.form.field.control = function (f, options = {}) {
     ...options.control,
     controlTag: {
       $key: key,
+      $output: (el) => () =>
+        options.digest ? options.digest(el.$value()) : el.$value(),
       ...(options.control || {}).controlTag,
     },
   };
@@ -198,7 +207,9 @@ ax.extension.form.field.fieldset = function (f, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let control = a['ax-appkit-form-control'](
+  let control = a[
+    'ax-appkit-form-control.ax-appkit-form-control-without-value'
+  ](
     [
       options.legend ? a.legend(options.legend, options.legendTag) : null,
       options.body || null,
@@ -210,13 +221,16 @@ ax.extension.form.field.fieldset = function (f, options = {}) {
       $buttons: (el) => () => {
         return el.$$('button').$$;
       },
+      $enabled: true,
       $disable: (el) => () => {
+        el.$enabled = false;
         let controls = [...el.$controls(), ...el.$buttons()];
         for (let i in controls) {
           controls[i].$disable && controls[i].$disable();
         }
       },
       $enable: (el) => () => {
+        el.$enabled = true;
         let controls = [...el.$controls(), ...el.$buttons()];
         for (let i in controls) {
           controls[i].$enable && controls[i].$enable();
@@ -410,7 +424,7 @@ ax.extension.report.field.collection = function (f, control, options = {}) {
       return options.value;
     },
     $focus: (el) => () => {
-      el.$('ax-appkit-report-control').focus();
+      el.$('ax-appkit-control-collection ax-appkit-report-control').$focus();
     },
     ...options.controlTag,
   };
@@ -437,8 +451,8 @@ ax.extension.report.field.control = function (r, options = {}) {
 
   let object = r.object || {};
 
-  if (ax.is.function(options.value)) {
-    options.value = options.value(object[key]);
+  if (ax.is.function(options.ingest)) {
+    options.value = options.ingest(object[key]);
   } else if (key && ax.is.not.undefined(object[key])) {
     options.value = object[key];
   }
@@ -623,7 +637,6 @@ ax.extension.report.field.label = function (options = {}) {
     $on: {
       'click: focus on output': (e, el) => {
         let target = el.$('^ax-appkit-report-field ax-appkit-report-control');
-        console.log(target);
         target && target.$focus();
       },
       ...(options.wrapperTag || {}).$on,
@@ -820,12 +833,15 @@ ax.extension.form.field.controls.checkbox = function (f, options) {
       el.$('input').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('input').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$('input').removeAttribute('disabled');
       }
     },
@@ -891,7 +907,9 @@ ax.extension.form.field.controls.checkboxes = function (f, options) {
       return el.$$('input').$$;
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       for (let input of el.$inputs()) {
         input.setAttribute('disabled', 'disabled');
       }
@@ -899,6 +917,7 @@ ax.extension.form.field.controls.checkboxes = function (f, options) {
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         for (let input of el.$inputs()) {
           if (!input.$ax.disabled) {
             input.removeAttribute('disabled');
@@ -932,16 +951,22 @@ ax.extension.form.field.controls.hidden = (f, options = {}) => {
     $value: (el) => () => {
       return options.value;
     },
-    $focus: (el) => () => {
-      el.focus();
+    $focus: (el) => () => {},
+    $enabled: !options.disabled,
+    $disable: (el) => () => {
+      el.$enabled = false;
+      el.$('input').setAttribute('disabled', 'disabled');
     },
-    $disable: (el) => () => {},
-
-    $enable: (el) => () => {},
+    $enable: (el) => () => {
+      if (!options.disabled) {
+        el.$enabled = true;
+        el.$('input').removeAttribute('disabled');
+      }
+    },
     ...options.controlTag,
   };
 
-  return a['ax-appkit-form-control'](
+  return a['ax-appkit-form-control.ax-appkit-form-control-not-focusable'](
     f.input({
       name: options.name,
       value: options.value,
@@ -968,12 +993,15 @@ ax.extension.form.field.controls.input = function (f, options) {
       el.$('input').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('input').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$('input').removeAttribute('disabled');
       }
     },
@@ -989,7 +1017,11 @@ ax.extension.form.field.controls.input = function (f, options) {
       } else {
         if (options.invalid) {
           if (ax.is.function(options.invalid)) {
-            let invalidMessage = options.invalid(el.$value, el.$validity());
+            let invalidMessage = options.invalid(
+              el.$value(),
+              el.$validity(),
+              el
+            );
             if (invalidMessage) {
               el.$('input').setCustomValidity(invalidMessage);
             }
@@ -1038,7 +1070,10 @@ ax.extension.form.field.controls.radios = function (f, options) {
       return el.$$('input').$$;
     },
 
+    $enabled: !options.disabled,
+
     $disable: (el) => () => {
+      el.$enabled = false;
       for (let input of el.$inputs()) {
         input.setAttribute('disabled', 'disabled');
       }
@@ -1046,6 +1081,7 @@ ax.extension.form.field.controls.radios = function (f, options) {
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         for (let input of el.$inputs()) {
           if (!input.$ax.disabled) {
             input.removeAttribute('disabled');
@@ -1112,12 +1148,15 @@ ax.extension.form.field.controls.select = function (f, options) {
       el.$('select').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('select').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$('select').removeAttribute('disabled');
       }
     },
@@ -1182,11 +1221,14 @@ ax.extension.form.field.controls.textarea = (f, options = {}) => {
       el.$('textarea').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('textarea').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
+      el.$enabled = true;
       if (!options.disabled) {
         el.$('textarea').removeAttribute('disabled');
       }

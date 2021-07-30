@@ -19,7 +19,7 @@ ax.extension.form.factory.radios = function (options = {}) {
       return x.check({
         type: 'radio',
         name: options.name,
-        value: value == selection.value ? true : false,
+        value: value,
         label: label,
         checked: selection.value,
         required: options.required,

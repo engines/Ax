@@ -91,7 +91,9 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
       el.$inputs()[0].focus();
     },
 
+    $enabled: !inputOptions.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       for (let input of el.$inputs()) {
         input.setAttribute('disabled', 'disabled');
       }
@@ -99,6 +101,7 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
 
     $enable: (el) => () => {
       if (!inputOptions.disabled) {
+        el.$enabled = true;
         for (let input of el.$inputs()) {
           input.removeAttribute('disabled');
         }

@@ -1,18 +1,21 @@
-ax.extension.form.field.dependent.collect = (options) => {
+ax.extension.form.field.dependent.components.dependent.collect = (
+  indexedScope,
+  options
+) => {
   let x = ax.x;
 
   let collection;
 
-  if (ax.is.string(options.dependent)) {
+  if (ax.is.string(options)) {
     collection = [
       {
-        key: options.dependent,
+        key: options,
       },
     ];
-  } else if (ax.is.array(options.dependent)) {
-    collection = options.dependent;
-  } else if (ax.is.object(options.dependent)) {
-    collection = [options.dependent];
+  } else if (ax.is.array(options)) {
+    collection = options;
+  } else if (ax.is.object(options)) {
+    collection = [options];
   } else {
     collection = [];
   }
@@ -32,7 +35,7 @@ ax.extension.form.field.dependent.collect = (options) => {
 
   for (let item of collection) {
     if (item.key) {
-      item.name = nameFor(options.scope, item.key);
+      item.name = nameFor(indexedScope, item.key);
     }
   }
 

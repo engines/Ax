@@ -132,7 +132,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       stringTag: {
-        class: 'form-control h-100 text-dark bg-white h-100',
+        class: 'form-control h-100 text-dark bg-transparent h-100',
         ...options.stringTag,
       },
     }),
@@ -141,7 +141,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       selectTag: {
-        class: 'form-control h-100 text-dark bg-white',
+        class: 'form-control h-100 text-dark bg-transparent',
         ...options.selectTag,
       },
     }),
@@ -150,7 +150,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       textareaTag: {
-        class: 'form-control text-dark bg-white',
+        class: 'form-control text-dark bg-transparent',
         ...options.textareaTag,
       },
     }),
@@ -159,7 +159,7 @@ ax.extension.bootstrap.report.shim = {
     target({
       ...options,
       outputTag: {
-        class: 'form-control h-100 text-dark bg-white',
+        class: 'form-control h-100 text-dark bg-transparent',
         ...options.outputTag,
       },
     }),
@@ -187,7 +187,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         booleanTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.booleanTag,
         },
       }),
@@ -196,7 +196,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         preTag: {
-          class: 'form-control h-100 mb-0 text-dark bg-white',
+          class: 'form-control h-100 mb-0 text-dark bg-transparent',
           ...options.preTag,
         },
       }),
@@ -205,7 +205,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         preTag: {
-          class: 'form-control h-100 mb-0 text-dark bg-white',
+          class: 'form-control h-100 mb-0 text-dark bg-transparent',
           ...options.preTag,
         },
       }),
@@ -214,7 +214,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         passwordTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.passwordTag,
         },
       }),
@@ -223,7 +223,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         colorTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.colorTag,
         },
       }),
@@ -232,7 +232,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         datetimeTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.datetimeTag,
         },
       }),
@@ -241,7 +241,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         numberTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.numberTag,
         },
       }),
@@ -250,7 +250,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         telTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.telTag,
         },
       }),
@@ -259,7 +259,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         emailTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.emailTag,
         },
       }),
@@ -268,7 +268,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         countryTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.countryTag,
         },
       }),
@@ -277,7 +277,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         languageTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.languageTag,
         },
       }),
@@ -286,7 +286,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         timezoneTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.timezoneTag,
         },
       }),
@@ -295,7 +295,7 @@ ax.extension.bootstrap.report.shim = {
       target({
         ...options,
         urlTag: {
-          class: 'form-control text-dark bg-white',
+          class: 'form-control text-dark bg-transparent',
           ...options.urlTag,
         },
       }),

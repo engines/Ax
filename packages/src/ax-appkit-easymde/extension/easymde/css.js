@@ -1,5 +1,8 @@
 ax.style({
-  'ax-appkit-control-easymde': {
+  'ax-appkit-easymde': {
+    '> textarea': {
+      display: 'none',
+    },
     'div.CodeMirror.disabled': {
       backgroundColor: '#e9ecef',
     },

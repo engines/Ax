@@ -1,18 +1,32 @@
-ax.extension.form.field.dependent.components.dependent = function (options) {
+ax.extension.form.field.dependent.components.dependent = function (
+  f,
+  target,
+  options
+) {
   let a = ax.a;
   let x = ax.x;
 
-  let optionsCollection = x.form.field.dependent.collect(options);
+  let indexedScope = f.indexedScope || f.scope;
+  let name = indexedScope ? `${indexedScope}[${options.key}]` : options.key;
+
+  let optionsCollection = x.form.field.dependent.components.dependent.collect(
+    indexedScope,
+    options.dependent
+  );
 
   let dependentTag = {
+    name: name,
     $init: (el) => {
       el.$dependencies = optionsCollection.map((opts) => ({
+        key: opts.key,
         field: x.form.field.dependent.components.dependent.dependency(el, opts),
         value: opts.value,
         pattern: opts.pattern,
       }));
       for (let dependency of el.$dependencies) {
-        dependency.field.$registerDependent(el);
+        if (dependency.field) {
+          dependency.field.$registerDependent(el);
+        }
       }
     },
     $registerDependent: (el) => (dependent) => {
@@ -91,7 +105,42 @@ ax.extension.form.field.dependent.components.dependent = function (options) {
       },
       ...(options.dependentTag || {}).$on,
     },
+    $rescope: (el) => (
+      oldScope,
+      newScope,
+      oldIndexedScope,
+      newIndexedScope,
+      index
+    ) => {
+      let oldName = oldScope ? `${oldScope}[${options.key}]` : options.key;
+      let oldIndexedName =
+        oldIndexedScope || oldScope
+          ? `${oldIndexedScope || oldScope}[${options.key}]`
+          : options.key;
+      let newName = newScope ? `${newScope}[${options.key}]` : options.key;
+      let newIndexedName = newIndexedScope
+        ? `${newIndexedScope}[${options.key}]`
+        : options.key;
+
+      el.setAttribute('name', newIndexedName);
+
+      let rescopable = x.lib.unnested(
+        el,
+        `[name^="${oldName}"], [name^="${oldIndexedName}"]`
+      );
+      rescopable.forEach((target) => {
+        if (ax.is.function(target.$rescope)) {
+          target.$rescope(
+            oldScope,
+            newScope,
+            oldIndexedScope,
+            newIndexedScope,
+            index
+          );
+        }
+      });
+    },
   };
 
-  return a['ax-appkit-form-field-dependent'](options.body, dependentTag);
+  return a['ax-appkit-form-field-dependent'](target(options), dependentTag);
 };

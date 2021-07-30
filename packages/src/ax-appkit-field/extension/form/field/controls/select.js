@@ -14,12 +14,15 @@ ax.extension.form.field.controls.select = function (f, options) {
       el.$('select').focus();
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       el.$('select').setAttribute('disabled', 'disabled');
     },
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         el.$('select').removeAttribute('disabled');
       }
     },

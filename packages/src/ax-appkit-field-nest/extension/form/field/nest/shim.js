@@ -11,7 +11,7 @@ ax.extension.form.field.nest.shim = {
         $rescope: (el) => () => {
           ax.x.lib
             .unnested(el, 'ax-appkit-form-nest')
-            .forEach((target) => target.$rescope());
+            .forEach((target) => target.$rescope(f.scope));
         },
         ...options.formTag,
       },

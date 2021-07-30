@@ -38,7 +38,9 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
 
+    $enabled: !options.disabled,
     $disable: (el) => () => {
+      el.$enabled = false;
       let select = el.$('ax-appkit-control-selectinput-select select');
       let input = el.$('ax-appkit-control-selectinput-input input');
       let hiddeninput = el.$('ax-appkit-control-selectinput-hiddeninput input');
@@ -48,6 +50,7 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
     },
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         let select = el.$('ax-appkit-control-selectinput-select select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(
@@ -106,6 +109,7 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
             selections: selections,
             placeholder: options.placeholder,
             disabled: options.disabled,
+            required: options.required,
             ...options.select,
           })
         ),

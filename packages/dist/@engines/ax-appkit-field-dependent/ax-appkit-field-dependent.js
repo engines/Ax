@@ -14,72 +14,17 @@ ax.extension.form.field.dependent = {};
 
 ax.extension.report.field.dependent = {};
 
-ax.extension.form.field.dependent.collect = (options) => {
-  let x = ax.x;
-
-  let collection;
-
-  if (ax.is.string(options.dependent)) {
-    collection = [
-      {
-        key: options.dependent,
-      },
-    ];
-  } else if (ax.is.array(options.dependent)) {
-    collection = options.dependent;
-  } else if (ax.is.object(options.dependent)) {
-    collection = [options.dependent];
-  } else {
-    collection = [];
-  }
-
-  let nameFor = (scope, key) => {
-    let dismantle = x.lib.name.dismantle;
-    let parts = [...dismantle(scope || ''), ...dismantle(key)];
-    while (parts.indexOf('..') >= 0) {
-      let index = parts.indexOf('..');
-      parts.splice(index, 1);
-      if (index > 0) parts.splice(index - 1, 1);
-    }
-    let name = parts.shift();
-    if (parts.length) name = `${name}[${parts.join('][')}]`;
-    return name;
-  };
-
-  for (let item of collection) {
-    if (item.key) {
-      item.name = nameFor(options.scope, item.key);
-    }
-  }
-
-  return collection;
-};
-
 ax.extension.form.field.dependent.components = {};
 
 ax.extension.form.field.dependent.shim = {
-  field: (f, target) => (options = {}) => {
-    return ax.x.form.field.dependent.components.dependent({
-      body: target(options),
-      scope: f.scope,
-      dependent: options.dependent,
-    });
-  },
+  field: (f, target) => (options = {}) =>
+    ax.x.form.field.dependent.components.dependent(f, target, options),
 
-  fieldset: (f, target) => (options = {}) => {
-    return ax.x.form.field.dependent.components.dependent({
-      body: target(options),
-      scope: f.scope,
-      dependent: options.dependent,
-    });
-  },
+  fieldset: (f, target) => (options = {}) =>
+    ax.x.form.field.dependent.components.dependent(f, target, options),
 
-  dependent: (f, target) => (options = {}) => {
-    return ax.x.form.field.dependent.components.dependent({
-      scope: f.scope,
-      ...options,
-    });
-  },
+  dependent: (f, target) => (options = {}) =>
+    ax.x.form.field.dependent.components.dependent(f, target, options),
 
   form: (f, target) => (options = {}) =>
     target({
@@ -87,10 +32,14 @@ ax.extension.form.field.dependent.shim = {
       formTag: {
         ...options.formTag,
         $init: (el) => {
-          options.formTag &&
-            options.formTag.$init &&
-            options.formTag.$init.bind(el)(arguments);
+          options.formTag && options.formTag.$init && options.formTag.$init(el);
           el.$checkDependents();
+        },
+        $on: {
+          'ax.appkit.form.async.complete: check dependents': (e, el) => {
+            el.$checkDependents();
+          },
+          ...(options.formTag || {}).$on,
         },
         $checkDependents: (el) => () => {
           let dependents = ax.x.lib.unnested(
@@ -156,21 +105,35 @@ ax.extension.report.field.dependent.shim = {
   },
 };
 
-ax.extension.form.field.dependent.components.dependent = function (options) {
+ax.extension.form.field.dependent.components.dependent = function (
+  f,
+  target,
+  options
+) {
   let a = ax.a;
   let x = ax.x;
 
-  let optionsCollection = x.form.field.dependent.collect(options);
+  let indexedScope = f.indexedScope || f.scope;
+  let name = indexedScope ? `${indexedScope}[${options.key}]` : options.key;
+
+  let optionsCollection = x.form.field.dependent.components.dependent.collect(
+    indexedScope,
+    options.dependent
+  );
 
   let dependentTag = {
+    name: name,
     $init: (el) => {
       el.$dependencies = optionsCollection.map((opts) => ({
+        key: opts.key,
         field: x.form.field.dependent.components.dependent.dependency(el, opts),
         value: opts.value,
         pattern: opts.pattern,
       }));
       for (let dependency of el.$dependencies) {
-        dependency.field.$registerDependent(el);
+        if (dependency.field) {
+          dependency.field.$registerDependent(el);
+        }
       }
     },
     $registerDependent: (el) => (dependent) => {
@@ -249,16 +212,53 @@ ax.extension.form.field.dependent.components.dependent = function (options) {
       },
       ...(options.dependentTag || {}).$on,
     },
+    $rescope: (el) => (
+      oldScope,
+      newScope,
+      oldIndexedScope,
+      newIndexedScope,
+      index
+    ) => {
+      let oldName = oldScope ? `${oldScope}[${options.key}]` : options.key;
+      let oldIndexedName =
+        oldIndexedScope || oldScope
+          ? `${oldIndexedScope || oldScope}[${options.key}]`
+          : options.key;
+      let newName = newScope ? `${newScope}[${options.key}]` : options.key;
+      let newIndexedName = newIndexedScope
+        ? `${newIndexedScope}[${options.key}]`
+        : options.key;
+
+      el.setAttribute('name', newIndexedName);
+
+      let rescopable = x.lib.unnested(
+        el,
+        `[name^="${oldName}"], [name^="${oldIndexedName}"]`
+      );
+      rescopable.forEach((target) => {
+        if (ax.is.function(target.$rescope)) {
+          target.$rescope(
+            oldScope,
+            newScope,
+            oldIndexedScope,
+            newIndexedScope,
+            index
+          );
+        }
+      });
+    },
   };
 
-  return a['ax-appkit-form-field-dependent'](options.body, dependentTag);
+  return a['ax-appkit-form-field-dependent'](target(options), dependentTag);
 };
 
 ax.extension.report.field.dependent.components.dependent = function (options) {
   let a = ax.a;
   let x = ax.x;
 
-  let optionsCollection = x.form.field.dependent.collect(options);
+  let optionsCollection = x.form.field.dependent.components.dependent.collect(
+    options
+  );
 
   let dependentTag = {
     $init: (el) => {
@@ -317,6 +317,50 @@ ax.extension.report.field.dependent.components.dependent = function (options) {
   return a['ax-appkit-report-field-dependent'](options.body, dependentTag);
 };
 
+ax.extension.form.field.dependent.components.dependent.collect = (
+  indexedScope,
+  options
+) => {
+  let x = ax.x;
+
+  let collection;
+
+  if (ax.is.string(options)) {
+    collection = [
+      {
+        key: options,
+      },
+    ];
+  } else if (ax.is.array(options)) {
+    collection = options;
+  } else if (ax.is.object(options)) {
+    collection = [options];
+  } else {
+    collection = [];
+  }
+
+  let nameFor = (scope, key) => {
+    let dismantle = x.lib.name.dismantle;
+    let parts = [...dismantle(scope || ''), ...dismantle(key)];
+    while (parts.indexOf('..') >= 0) {
+      let index = parts.indexOf('..');
+      parts.splice(index, 1);
+      if (index > 0) parts.splice(index - 1, 1);
+    }
+    let name = parts.shift();
+    if (parts.length) name = `${name}[${parts.join('][')}]`;
+    return name;
+  };
+
+  for (let item of collection) {
+    if (item.key) {
+      item.name = nameFor(indexedScope, item.key);
+    }
+  }
+
+  return collection;
+};
+
 ax.extension.form.field.dependent.components.dependent.dependency = (
   el,
   options
@@ -330,16 +374,9 @@ ax.extension.form.field.dependent.components.dependent.dependency = (
   }
 
   let search = options.search || '^form';
-
   let target = el.$(search).$(selector);
-  let targetDependency;
-
   if (target) {
-    targetDependency = target.$('^ax-appkit-form-field-dependent');
-  }
-
-  if (targetDependency) {
-    return targetDependency;
+    return target;
   } else {
     console.error(
       el,
@@ -356,7 +393,7 @@ ax.extension.form.field.dependent.components.dependent.match = function (
 ) {
   let field = options.field;
 
-  if (field.$match()) {
+  if (field && field.$match()) {
     let fieldValue = field.$value();
 
     if (options.value) {

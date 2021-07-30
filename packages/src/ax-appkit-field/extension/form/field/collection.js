@@ -23,7 +23,7 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
                   })
                 : null,
             ],
-            options.itemMenuTag
+            options.itemButtonsTag
           ),
           options.itemHeaderTag
         ),
@@ -52,7 +52,10 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
       if (first) setTimeout(first.$focus, 0);
     },
 
+    $enabled: !options.disabled,
+
     $disable: (el) => () => {
+      el.$enabled = false;
       let controls = el.$$('ax-appkit-form-control').$$;
       for (let control of controls) {
         control.$disable();
@@ -61,6 +64,7 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
 
     $enable: (el) => () => {
       if (!options.disabled) {
+        el.$enabled = true;
         let controls = el.$$('ax-appkit-form-control').$$;
         for (let control of controls) {
           control.$enable();

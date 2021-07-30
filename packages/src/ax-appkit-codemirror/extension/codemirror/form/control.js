@@ -54,13 +54,16 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
         el.$('textarea').$codemirror.focus();
       },
 
+      $enabled: !options.disabled,
       $disable: (el) => () => {
+        el.$enabled = false;
         el.$$('.CodeMirror').classList.add('disabled');
         el.$$('textarea').setAttribute('disabled', 'disabled');
       },
 
       $enable: (el) => () => {
         if (!options.disabled) {
+          el.$enabled = true;
           el.$$('.CodeMirror').classList.remove('disabled');
           el.$$('textarea').removeAttribute('disabled');
         }

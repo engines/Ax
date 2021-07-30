@@ -48,13 +48,22 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
 
         let headerCells = () => {
           let cells = form(ffP) || [];
-          if (options.moveable || options.removeable)
+          if (options.itemTitle) {
+            cells.unshift(
+              a.th(null, {
+                width: '10%',
+                ...options.thTag,
+              })
+            );
+          }
+          if (options.moveable || options.removeable) {
             cells.push(
               a.th(null, {
                 width: '10%',
                 ...options.thTag,
               })
             );
+          }
           return cells;
         };
 
@@ -159,6 +168,21 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
 
             let cells = form(fffP);
 
+            if (options.itemTitle) {
+              cells.unshift(
+                a.td([
+                  a['ax-appkit-form-nest-table-item-title'](null, {
+                    $nodes: () => options.itemTitle(fffP),
+                    name: fffP.scope,
+                    $rescope: (el) => () => {
+                      el.$render();
+                    },
+                    ...options.itemTitleTag,
+                  }),
+                ])
+              );
+            }
+
             if (options.moveable || options.removeable)
               cells.push(
                 a.td(
@@ -180,7 +204,7 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                           })
                         : null,
                     ],
-                    options.itemMenuTag
+                    options.itemButtonsTag
                   ),
                   options.tdTag
                 )
