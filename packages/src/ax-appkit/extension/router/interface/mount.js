@@ -19,12 +19,21 @@ ax.extension.router.interface.mount = (setup) => {
     let transition = ax.x.router.interface.mount.transition(config.transition);
     let view = ax.x.router.interface.mount.view;
 
+    let componentWrapper = (component) =>
+      a['ax-appkit-router-load'](component, {
+        $init: (el) => {
+          el.$send('ax.appkit.router.load');
+        },
+      });
+
     if (transition) {
       init = (el) => {
         let locatedView = view(config, el);
         el.$matched = locatedView.matched;
         el.$scope = locatedView.scope;
-        el.$('ax-appkit-transition').$to(locatedView.component);
+        el.$('ax-appkit-transition').$to(
+          componentWrapper(locatedView.component)
+        );
       };
       component = [transition];
     } else {
@@ -32,7 +41,7 @@ ax.extension.router.interface.mount = (setup) => {
         let locatedView = view(config, el);
         el.$matched = locatedView.matched;
         el.$scope = locatedView.scope;
-        return locatedView.component;
+        return componentWrapper(locatedView.component);
       };
     }
 
@@ -43,7 +52,7 @@ ax.extension.router.interface.mount = (setup) => {
 
       $reload: (el) => () => {
         el.$matched = false;
-        el.$('^ax-appkit-router').$go();
+        el.$('^ax-appkit-router').$pop();
       },
 
       $load: (el) => (path, query, anchor) => {
@@ -66,17 +75,7 @@ ax.extension.router.interface.mount = (setup) => {
         } else {
           el.$scope = locatedView.scope;
           el.$matched = locatedView.matched;
-          let component = a['ax-appkit-router-load'](locatedView.component, {
-            $init: () => {
-              el.$send('ax.appkit.router.load', {
-                detail: {
-                  path: path,
-                  query: query,
-                  anchor: anchor,
-                },
-              });
-            },
-          });
+          let component = componentWrapper(locatedView.component);
 
           if (transition) {
             // Disable pointer events on outgoing view

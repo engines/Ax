@@ -3,7 +3,7 @@ ax.extension.router.element = (options) => {
     id: options.id,
     $init: ax.extension.router.element.init,
     $nodes: ax.extension.router.element.nodes(options),
-    $go: ax.extension.router.element.go,
+    $pop: ax.extension.router.element.pop,
     $open: ax.extension.router.element.open(options),
     $locate: ax.extension.router.element.locate,
     $location: ax.extension.router.element.location,

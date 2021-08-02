@@ -646,7 +646,7 @@ ax.extension.router.element = (options) => {
     id: options.id,
     $init: ax.extension.router.element.init,
     $nodes: ax.extension.router.element.nodes(options),
-    $go: ax.extension.router.element.go,
+    $pop: ax.extension.router.element.pop,
     $open: ax.extension.router.element.open(options),
     $locate: ax.extension.router.element.locate,
     $location: ax.extension.router.element.location,
@@ -1416,16 +1416,8 @@ ax.extension.report.factory.text = function (options = {}) {
   );
 };
 
-ax.extension.router.element.go = (el) => () => {
-  let location = el.$location();
-  el.$load(location.path, location.query, location.anchor);
-};
-
 ax.extension.router.element.init = (el) => {
-  window.addEventListener('popstate', el.$go);
-  el.$send('ax.appkit.router.load', {
-    detail: el.$location(),
-  });
+  window.addEventListener('popstate', el.$pop);
 };
 
 ax.extension.router.element.load = (el) => (path, query, anchor) => {
@@ -1504,6 +1496,12 @@ ax.extension.router.element.open = (options) => (el) => (
   el.$locate(path, query, anchor);
 };
 
+ax.extension.router.element.pop = (el) => () => {
+  let location = el.$location();
+  el.$load(location.path, location.query, location.anchor);
+  el.$send('ax.appkit.router.pop');
+};
+
 ax.extension.router.interface.load = (config) =>
   function (locator = '', query = {}, anchor = null) {
     let path = window.location.pathname;
@@ -1544,12 +1542,21 @@ ax.extension.router.interface.mount = (setup) => {
     let transition = ax.x.router.interface.mount.transition(config.transition);
     let view = ax.x.router.interface.mount.view;
 
+    let componentWrapper = (component) =>
+      a['ax-appkit-router-load'](component, {
+        $init: (el) => {
+          el.$send('ax.appkit.router.load');
+        },
+      });
+
     if (transition) {
       init = (el) => {
         let locatedView = view(config, el);
         el.$matched = locatedView.matched;
         el.$scope = locatedView.scope;
-        el.$('ax-appkit-transition').$to(locatedView.component);
+        el.$('ax-appkit-transition').$to(
+          componentWrapper(locatedView.component)
+        );
       };
       component = [transition];
     } else {
@@ -1557,7 +1564,7 @@ ax.extension.router.interface.mount = (setup) => {
         let locatedView = view(config, el);
         el.$matched = locatedView.matched;
         el.$scope = locatedView.scope;
-        return locatedView.component;
+        return componentWrapper(locatedView.component);
       };
     }
 
@@ -1568,7 +1575,7 @@ ax.extension.router.interface.mount = (setup) => {
 
       $reload: (el) => () => {
         el.$matched = false;
-        el.$('^ax-appkit-router').$go();
+        el.$('^ax-appkit-router').$pop();
       },
 
       $load: (el) => (path, query, anchor) => {
@@ -1591,17 +1598,7 @@ ax.extension.router.interface.mount = (setup) => {
         } else {
           el.$scope = locatedView.scope;
           el.$matched = locatedView.matched;
-          let component = a['ax-appkit-router-load'](locatedView.component, {
-            $init: () => {
-              el.$send('ax.appkit.router.load', {
-                detail: {
-                  path: path,
-                  query: query,
-                  anchor: anchor,
-                },
-              });
-            },
-          });
+          let component = componentWrapper(locatedView.component);
 
           if (transition) {
             // Disable pointer events on outgoing view
