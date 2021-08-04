@@ -128,9 +128,9 @@ ax.style({
       top: 0,
       bottom: 0,
       width: '4px',
-      background: '#0001',
+      backgroundColor: '#0003',
       '&:hover': {
-        background: '#ddd',
+        backgroundColor: '#0006',
       },
     },
 

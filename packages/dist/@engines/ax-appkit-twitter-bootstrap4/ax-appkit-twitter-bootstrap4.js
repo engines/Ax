@@ -294,7 +294,7 @@ ax.extension.bootstrap.form.shim = {
           },
         },
         tableTag: {
-          class: 'table table-sm table-borderless mb-0 ml-n1 mr-n1',
+          class: 'table table-sm table-borderless mb-1 ml-n1 mr-n1',
           ...options.tableTag,
         },
         helpTdTag: {
@@ -306,7 +306,7 @@ ax.extension.bootstrap.form.shim = {
           ...options.thTag,
         },
         tdTag: {
-          class: 'pl-1 pt-0 pr-0 pb-1',
+          class: 'pl-1 pt-1 pr-0 pb-1',
           ...options.tdTag,
         },
         hintTdTag: {

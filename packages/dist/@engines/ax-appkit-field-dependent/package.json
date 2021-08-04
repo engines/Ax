@@ -1,6 +1,5 @@
 {
   "name": "@engines/ax-appkit-field-dependent",
-  "version": "0.0.17",
   "description": "An Ax extension that makes field control visibility dependent upon values in other fields.",
   "main": "ax-appkit-field-dependent.js",
   "repository": {
