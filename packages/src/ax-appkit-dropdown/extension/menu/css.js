@@ -1,4 +1,10 @@
 ax.style({
+  'ax-appkit-context': {
+    position: 'relative',
+  },
+  'ax-appkit-context-popup': {
+    display: 'none',
+  },
   'ax-appkit-menu': {
     display: 'block',
     width: '150px',

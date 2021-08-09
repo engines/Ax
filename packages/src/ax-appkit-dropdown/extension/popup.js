@@ -5,7 +5,7 @@ ax.extension.popup = function (component, options = {}) {
   let popupTagOptions = {
     ...options.popupTag,
     style: {
-      position: 'fixed',
+      position: 'absolute',
       zIndex: 1,
       ...(options.popupTag || {}).style,
     },
@@ -39,11 +39,33 @@ ax.extension.popup = function (component, options = {}) {
     let wh = window.innerHeight;
     let bGap = wh - rect.top - rect.height;
     let rGap = ww - rect.left - rect.width;
-    if (bGap < 0) target.style.top = `${rect.y + bGap}px`;
-    if (rGap < 0) target.style.left = `${rect.x + rGap}px`;
+    if (bGap < 0) target.style.top = `${-bGap}px`;
+    if (rGap < 0) target.style.left = `${-rGap}px`;
   };
 
   let contentTagOptions = {
+    $clickHandler: (el) => (e) => {
+      let context = el.$('^ax-appkit-context');
+      if (!context.contains(e.target)) {
+        el.$closePopup();
+      }
+    },
+    $removeClickHandler: (el) => () =>
+      window.document.removeEventListener('mousedown', el.$clickHandler),
+    $addClickHandler: (el) => () =>
+      window.document.addEventListener('mousedown', el.$clickHandler),
+    $closePopup: (el) => () => {
+      let context = el.$('^ax-appkit-context');
+      let popup = context.$('ax-appkit-context-popup');
+      if (options.menu) {
+        let menu = popup.$('ax-appkit-menu');
+        menu && menu.$closeSubmenus();
+      }
+      popup.style.display = 'none';
+      el.$removeClickHandler();
+      el.$send('ax.appkit.context.popup.close');
+    },
+    $exit: (el) => el.$removeClickHandler(),
     $init: (el) => {
       let popupContents;
       let context = el.$('^ax-appkit-context');
@@ -62,37 +84,21 @@ ax.extension.popup = function (component, options = {}) {
 
       let popup = context.$('ax-appkit-context-popup');
 
-      let clickHandler = function (e) {
-        if (!popup.contains(e.target)) {
-          if (options.menu) {
-            let menu = popup.$('ax-appkit-menu');
-            menu && menu.$closeSubmenus();
-          }
-          popup.style.display = 'none';
-          removeClickHandler();
-          el.$send('ax.appkit.context.popup.close');
-        }
-      };
-
-      let removeClickHandler = function () {
-        window.document.removeEventListener('mousedown', clickHandler);
-      };
-
-      let addClickHandler = function () {
-        window.document.addEventListener('mousedown', clickHandler);
-      };
-
       el.$on({
         'click: show popup': (e, el) => {
           e.preventDefault();
           e.stopPropagation();
-          popup.$nodes = [popupContents];
-          popup.style.left = `${e.pageX + 1}px`;
-          popup.style.top = `${e.pageY + 1}px`;
-          popup.style.display = 'inline-block';
-          nudgePopup(popup);
-          addClickHandler();
-          el.$send('ax.appkit.context.popup.show');
+          if (x.lib.element.visible(popup)) {
+            el.$closePopup();
+          } else {
+            popup.$nodes = [popupContents];
+            // popup.style.left = `-5px`;
+            popup.style.top = `-9px`;
+            popup.style.display = 'inline-block';
+            nudgePopup(popup);
+            el.$addClickHandler();
+            el.$send('ax.appkit.context.popup.show');
+          }
         },
       });
     },

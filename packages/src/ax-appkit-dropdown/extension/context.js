@@ -7,7 +7,7 @@ ax.extension.context = function (options = {}) {
   let popupTagOptions = {
     ...options.popupTag,
     style: {
-      position: 'fixed',
+      position: 'absolute',
       zIndex: 1,
       ...(options.popupTag || {}).style,
     },

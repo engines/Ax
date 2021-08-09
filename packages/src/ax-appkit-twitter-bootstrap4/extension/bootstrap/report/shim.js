@@ -324,7 +324,7 @@ ax.extension.bootstrap.report.shim = {
           ...options.thTag,
         },
         tdTag: {
-          class: 'pl-1 pt-0 pr-0 pb-1',
+          class: 'pl-1 pt-1 pr-0 pb-1',
           ...options.tdTag,
         },
         hintTdTag: {

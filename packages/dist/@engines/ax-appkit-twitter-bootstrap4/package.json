@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit-twitter-bootstrap4",
+  "version": "0.0.19",
   "description": "An Ax extension that adds bootstrap styling classes to the ax-appkit-kit form builder and report builder.",
   "main": "ax-appkit-twitter-bootstrap4.js",
   "repository": {
