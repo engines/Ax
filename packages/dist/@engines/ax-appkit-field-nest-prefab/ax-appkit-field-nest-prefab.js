@@ -410,9 +410,11 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                       hint: false,
                       help: false,
                       bodyTag: {
+                        ...fieldOptions.bodyTag,
                         class: '',
                       },
                       fieldTag: {
+                        ...fieldOptions.fieldTag,
                         class: '',
                       },
                     });
