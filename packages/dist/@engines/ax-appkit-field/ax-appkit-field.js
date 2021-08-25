@@ -1012,16 +1012,13 @@ ax.extension.form.field.controls.input = function (f, options) {
 
     $valid: (el) => () => {
       el.$('input').setCustomValidity('');
-      if (el.$validity().valid) {
+      let validity = el.$validity();
+      if (validity.valid) {
         return true;
       } else {
         if (options.invalid) {
           if (ax.is.function(options.invalid)) {
-            let invalidMessage = options.invalid(
-              el.$value(),
-              el.$validity(),
-              el
-            );
+            let invalidMessage = options.invalid(el.$value(), validity, el);
             if (invalidMessage) {
               el.$('input').setCustomValidity(invalidMessage);
             }
@@ -1029,6 +1026,7 @@ ax.extension.form.field.controls.input = function (f, options) {
             el.$('input').setCustomValidity(options.invalid);
           }
         }
+        el.$('input').reportValidity();
         return false;
       }
     },

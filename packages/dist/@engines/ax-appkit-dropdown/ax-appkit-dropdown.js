@@ -308,7 +308,7 @@ ax.style({
         lineHeight: '1.5',
         padding: '0.375rem',
         width: '100%',
-        border: 'none',
+        border: '1px solid transparent',
         background: 'none',
         textAlign: 'left',
       },
