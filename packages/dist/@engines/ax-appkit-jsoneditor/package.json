@@ -1,6 +1,6 @@
 {
   "name": "@engines/ax-appkit-jsoneditor",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "An Ax extension for JSONEditor.",
   "main": "ax-appkit-jsoneditor.js",
   "repository": {

@@ -283,7 +283,7 @@ class AxAppkitFetch {
     this.headers = options.headers;
     this.body = options.body;
     this.placeholder = options.placeholder || null;
-    this.id = options.fetchTagId || null;
+    // this.id = options.fetchTagId || null;
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -306,7 +306,7 @@ class AxAppkitFetch {
         this.element = el;
         this.init();
       },
-      id: this.fetchTagId,
+      // id: this.fetchTagId,
       ...this.fetchTag,
     });
   }
@@ -393,9 +393,12 @@ class AxAppkitFetch {
       let status = result.status;
       let contentType = result.contentType;
       if (this.preprocessWhen[status])
-        body = this.preprocessWhen[status](body, this.element, response);
+        body =
+          this.preprocessWhen[status](body, this.element, response) || null;
       if (this.preprocessWhen[contentType])
-        body = this.preprocessWhen[contentType](body, this.element, response);
+        body =
+          this.preprocessWhen[contentType](body, this.element, response) ||
+          null;
       result.body = body;
       return result;
     });
@@ -1106,7 +1109,8 @@ ax.extension.lib.query.parse = function (queryString) {
   if (queryString) {
     queryString.split('&').map(function (pair) {
       pair = pair.split('=');
-      result[pair[0]] = decodeURIComponent(pair[1]);
+      let keys = x.lib.name.dismantle(decodeURIComponent(pair[0]));
+      x.lib.object.assign(result, keys, decodeURIComponent(pair[1]));
     });
   }
 
@@ -1114,19 +1118,19 @@ ax.extension.lib.query.parse = function (queryString) {
 };
 
 ax.extension.lib.query.stringify = function (object, options = {}) {
-  var queryString = [];
-  var property;
+  let queryString = [];
+  let property;
 
   for (property in object) {
     if (object.hasOwnProperty(property)) {
-      var k = options.prefix ? options.prefix + '[' + property + ']' : property,
+      let k = options.prefix ? options.prefix + '[' + property + ']' : property,
         v = object[property];
       queryString.push(
         v !== null && ax.is.object(v)
           ? this.stringify(v, {
               prefix: k,
             })
-          : encodeURIComponent(k) + '=' + encodeURIComponent(v)
+          : `${k}=${encodeURIComponent(v)}`
       );
     }
   }

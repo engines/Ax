@@ -7,7 +7,7 @@ class AxAppkitFetch {
     this.headers = options.headers;
     this.body = options.body;
     this.placeholder = options.placeholder || null;
-    this.id = options.fetchTagId || null;
+    // this.id = options.fetchTagId || null;
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -30,7 +30,7 @@ class AxAppkitFetch {
         this.element = el;
         this.init();
       },
-      id: this.fetchTagId,
+      // id: this.fetchTagId,
       ...this.fetchTag,
     });
   }
@@ -117,9 +117,12 @@ class AxAppkitFetch {
       let status = result.status;
       let contentType = result.contentType;
       if (this.preprocessWhen[status])
-        body = this.preprocessWhen[status](body, this.element, response);
+        body =
+          this.preprocessWhen[status](body, this.element, response) || null;
       if (this.preprocessWhen[contentType])
-        body = this.preprocessWhen[contentType](body, this.element, response);
+        body =
+          this.preprocessWhen[contentType](body, this.element, response) ||
+          null;
       result.body = body;
       return result;
     });

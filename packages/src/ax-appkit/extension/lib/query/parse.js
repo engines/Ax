@@ -4,7 +4,8 @@ ax.extension.lib.query.parse = function (queryString) {
   if (queryString) {
     queryString.split('&').map(function (pair) {
       pair = pair.split('=');
-      result[pair[0]] = decodeURIComponent(pair[1]);
+      let keys = x.lib.name.dismantle(decodeURIComponent(pair[0]));
+      x.lib.object.assign(result, keys, decodeURIComponent(pair[1]));
     });
   }
 
