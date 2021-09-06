@@ -1,6 +1,6 @@
 {
   "name": "@engines/ax-appkit-codemirror",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "An Ax extension for CodeMirror.",
   "main": "ax-appkit-codemirror.js",
   "repository": {

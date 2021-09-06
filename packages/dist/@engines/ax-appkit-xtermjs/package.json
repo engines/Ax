@@ -1,6 +1,6 @@
 {
   "name": "@engines/ax-appkit-xtermjs",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "An Ax extension for Xterm.js.",
   "main": "ax-appkit-xtermjs.js",
   "repository": {

@@ -25,6 +25,7 @@ ax.extension.xtermjs = (options = {}) => (a, x) =>
               el.$resizer.observe(el);
               intersection.disconnect();
               intersection = null;
+              el.$send('ax.appkit.xtermjs.ready');
             }
           });
           intersection.observe(el);
