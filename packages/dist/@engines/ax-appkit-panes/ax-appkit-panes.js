@@ -81,14 +81,11 @@ ax.extension.panes = (options = {}) => {
             let position = el.clientWidth - (e.clientX - el.offsetLeft);
             percent = 100 * (1 - position / el.clientWidth);
           }
-
-          el.$resize(percent);
-        } else {
-          el.$resize(options.percent);
-          el.$clear(e);
+          el.$percent = percent;
+          el.$resize();
         }
       },
-      $clear: (el) => (e) => {
+      $clear: (el) => () => {
         el.classList.remove('dragable');
         window.document.removeEventListener('mousemove', el.$move);
         window.document.removeEventListener('mouseup', el.$clear);

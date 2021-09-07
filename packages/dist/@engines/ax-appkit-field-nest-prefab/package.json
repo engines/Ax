@@ -1,6 +1,6 @@
 {
   "name": "@engines/ax-appkit-field-nest-prefab",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "An Ax extension with some pre-built field controls for easy nesting, such as table, many, one.",
   "main": "ax-appkit-field-nest-prefab.js",
   "repository": {
