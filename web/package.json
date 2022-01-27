@@ -38,7 +38,7 @@
     "@engines/ax-appkit-xtermjs": "file:../packages/dist/@engines/ax-appkit-xtermjs",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "bootstrap": "^4.5.0",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "codemirror": "^5.56.0",
     "easymde": "^2.11.0",
     "elix": "^14.0.0",
