@@ -190,8 +190,10 @@ ax.extension.popup = function (component, options = {}) {
     let wh = window.innerHeight;
     let bGap = wh - rect.top - rect.height;
     let rGap = ww - rect.left - rect.width;
-    if (bGap < 0) target.style.top = `${-bGap}px`;
-    if (rGap < 0) target.style.left = `${-rGap}px`;
+    // debugger
+    // target.style.left = `${-1000}px`;
+    // if (bGap < 0) target.style.top = `${bGap}px`;
+    if (rGap < 0) target.style.left = `${rGap}px`;
   };
 
   let contentTagOptions = {
@@ -244,7 +246,7 @@ ax.extension.popup = function (component, options = {}) {
           } else {
             popup.$nodes = [popupContents];
             // popup.style.left = `-5px`;
-            popup.style.top = `-9px`;
+            // popup.style.top = `-9px`;
             popup.style.display = 'inline-block';
             nudgePopup(popup);
             el.$addClickHandler();
@@ -272,6 +274,7 @@ ax.style({
   },
   'ax-appkit-context-popup': {
     display: 'none',
+    left: '0px',
   },
   'ax-appkit-menu': {
     display: 'block',

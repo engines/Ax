@@ -55,9 +55,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
               }),
             ]
           : a['i.placeholder'](
-              ax.is.undefined(options.placeholder)
-                ? 'None'
-                : options.placeholder
+              ax.is.undefined(options.placeholder) ? '' : options.placeholder
             ),
         {
           tabindex: 0,

@@ -63,27 +63,12 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view'](component(route), {
-      $init: (el) => {
-        if (config.anchor) {
-          let anchored = window.document.getElementById(config.anchor);
-          if (!anchored) {
-            console.warn(
-              `Router cannot find #${config.anchor} to scroll into view.`
-            );
-          } else {
-            anchored.scrollIntoView();
-          }
-        }
-      },
-    });
-  } else {
-    component = ax.a['ax-appkit-router-view'](component);
+    component = component(route);
   }
 
   return {
     matched: matched,
-    component: component,
+    component: ax.a['ax-appkit-router-view'](component),
     scope: scope,
   };
 };

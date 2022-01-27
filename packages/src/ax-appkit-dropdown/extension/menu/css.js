@@ -4,6 +4,7 @@ ax.style({
   },
   'ax-appkit-context-popup': {
     display: 'none',
+    left: '0px',
   },
   'ax-appkit-menu': {
     display: 'block',

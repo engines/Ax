@@ -55,12 +55,15 @@ ax.extension.easymde = (options = {}) => (a, x) =>
   );
 
 ax.style({
-  'ax-appkit-easymde': {
+  'ax-appkit-easymde .EasyMDEContainer': {
     '> textarea': {
       display: 'none',
     },
     'div.CodeMirror.disabled': {
       backgroundColor: '#e9ecef',
+    },
+    'div.CodeMirror-fullscreen': {
+      zIndex: 999,
     },
     '.editor-statusbar': {
       padding: '0px 5px',
@@ -81,6 +84,9 @@ ax.style({
       },
       '&:after': {
         margin: 0,
+      },
+      '.fullscreen': {
+        zIndex: 999,
       },
     },
   },

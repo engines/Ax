@@ -454,7 +454,7 @@ ax.extension.report.field.nest.components.nest.items = function (f, options) {
     itemsData.length
       ? itemsData.map(item)
       : a['i.placeholder'](
-          ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+          ax.is.undefined(options.placeholder) ? '' : options.placeholder
         ),
     {
       $count: (el) => () => {

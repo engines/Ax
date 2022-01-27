@@ -1327,7 +1327,7 @@ ax.extension.report.field.extras.controls.color = (r, options = {}) => {
     });
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1371,7 +1371,7 @@ ax.extension.report.field.extras.controls.country = (r, options = {}) => {
     }
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1423,7 +1423,7 @@ ax.extension.report.field.extras.controls.datetime = (r, options = {}) => {
     }
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1464,7 +1464,7 @@ ax.extension.report.field.extras.controls.email = (r, options = {}) => {
     });
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1514,7 +1514,7 @@ ax.extension.report.field.extras.controls.json = function (r, options) {
     }
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1561,7 +1561,7 @@ ax.extension.report.field.extras.controls.language = (r, options = {}) => {
     }
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1600,7 +1600,7 @@ ax.extension.report.field.extras.controls.number = (r, options = {}) => {
     component = Number(value);
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1689,9 +1689,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
               }),
             ]
           : a['i.placeholder'](
-              ax.is.undefined(options.placeholder)
-                ? 'None'
-                : options.placeholder
+              ax.is.undefined(options.placeholder) ? '' : options.placeholder
             ),
         {
           tabindex: 0,
@@ -1726,7 +1724,7 @@ ax.extension.report.field.extras.controls.preformatted = (r, options = {}) => {
     component = options.value || '';
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1758,7 +1756,7 @@ ax.extension.report.field.extras.controls.tel = (r, options = {}) => {
     });
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1802,7 +1800,7 @@ ax.extension.report.field.extras.controls.timezone = (r, options = {}) => {
     }
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1844,7 +1842,7 @@ ax.extension.report.field.extras.controls.url = (r, options = {}) => {
     });
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 

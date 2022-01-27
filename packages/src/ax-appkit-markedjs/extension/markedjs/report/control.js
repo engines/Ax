@@ -12,7 +12,7 @@ ax.extension.markedjs.report.control = function (r, options = {}) {
     });
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 

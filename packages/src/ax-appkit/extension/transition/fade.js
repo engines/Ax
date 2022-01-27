@@ -21,9 +21,12 @@ ax.extension.transition.fade = function (options = {}) {
         duration: duration,
         display: options.display,
         complete: () => {
+          el.$send('ax-appkit-transition-complete');
           if (options.complete) options.complete(el);
         },
       });
+      el.$send('ax-appkit-transition-in');
+      if (options.in) options.in(el);
     },
     $to: (el) => (component) => {
       if (el.style.opacity == '1') {
@@ -31,6 +34,7 @@ ax.extension.transition.fade = function (options = {}) {
           duration: duration,
           complete: () => el.$in(component),
         });
+        el.$send('ax-appkit-transition-out');
       } else {
         el.$in(component);
       }

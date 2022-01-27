@@ -1,1 +1,1 @@
-ax.extension.fetch = (options = {}) => new AxAppkitFetch(options).render();
+ax.extension.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();

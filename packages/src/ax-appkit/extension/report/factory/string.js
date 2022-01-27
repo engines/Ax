@@ -10,7 +10,7 @@ ax.extension.report.factory.string = function (options = {}) {
     component = options.value.toString();
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 

@@ -16,7 +16,6 @@ ax.extension.router.interface.mount = (setup) => {
     let init;
     let component;
     let matched;
-    let transition = ax.x.router.interface.mount.transition(config.transition);
     let view = ax.x.router.interface.mount.view;
 
     let componentWrapper = (component) =>
@@ -26,7 +25,15 @@ ax.extension.router.interface.mount = (setup) => {
         },
       });
 
-    if (transition) {
+    if (config.transition) {
+      let transition = ax.x.router.interface.mount.transition(
+        config.transition,
+        {
+          in: (el) => {
+            el.$('^ax-appkit-router-mount').$scrollToAnchor();
+          },
+        }
+      );
       init = (el) => {
         let locatedView = view(config, el);
         el.$matched = locatedView.matched;
@@ -55,6 +62,13 @@ ax.extension.router.interface.mount = (setup) => {
         el.$('^ax-appkit-router').$pop();
       },
 
+      $scrollToAnchor: (el) => () => {
+        if (config.anchor) {
+          let anchored = window.document.getElementById(config.anchor);
+          if (anchored) anchored.scrollIntoView();
+        }
+      },
+
       $load: (el) => (path, query, anchor) => {
         config.path = path;
         config.query = query;
@@ -77,12 +91,13 @@ ax.extension.router.interface.mount = (setup) => {
           el.$matched = locatedView.matched;
           let component = componentWrapper(locatedView.component);
 
-          if (transition) {
+          if (config.transition) {
             // Disable pointer events on outgoing view
             el.$('ax-appkit-router-view').style.pointerEvents = 'none';
             el.$('ax-appkit-transition').$to(component);
           } else {
             el.$nodes = component;
+            el.$scrollToAnchor();
           }
         }
       },

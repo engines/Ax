@@ -1,4 +1,4 @@
-class AxAppkitFetch {
+ax.AxAppkitFetch = class {
   constructor(options = {}) {
     this.multiple = this.determineMultiple(options);
     this.url = options.url;
@@ -191,4 +191,4 @@ class AxAppkitFetch {
   callComplete() {
     if (this.completeCallback) this.completeCallback(this.element);
   }
-}
+};

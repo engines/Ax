@@ -1,6 +1,5 @@
 {
   "name": "@engines/ax-appkit-field-extras",
-  "version": "0.0.23",
   "description": "An Ax extension that adds some extra controls, including country, language, timezone, password.",
   "main": "ax-appkit-field-extras.js",
   "repository": {

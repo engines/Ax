@@ -15,6 +15,8 @@ ax.extension.report.factory.select = function (options = {}) {
     let found = selections.find((selection) => selection.value === selected);
     if (found) {
       labels.push(found.label);
+    } else {
+      labels.push(selected);
     }
   }
   labels = labels.join(', ');
@@ -26,7 +28,7 @@ ax.extension.report.factory.select = function (options = {}) {
 
   if (!labels) {
     labels = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 

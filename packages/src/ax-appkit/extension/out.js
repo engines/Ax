@@ -6,7 +6,7 @@ ax.extension.out = function (value, options = {}) {
 
   if (ax.is.undefined(value)) {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   } else {
     if (options.parse) {

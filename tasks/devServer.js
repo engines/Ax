@@ -5,7 +5,7 @@ module.exports = {
   webserver: function (done) {
     connect.server({
       root: "packages/dist",
-      port: 8000,
+      port: 3333,
       host: "0.0.0.0",
     });
     done();

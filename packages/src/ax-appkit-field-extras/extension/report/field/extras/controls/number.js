@@ -9,7 +9,7 @@ ax.extension.report.field.extras.controls.number = (r, options = {}) => {
     component = Number(value);
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 

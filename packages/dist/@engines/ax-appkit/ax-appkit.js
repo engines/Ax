@@ -114,7 +114,7 @@ ax.extension.cycle = function (options = {}) {
   return a['ax-appkit-cycle'](null, cycleTag);
 };
 
-ax.extension.fetch = (options = {}) => new AxAppkitFetch(options).render();
+ax.extension.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();
 
 ax.extension.form = function (options = {}) {
   let a = ax.a;
@@ -137,7 +137,7 @@ ax.extension.out = function (value, options = {}) {
 
   if (ax.is.undefined(value)) {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   } else {
     if (options.parse) {
@@ -274,7 +274,7 @@ ax.extension.time = function (options = {}) {
 
 ax.extension.transition = {};
 
-class AxAppkitFetch {
+ax.AxAppkitFetch = class {
   constructor(options = {}) {
     this.multiple = this.determineMultiple(options);
     this.url = options.url;
@@ -467,7 +467,7 @@ class AxAppkitFetch {
   callComplete() {
     if (this.completeCallback) this.completeCallback(this.element);
   }
-}
+};
 
 ax.extension.form.factory = function (options) {
   let shims = [this.shim, ...(options.formOptions.shims || [])];
@@ -704,9 +704,12 @@ ax.extension.transition.fade = function (options = {}) {
         duration: duration,
         display: options.display,
         complete: () => {
+          el.$send('ax-appkit-transition-complete');
           if (options.complete) options.complete(el);
         },
       });
+      el.$send('ax-appkit-transition-in');
+      if (options.in) options.in(el);
     },
     $to: (el) => (component) => {
       if (el.style.opacity == '1') {
@@ -714,6 +717,7 @@ ax.extension.transition.fade = function (options = {}) {
           duration: duration,
           complete: () => el.$in(component),
         });
+        el.$send('ax-appkit-transition-out');
       } else {
         el.$in(component);
       }
@@ -1103,6 +1107,18 @@ ax.extension.lib.object.dig = function (
   return result || defaultValue;
 };
 
+ax.extension.lib.object.omit = function (obj, keys) {
+  return Object.keys(obj)
+    .filter((key) => keys.indexOf(key) < 0)
+    .reduce((result, key) => ((result[key] = obj[key]), result));
+};
+
+ax.extension.lib.object.pick = function (obj, keys) {
+  return keys
+    .filter((key) => key in obj)
+    .reduce((result, key) => ((result[key] = obj[key]), result));
+};
+
 ax.extension.lib.query.parse = function (queryString) {
   var result = {};
 
@@ -1355,6 +1371,8 @@ ax.extension.report.factory.select = function (options = {}) {
     let found = selections.find((selection) => selection.value === selected);
     if (found) {
       labels.push(found.label);
+    } else {
+      labels.push(selected);
     }
   }
   labels = labels.join(', ');
@@ -1366,7 +1384,7 @@ ax.extension.report.factory.select = function (options = {}) {
 
   if (!labels) {
     labels = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1388,7 +1406,7 @@ ax.extension.report.factory.string = function (options = {}) {
     component = options.value.toString();
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1407,7 +1425,7 @@ ax.extension.report.factory.text = function (options = {}) {
     component = options.value;
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 
@@ -1543,7 +1561,6 @@ ax.extension.router.interface.mount = (setup) => {
     let init;
     let component;
     let matched;
-    let transition = ax.x.router.interface.mount.transition(config.transition);
     let view = ax.x.router.interface.mount.view;
 
     let componentWrapper = (component) =>
@@ -1553,7 +1570,15 @@ ax.extension.router.interface.mount = (setup) => {
         },
       });
 
-    if (transition) {
+    if (config.transition) {
+      let transition = ax.x.router.interface.mount.transition(
+        config.transition,
+        {
+          in: (el) => {
+            el.$('^ax-appkit-router-mount').$scrollToAnchor();
+          },
+        }
+      );
       init = (el) => {
         let locatedView = view(config, el);
         el.$matched = locatedView.matched;
@@ -1582,6 +1607,13 @@ ax.extension.router.interface.mount = (setup) => {
         el.$('^ax-appkit-router').$pop();
       },
 
+      $scrollToAnchor: (el) => () => {
+        if (config.anchor) {
+          let anchored = window.document.getElementById(config.anchor);
+          if (anchored) anchored.scrollIntoView();
+        }
+      },
+
       $load: (el) => (path, query, anchor) => {
         config.path = path;
         config.query = query;
@@ -1604,12 +1636,13 @@ ax.extension.router.interface.mount = (setup) => {
           el.$matched = locatedView.matched;
           let component = componentWrapper(locatedView.component);
 
-          if (transition) {
+          if (config.transition) {
             // Disable pointer events on outgoing view
             el.$('ax-appkit-router-view').style.pointerEvents = 'none';
             el.$('ax-appkit-transition').$to(component);
           } else {
             el.$nodes = component;
+            el.$scrollToAnchor();
           }
         }
       },
@@ -1773,15 +1806,15 @@ ax.extension.lib.form.data.urlencoded = function (data) {
   return parts.join('&');
 };
 
-ax.extension.router.interface.mount.transition = (transition) => {
+ax.extension.router.interface.mount.transition = (transition, options = {}) => {
   if (ax.is.string(transition)) {
-    return ax.x.transition[transition]();
+    return ax.x.transition[transition](options);
   } else if (ax.is.array(transition)) {
     let name = transition[0];
-    let options = transition[1];
-    return ax.x.transition[name](options);
+    let mergedOptions = { ...transition[1], ...options };
+    return ax.x.transition[name](mergedOptions);
   } else if (ax.is.function(transition)) {
-    return transition();
+    return transition(options);
   } else {
     return transition;
   }
@@ -1852,27 +1885,12 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       default: defaultContent,
       transition: transition,
     });
-    component = ax.a['ax-appkit-router-view'](component(route), {
-      $init: (el) => {
-        if (config.anchor) {
-          let anchored = window.document.getElementById(config.anchor);
-          if (!anchored) {
-            console.warn(
-              `Router cannot find #${config.anchor} to scroll into view.`
-            );
-          } else {
-            anchored.scrollIntoView();
-          }
-        }
-      },
-    });
-  } else {
-    component = ax.a['ax-appkit-router-view'](component);
+    component = component(route);
   }
 
   return {
     matched: matched,
-    component: component,
+    component: ax.a['ax-appkit-router-view'](component),
     scope: scope,
   };
 };

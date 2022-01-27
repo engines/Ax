@@ -14,7 +14,7 @@ ax.extension.report.field.extras.controls.language = (r, options = {}) => {
     }
   } else {
     component = a['i.placeholder'](
-      ax.is.undefined(options.placeholder) ? 'None' : options.placeholder
+      ax.is.undefined(options.placeholder) ? '' : options.placeholder
     );
   }
 

@@ -156,7 +156,9 @@ ax.extension.form.field.control = function (f, options = {}) {
     controlTag: {
       $key: key,
       $output: (el) => () =>
-        options.digest ? options.digest(el.$value()) : el.$value(),
+        ax.is.function(options.digest)
+          ? options.digest(el.$value())
+          : el.$value(),
       ...(options.control || {}).controlTag,
     },
   };
