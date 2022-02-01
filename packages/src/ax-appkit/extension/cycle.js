@@ -8,15 +8,16 @@ ax.extension.cycle = function (options = {}) {
   let max = collection.length - 1;
 
   let cycleTag = {
-    $state: 0,
-    $nodes: (el) => collection[el.$state],
+    $count: 0,
+    $nodes: (el) => collection[el.$count],
     $init: (el) => {
       setInterval(() => {
-        if (el.$state === max) {
-          el.$state = 0;
+        if (el.$count === max) {
+          el.$count = 0;
         } else {
-          el.$state++;
+          el.$count++;
         }
+        el.$render()
       }, period);
     },
     ...options.cycleTag,

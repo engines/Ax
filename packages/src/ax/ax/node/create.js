@@ -23,9 +23,9 @@ ax.node.create = function (properties) {
 
   try {
     return ax.node.create.properties(element);
-  } catch (e) {
+  } catch (err) {
     if (properties.$catch) {
-      return ax.node(properties.$catch(e));
+      return ax.node(properties.$catch(err));
     } else {
       console.error(
         `Ax failed to render element with properties: `,

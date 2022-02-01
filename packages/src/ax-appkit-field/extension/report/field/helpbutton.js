@@ -3,15 +3,16 @@ ax.extension.report.field.helpbutton = function (options = {}) {
   let x = ax.x;
 
   return a['ax-appkit-report-field-helpbutton'](null, {
-    $state: false,
+    $showHelp: false,
     $nodes: (el) => {
       return a['ax-appkit-report-field-helpbutton-text'](
-        el.$state ? ' ❓ ✖ ' : ' ❓ '
+        el.$showHelp ? ' ❓ ✖ ' : ' ❓ '
       );
     },
     $on: {
       'click: toggle help': (e, el) => {
-        el.$state = !el.$state;
+        el.$showHelp = !el.$showHelp;
+        el.$render()
         el.$(
           '^ax-appkit-report-field',
           'ax-appkit-report-field-help'

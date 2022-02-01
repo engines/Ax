@@ -7,7 +7,7 @@ ax.node.create.properties.render.text = function (element) {
 
   // Resolve content function, if there is one.
   if (ax.is.function(text)) {
-    text = text(element, element.$state);
+    text = text(element);
   }
 
   let root = element.shadowRoot || element;

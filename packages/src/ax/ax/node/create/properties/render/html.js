@@ -6,7 +6,7 @@ ax.node.create.properties.render.html = function (element) {
   let html = element.$ax.$html;
 
   if (ax.is.function(html)) {
-    html = html(element, element.$state);
+    html = html(element);
   }
 
   let root = element.shadowRoot || element;

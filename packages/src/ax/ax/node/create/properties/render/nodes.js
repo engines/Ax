@@ -6,7 +6,7 @@ ax.node.create.properties.render.nodes = function (element) {
   let nodes = element.$ax.$nodes;
 
   if (ax.is.function(nodes)) {
-    nodes = nodes(element, element.$state);
+    nodes = nodes(element);
   }
 
   let root = element.shadowRoot || element;

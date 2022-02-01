@@ -353,9 +353,9 @@ ax.node.create = function (properties) {
 
   try {
     return ax.node.create.properties(element);
-  } catch (e) {
+  } catch (err) {
     if (properties.$catch) {
-      return ax.node(properties.$catch(e));
+      return ax.node(properties.$catch(err));
     } else {
       console.error(
         `Ax failed to render element with properties: `,
@@ -581,7 +581,7 @@ ax.node.create.properties.accessors = function (element) {
     this.accessors.html(
       this.accessors.text(
         this.accessors.on(
-          this.accessors.off(this.accessors.send(this.accessors.state(element)))
+          this.accessors.off(this.accessors.send(element))
         )
       )
     )
@@ -623,7 +623,7 @@ ax.node.create.properties.define = function (element) {
       } else {
         if (
           !property.match(
-            /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$state|\$send|\$on|\$off|\$update|\$render|\$ax|$events|\$catch|\$|\$\$|\$shadow)$/
+            /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$send|\$on|\$off|\$render|\$ax|$events|\$catch|\$|\$\$|\$shadow)$/
           )
         ) {
           let customAttribute = element.$ax[property];
@@ -670,7 +670,7 @@ ax.node.create.properties.init = function (element) {
           'let script=window.document.currentScript;' +
           'let element=script.parentElement;' +
           'script.remove();' +
-          'element.$ax.$init(element, element.$state);' +
+          'element.$ax.$init(element);' +
           '})()',
       })
     );
@@ -684,12 +684,12 @@ ax.node.create.properties.init = function (element) {
  */
 ax.node.create.properties.render = function (element) {
   element.$render = () => {
-    if (!!element.$ax.$update) {
-      element.$ax.$update(element, element.$state) &&
-        this.apply(this.render.empty(element));
-    } else {
-      this.apply(this.render.empty(element));
-    }
+    this.apply(this.render.empty(element));
+    // if (!!element.$ax.$update) {
+    //   element.$ax.$update(element, element.$state) &&
+    //     this.apply(this.render.empty(element));
+    // } else {
+    // }
     return element;
   };
 
@@ -819,19 +819,19 @@ ax.node.create.properties.accessors.send = function (element) {
   return element;
 };
 
-/**
- * Get element state, or set element state.
- */
-ax.node.create.properties.accessors.state = function (element) {
-  let accessors = this;
-
-  Object.defineProperty(element, '$state', {
-    get: () => element.$ax.$state,
-    set: (state) => accessors.state.set(element, state),
-  });
-
-  return element;
-};
+// /**
+//  * Get element state, or set element state.
+//  */
+// ax.node.create.properties.accessors.state = function (element) {
+//   let accessors = this;
+//
+//   Object.defineProperty(element, '$state', {
+//     get: () => element.$ax.$state,
+//     set: (state) => accessors.state.set(element, state),
+//   });
+//
+//   return element;
+// };
 
 /**
  * Get text content, or set new text content.
@@ -907,7 +907,7 @@ ax.node.create.properties.render.html = function (element) {
   let html = element.$ax.$html;
 
   if (ax.is.function(html)) {
-    html = html(element, element.$state);
+    html = html(element);
   }
 
   let root = element.shadowRoot || element;
@@ -925,7 +925,7 @@ ax.node.create.properties.render.nodes = function (element) {
   let nodes = element.$ax.$nodes;
 
   if (ax.is.function(nodes)) {
-    nodes = nodes(element, element.$state);
+    nodes = nodes(element);
   }
 
   let root = element.shadowRoot || element;
@@ -953,7 +953,7 @@ ax.node.create.properties.render.text = function (element) {
 
   // Resolve content function, if there is one.
   if (ax.is.function(text)) {
-    text = text(element, element.$state);
+    text = text(element);
   }
 
   let root = element.shadowRoot || element;
@@ -1031,17 +1031,17 @@ ax.node.create.properties.accessors.nodes.set = function (element, nodes) {
   return element;
 };
 
-/**
- * Update state and render new content.
- */
-ax.node.create.properties.accessors.state.set = function (element, state) {
-  if (element.$ax.$state != state) {
-    element.$ax.$state = state;
-    element.$render();
-  }
-
-  return element;
-};
+// /**
+//  * Update state and render new content.
+//  */
+// ax.node.create.properties.accessors.state.set = function (element, state) {
+//   if (element.$ax.$state != state) {
+//     element.$ax.$state = state;
+//     element.$render();
+//   }
+//
+//   return element;
+// };
 
 /**
  * Render text content.

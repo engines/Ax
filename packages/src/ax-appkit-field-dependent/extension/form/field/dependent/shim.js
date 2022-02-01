@@ -41,10 +41,7 @@ ax.extension.form.field.dependent.shim = {
       itemsTag: {
         ...options.itemsTag,
         $on: {
-          'ax.appkit.form.nest.item.add: check dependents on new item': (
-            e,
-            el
-          ) => {
+          'ax.appkit.form.nest.item.add: check dependents on new item': (e, el) => {
             let newItem = el.$itemElements().reverse()[0];
             let dependents = ax.x.lib.unnested(
               newItem,

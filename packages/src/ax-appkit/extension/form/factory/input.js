@@ -2,7 +2,7 @@ ax.extension.form.factory.input = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let datalist = a._;
+  let datalist = null;
   let datalistId;
 
   if (options.datalist) {

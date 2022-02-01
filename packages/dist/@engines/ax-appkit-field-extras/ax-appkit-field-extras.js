@@ -879,7 +879,7 @@ ax.extension.form.field.extras.controls.multiselect = function (
     $value: (el) => () => {
       return el
         .$('ax-appkit-form-multiselect-selected')
-        .$state.map(function (item) {
+        .$selected.map(function (item) {
           return item.value;
         });
     },
@@ -923,14 +923,11 @@ ax.extension.form.field.extras.controls.multiselect = function (
           }
         });
       });
-      el.$('ax-appkit-form-multiselect-selected').$state = items;
+      el.$('ax-appkit-form-multiselect-selected').$update(items);
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (
-        e,
-        el
-      ) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1662,7 +1659,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
           ? [
               a['ax-appkit-report-password-text'](null, {
                 $nodes: (el) => {
-                  let flag = el.$state;
+                  let flag = el.$showPassword;
                   if (flag > 0) {
                     el.style.fontFamily = 'text-security-disc';
                     el.classList.add('secure-text');
@@ -1674,7 +1671,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
                     $text: options.value || '',
                   });
                 },
-                $state: 1,
+                $showPassword: 1,
                 ...options.textTag,
               }),
               x.button({
@@ -1683,7 +1680,8 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
-                  text.$state = text.$state * -1;
+                  text.$showPassword = text.$showPassword * -1;
+                  el.$render()
                 },
                 ...options.button,
               }),
@@ -1940,25 +1938,26 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
   let a = ax.a;
 
   return a['ax-appkit-form-multiselect-selected'](null, {
-    $state: [],
+    $selected: [],
 
     $remove: (el) => (item) => {
-      let state = [...el.$state];
-      let index = state.indexOf(item);
+      let selected = [...el.$selected];
+      let index = selected.indexOf(item);
       if (index !== -1) {
-        state.splice(index, 1);
-        el.$state = state;
+        selected.splice(index, 1);
+        el.$update(selected)
       }
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
     $add: (el) => (item, index) => {
-      el.$state = [item].concat(el.$state);
+      el.$update([item].concat(el.$selected))
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
-    $update: (el) => {
-      if (el.$state.length === 0) {
+    $update: (el) => (selected) => {
+      el.$selected = selected
+      if (el.$selected.length === 0) {
         el.style.display = 'none';
         el.$('^ax-appkit-form-multiselect-selected').previousSibling.required =
           options.required;
@@ -1976,7 +1975,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
         el.$(
           '^ax-appkit-form-multiselect-selected'
         ).previousSibling.removeAttribute('required');
-        el.$nodes = el.$state.map(function (item) {
+        el.$nodes = el.$selected.map(function (item) {
           return a['ax-appkit-form-multiselect-selected-item'](
             [
               a['ax-appkit-form-multiselect-selected-item-label'](item.label),

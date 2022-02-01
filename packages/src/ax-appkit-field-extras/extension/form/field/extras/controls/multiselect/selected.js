@@ -5,25 +5,26 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
   let a = ax.a;
 
   return a['ax-appkit-form-multiselect-selected'](null, {
-    $state: [],
+    $selected: [],
 
     $remove: (el) => (item) => {
-      let state = [...el.$state];
-      let index = state.indexOf(item);
+      let selected = [...el.$selected];
+      let index = selected.indexOf(item);
       if (index !== -1) {
-        state.splice(index, 1);
-        el.$state = state;
+        selected.splice(index, 1);
+        el.$update(selected)
       }
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
     $add: (el) => (item, index) => {
-      el.$state = [item].concat(el.$state);
+      el.$update([item].concat(el.$selected))
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
-    $update: (el) => {
-      if (el.$state.length === 0) {
+    $update: (el) => (selected) => {
+      el.$selected = selected
+      if (el.$selected.length === 0) {
         el.style.display = 'none';
         el.$('^ax-appkit-form-multiselect-selected').previousSibling.required =
           options.required;
@@ -41,7 +42,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
         el.$(
           '^ax-appkit-form-multiselect-selected'
         ).previousSibling.removeAttribute('required');
-        el.$nodes = el.$state.map(function (item) {
+        el.$nodes = el.$selected.map(function (item) {
           return a['ax-appkit-form-multiselect-selected-item'](
             [
               a['ax-appkit-form-multiselect-selected-item-label'](item.label),

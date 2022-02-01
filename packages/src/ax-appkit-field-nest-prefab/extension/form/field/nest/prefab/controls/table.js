@@ -26,7 +26,8 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                           helpbuttonTag: {
                             $on: {
                               'click: toggle help': (e, el) => {
-                                el.$state = !el.$state;
+                                el.$showHelp = !el.$showHelp;
+                                el.$render()
                                 el.$(
                                   '^table',
                                   `ax-appkit-form-field-help[data-field-key="${fieldOptions.key}"]`

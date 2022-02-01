@@ -97,15 +97,16 @@ ax.extension.cycle = function (options = {}) {
   let max = collection.length - 1;
 
   let cycleTag = {
-    $state: 0,
-    $nodes: (el) => collection[el.$state],
+    $count: 0,
+    $nodes: (el) => collection[el.$count],
     $init: (el) => {
       setInterval(() => {
-        if (el.$state === max) {
-          el.$state = 0;
+        if (el.$count === max) {
+          el.$count = 0;
         } else {
-          el.$state++;
+          el.$count++;
         }
+        el.$render()
       }, period);
     },
     ...options.cycleTag,
@@ -441,8 +442,8 @@ ax.AxAppkitFetch = class {
         } else {
           this.element.$nodes = [];
         }
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error(err);
         this.element.$nodes = [];
       }
     } else {
@@ -838,7 +839,7 @@ ax.extension.form.factory.input = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let datalist = a._;
+  let datalist = null;
   let datalistId;
 
   if (options.datalist) {

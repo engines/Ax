@@ -12,7 +12,7 @@ ax.node.create.properties.init = function (element) {
           'let script=window.document.currentScript;' +
           'let element=script.parentElement;' +
           'script.remove();' +
-          'element.$ax.$init(element, element.$state);' +
+          'element.$ax.$init(element);' +
           '})()',
       })
     );

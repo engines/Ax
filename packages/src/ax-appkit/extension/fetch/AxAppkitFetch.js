@@ -165,8 +165,8 @@ ax.AxAppkitFetch = class {
         } else {
           this.element.$nodes = [];
         }
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        console.error(err);
         this.element.$nodes = [];
       }
     } else {

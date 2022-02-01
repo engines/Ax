@@ -28,7 +28,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
           ? [
               a['ax-appkit-report-password-text'](null, {
                 $nodes: (el) => {
-                  let flag = el.$state;
+                  let flag = el.$showPassword;
                   if (flag > 0) {
                     el.style.fontFamily = 'text-security-disc';
                     el.classList.add('secure-text');
@@ -40,7 +40,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
                     $text: options.value || '',
                   });
                 },
-                $state: 1,
+                $showPassword: 1,
                 ...options.textTag,
               }),
               x.button({
@@ -49,7 +49,8 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
-                  text.$state = text.$state * -1;
+                  text.$showPassword = text.$showPassword * -1;
+                  el.$render()
                 },
                 ...options.button,
               }),

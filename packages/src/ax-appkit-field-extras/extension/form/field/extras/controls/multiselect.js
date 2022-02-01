@@ -18,7 +18,7 @@ ax.extension.form.field.extras.controls.multiselect = function (
     $value: (el) => () => {
       return el
         .$('ax-appkit-form-multiselect-selected')
-        .$state.map(function (item) {
+        .$selected.map(function (item) {
           return item.value;
         });
     },
@@ -62,14 +62,11 @@ ax.extension.form.field.extras.controls.multiselect = function (
           }
         });
       });
-      el.$('ax-appkit-form-multiselect-selected').$state = items;
+      el.$('ax-appkit-form-multiselect-selected').$update(items);
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (
-        e,
-        el
-      ) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

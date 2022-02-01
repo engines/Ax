@@ -6,7 +6,7 @@ ax.node.create.properties.accessors = function (element) {
     this.accessors.html(
       this.accessors.text(
         this.accessors.on(
-          this.accessors.off(this.accessors.send(this.accessors.state(element)))
+          this.accessors.off(this.accessors.send(element))
         )
       )
     )
