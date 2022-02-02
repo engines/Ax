@@ -12,7 +12,7 @@ ax.extension.form.field.helpbutton = function (options = {}) {
     },
     ...options.helpbuttonTag,
     $on: {
-      'click: toggle help': (e, el) => {
+      'click: toggle help': (el) => (e) => {
         el.$showHelp = !el.$showHelp;
         el.$render()
         el.$('^ax-appkit-form-field', 'ax-appkit-form-field-help').$toggle();

@@ -50,7 +50,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
                 a.button('✖', { type: 'button' }),
                 {
                   $on: {
-                    'click: remove item from selection': (e, el) => {
+                    'click: remove item from selection': (el) => (e) => {
                       if (!el.disabled) {
                         el.$('^ax-appkit-form-control')
                           .$('select')

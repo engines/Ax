@@ -5,10 +5,10 @@ import wip from './test/wip.js'
 
 export default (router) => (a,x) => a['div.container']([
   router,
-  a.button('report',{$on: {click: (e, el) => router.open('/test')}}),
-  a.button('form',{$on: {click: (e, el) => router.open('/test/form')}}),
-  a.button('performance',{$on: {click: (e, el) => router.open('/test/performance')}}),
-  a.button('wip',{$on: {click: (e, el) => router.open('/test/wip')}}),
+  a.button('report',{$on: {click: (el) => (e) => router.open('/test')}}),
+  a.button('form',{$on: {click: (el) => (e) => router.open('/test/form')}}),
+  a.button('performance',{$on: {click: (el) => (e) => router.open('/test/performance')}}),
+  a.button('wip',{$on: {click: (el) => (e) => router.open('/test/wip')}}),
   router.mount({
     routes: {
       '/?': report,

@@ -37,7 +37,7 @@ ax.extension.easymde = (options = {}) => (a, x) =>
         el.value = el.$easymde.value();
       },
       $on: {
-        'keydown: check for editor exit': (e, el) => {
+        'keydown: check for editor exit': (el) => (e) => {
           if (e.keyCode == 27) {
             // ESC pressed - move focus forward
             ax.x.lib.tabable.next(e.target).focus();
@@ -202,11 +202,11 @@ ax.extension.easymde.form.control = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'keyup: update textarea': (e, el) => {
+      'keyup: update textarea': (el) => (e) => {
         el.$('textarea').$updateValue();
         el.$send('ax.appkit.form.control.change');
       },
-      'keydown: check for editor exit': (e, el) => {
+      'keydown: check for editor exit': (el) => (e) => {
         if (e.target.nodeName === 'TEXTAREA') {
           if (e.keyCode == 27) {
             // ESC pressed - move focus forward

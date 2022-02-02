@@ -30,7 +30,7 @@ ax.node.create = function (properties) {
       console.error(
         `Ax failed to render element with properties: `,
         properties,
-        e
+        err
       );
       return null;
     }

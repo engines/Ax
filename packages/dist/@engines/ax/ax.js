@@ -360,7 +360,7 @@ ax.node.create = function (properties) {
       console.error(
         `Ax failed to render element with properties: `,
         properties,
-        e
+        err
       );
       return null;
     }
@@ -647,9 +647,9 @@ ax.node.create.properties.events = function (element) {
   element.$events = {};
 
   for (let handle in element.$ax.$on) {
-    element.$events[handle] = element.$ax.$on[handle];
+    element.$events[handle] = element.$ax.$on[handle](element);
     element.addEventListener(handle.split(':')[0], (e) =>
-      element.$events[handle](e, element)
+      element.$events[handle](e)
     );
   }
 
@@ -792,9 +792,9 @@ ax.node.create.properties.accessors.on = function (element) {
   element.$on = function (handlers) {
     for (let handle in handlers) {
       element.$off(handle);
-      element.$events[handle] = handlers[handle];
+      element.$events[handle] = handlers[handle](element);
       element.addEventListener(handle.split(':')[0], (e) =>
-        element.$events[handle](e, element)
+        element.$events[handle](e)
       );
     }
   };

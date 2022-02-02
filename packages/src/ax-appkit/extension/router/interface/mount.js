@@ -69,35 +69,38 @@ ax.extension.router.interface.mount = (setup) => {
         }
       },
 
-      $load: (el) => (path, query, anchor) => {
-        config.path = path;
-        config.query = query;
-        config.anchor = anchor;
+      $load: (el) => {
+        console.log(el)
+        return (path, query, anchor) => {
+          config.path = path;
+          config.query = query;
+          config.anchor = anchor;
 
-        let locatedView = view(config, el);
+          let locatedView = view(config, el);
 
-        if (
-          config.lazy &&
-          el.$matched &&
-          locatedView.matched &&
-          el.$scope == locatedView.scope
-        ) {
-          let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
-          routes.forEach((r) => {
-            r.$load(path, query, anchor);
-          });
-        } else {
-          el.$scope = locatedView.scope;
-          el.$matched = locatedView.matched;
-          let component = componentWrapper(locatedView.component);
-
-          if (config.transition) {
-            // Disable pointer events on outgoing view
-            el.$('ax-appkit-router-view').style.pointerEvents = 'none';
-            el.$('ax-appkit-transition').$to(component);
+          if (
+            config.lazy &&
+            el.$matched &&
+            locatedView.matched &&
+            el.$scope == locatedView.scope
+          ) {
+            let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
+            routes.forEach((r) => {
+              r.$load(path, query, anchor);
+            });
           } else {
-            el.$nodes = component;
-            el.$scrollToAnchor();
+            el.$scope = locatedView.scope;
+            el.$matched = locatedView.matched;
+            let component = componentWrapper(locatedView.component);
+
+            if (config.transition) {
+              // Disable pointer events on outgoing view
+              el.$('ax-appkit-router-view').style.pointerEvents = 'none';
+              el.$('ax-appkit-transition').$to(component);
+            } else {
+              el.$nodes = component;
+              el.$scrollToAnchor();
+            }
           }
         }
       },

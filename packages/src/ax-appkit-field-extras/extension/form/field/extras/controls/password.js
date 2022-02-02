@@ -111,17 +111,17 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: secure text': (e, el) => {
+      'input: secure text': (el) => (e) => {
         for (let input of el.$inputs()) {
           secure(input);
         }
       },
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         for (let input of el.$inputs()) {
           input.$valid();
         }
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

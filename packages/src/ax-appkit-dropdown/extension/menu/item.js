@@ -56,13 +56,13 @@ ax.extension.menu.item = (item, options = {}) => (a, x) => {
   let itemTagOptions = {
     ...options.itemTag,
     $on: {
-      click: (e, el) => {
+      click: (el) => (e) => {
         if (e.target.tagName == 'APPKIT-MENU-SUBMENU-OPEN') {
           openSubmenu(el, e);
           e.stopPropagation();
         }
       },
-      mouseenter: (e, el) => {
+      mouseenter: (el) => (e) => {
         openSubmenu(el, e);
       },
       ...(options.itemTag || {}).$on,

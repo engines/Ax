@@ -8,7 +8,7 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
   return a['ax-appkit-form-nest-add-button'](
     f.button({
       label: label,
-      onclick: (e, el) => {
+      onclick: (el) => (e) => {
         let items = el.$('^ax-appkit-form-nest |ax-appkit-form-nest-items');
         items.$add();
       },

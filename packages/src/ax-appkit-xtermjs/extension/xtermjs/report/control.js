@@ -9,7 +9,7 @@ ax.extension.xtermjs.report.control = function (r, options = {}) {
         ...options,
         xtermjsTag: {
           $on: {
-            'keydown: check for exit': (e, el) => {
+            'keydown: check for exit': (el) => (e) => {
               let control = el.$('^ax-appkit-xtermjs-control');
               if (control.classList.contains('fullscreen')) {
                 if (e.keyCode == 27) {

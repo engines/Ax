@@ -12,7 +12,7 @@ export default (router) => (a, x) =>
           class: "navbar-brand",
           href: "#",
           $on: {
-            click: (e, el) => {
+            click: (el) => (e) => {
               e.preventDefault();
               router.open("/");
             },
@@ -34,7 +34,7 @@ export default (router) => (a, x) =>
                 class: "nav-link",
                 href: "#",
                 $on: {
-                  click: (e, el) => {
+                  click: (el) => (e) => {
                     e.preventDefault();
                     router.open("/");
                   },
@@ -52,7 +52,7 @@ export default (router) => (a, x) =>
                 class: "nav-link",
                 href: "#",
                 $on: {
-                  click: (e, el) => {
+                  click: (el) => (e) => {
                     e.preventDefault();
                     router.open("/docs");
                   },
@@ -70,7 +70,7 @@ export default (router) => (a, x) =>
                 class: "nav-link",
                 href: "#",
                 $on: {
-                  click: (e, el) => {
+                  click: (el) => (e) => {
                     e.preventDefault();
                     router.open("/test");
                   },

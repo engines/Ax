@@ -24,7 +24,7 @@ const playground = (js, options = {}) => (a, x) =>
           $nodes: [app.icon("fa fa-play")],
           title: 'Execute code',
           $on: {
-            click: (e, el) => {
+            click: (el) => (e) => {
               let js = el.$("^app-playground textarea").$codemirror.getValue();
               let iframeWrapper = el.$(
                 "^app-playground app-playground-iframe-wrapper"
@@ -51,7 +51,7 @@ const playground = (js, options = {}) => (a, x) =>
           $nodes: [app.icon("fa fa-stop")],
           title: 'Close output window',
           $on: {
-            click: (e, el) => {
+            click: (el) => (e) => {
               let iframe = el.$("^app-playground iframe");
               iframe.classList.add("d-none");
             },
@@ -63,7 +63,7 @@ const playground = (js, options = {}) => (a, x) =>
           $nodes: [app.icon("fa fa-undo")],
           title: 'Reset editor',
           $on: {
-            click: (e, el) => {
+            click: (el) => (e) => {
               let playground = el.$("^app-playground");
               playground.$render();
               playground.$(".btn-group").scrollIntoView();

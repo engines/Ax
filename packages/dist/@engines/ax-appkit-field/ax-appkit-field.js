@@ -319,7 +319,7 @@ ax.extension.form.field.helpbutton = function (options = {}) {
     },
     ...options.helpbuttonTag,
     $on: {
-      'click: toggle help': (e, el) => {
+      'click: toggle help': (el) => (e) => {
         el.$showHelp = !el.$showHelp;
         el.$render()
         el.$('^ax-appkit-form-field', 'ax-appkit-form-field-help').$toggle();
@@ -353,7 +353,7 @@ ax.extension.form.field.label = function (options = {}) {
     ...options.wrapperTag,
 
     $on: {
-      'click: focus on input': (e, el) => {
+      'click: focus on input': (el) => (e) => {
         let target = el.$('^ax-appkit-form-field ax-appkit-form-control');
         target.$focus();
       },
@@ -598,7 +598,7 @@ ax.extension.report.field.helpbutton = function (options = {}) {
       );
     },
     $on: {
-      'click: toggle help': (e, el) => {
+      'click: toggle help': (el) => (e) => {
         el.$showHelp = !el.$showHelp;
         el.$render()
         el.$(
@@ -639,7 +639,7 @@ ax.extension.report.field.label = function (options = {}) {
     ...options.wrapperTag,
 
     $on: {
-      'click: focus on output': (e, el) => {
+      'click: focus on output': (el) => (e) => {
         let target = el.$('^ax-appkit-report-field ax-appkit-report-control');
         target && target.$focus();
       },
@@ -732,7 +732,7 @@ ax.extension.form.field.collection.add = function (f, options) {
 
   return f.button({
     label: label,
-    onclick: (e, el) => {
+    onclick: (el) => (e) => {
       let itemsTag = options.target
         ? options.target(el)
         : el.$(
@@ -748,7 +748,7 @@ ax.extension.form.field.collection.add = function (f, options) {
 ax.extension.form.field.collection.down = function (f, options) {
   return f.button({
     label: '⏷',
-    onclick: function (e, el) {
+    onclick: (el) => (e) => {
       var target = options.itemTarget
         ? options.itemTarget(el)
         : el.$('^ax-appkit-control-collection-item');
@@ -779,7 +779,7 @@ ax.extension.form.field.collection.remove = function (f, options) {
   return f.button({
     label: '✖',
     confirm: confirmation,
-    onclick: function (e, el) {
+    onclick: (el) => (e) => {
       var target = el.$('^ax-appkit-control-collection-item');
       let parent = target.parentElement;
       let index = Array.prototype.indexOf.call(parent.children, target);
@@ -801,7 +801,7 @@ ax.extension.form.field.collection.remove = function (f, options) {
 ax.extension.form.field.collection.up = function (f, options) {
   return f.button({
     label: '⏶',
-    onclick: function (e, el) {
+    onclick: (el) => (e) => {
       var target = options.itemTarget
         ? options.itemTarget(el)
         : el.$('^ax-appkit-control-collection-item');
@@ -876,10 +876,10 @@ ax.extension.form.field.controls.checkbox = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         el.$valid();
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -933,10 +933,10 @@ ax.extension.form.field.controls.checkboxes = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (el) => (e) => {
         if (options.readonly) e.preventDefault();
       },
-      'change: send control change event': (e, el) => {
+      'change: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1038,10 +1038,10 @@ ax.extension.form.field.controls.input = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         el.$valid();
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1118,13 +1118,13 @@ ax.extension.form.field.controls.radios = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (el) => (e) => {
         if (options.readonly) e.preventDefault();
       },
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         el.$valid();
       },
-      'change: send control change event': (e, el) => {
+      'change: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1189,13 +1189,13 @@ ax.extension.form.field.controls.select = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (el) => (e) => {
         if (options.readonly) e.preventDefault();
       },
-      'change: check validity': (e, el) => {
+      'change: check validity': (el) => (e) => {
         el.$valid();
       },
-      'change: send control change event': (e, el) => {
+      'change: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1266,10 +1266,10 @@ ax.extension.form.field.controls.textarea = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         el.$valid();
       },
-      'input: send control change event and resize': (e, el) => {
+      'input: send control change event and resize': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
         el.$resize();
       },

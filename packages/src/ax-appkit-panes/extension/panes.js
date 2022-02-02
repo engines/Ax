@@ -10,7 +10,7 @@ ax.extension.panes = (options = {}) => {
       a['ax-appkit-panes-proximate'](proximate),
       a['ax-appkit-panes-drag'](null, {
         $on: {
-          mousedown: (e, el) => {
+          mousedown: (el) => (e) => {
             e.preventDefault();
             el.$('^ax-appkit-panes').classList.add('dragable');
             window.document.addEventListener(

@@ -27,7 +27,7 @@ export default (a, x) => a["app-router"](
   ],
   {
     $on: {
-      "ax.appkit.router.load": (e, el) => {
+      "ax.appkit.router.load": (el) => (e) => {
         el.$("#navbar").$activate();
       },
     },
@@ -51,7 +51,7 @@ export default (a, x) => a["app-router"](
 //   ],
 //   {
 //     $on: {
-//       "ax.appkit.router.load": (e, el) => {
+//       "ax.appkit.router.load": (el) => (e) => {
 //         console.log('Router load event', e)
 //       },
 //     },

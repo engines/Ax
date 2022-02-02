@@ -26,11 +26,11 @@ ax.extension.easymde.form.control = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'keyup: update textarea': (e, el) => {
+      'keyup: update textarea': (el) => (e) => {
         el.$('textarea').$updateValue();
         el.$send('ax.appkit.form.control.change');
       },
-      'keydown: check for editor exit': (e, el) => {
+      'keydown: check for editor exit': (el) => (e) => {
         if (e.target.nodeName === 'TEXTAREA') {
           if (e.keyCode == 27) {
             // ESC pressed - move focus forward

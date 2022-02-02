@@ -45,7 +45,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
               }),
               x.button({
                 label: '👁',
-                onclick: (e, el) => {
+                onclick: (el) => (e) => {
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );

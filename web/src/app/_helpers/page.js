@@ -41,7 +41,7 @@ page.for = (router) => (a, x) => {
 
   return a["app-markdown-page"](result, {
     $on: {
-      click: (e, el) => {
+      click: (el) => (e) => {
         if (e.target.classList.contains("app-navigation")) {
           e.preventDefault();
           let path = e.target.attributes.href.value.replace(/\.[^/.]+$/, "");

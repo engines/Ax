@@ -55,10 +55,10 @@ ax.extension.form.field.controls.input = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         el.$valid();
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

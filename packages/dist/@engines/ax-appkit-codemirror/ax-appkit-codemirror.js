@@ -162,7 +162,7 @@ ax.extension.codemirror.toolbar = function (options = {}) {
         a.button('🗖', {
           type: 'button',
           $on: {
-            'click: toggle full screen': (e, el) => {
+            'click: toggle full screen': (el) => (e) => {
               let wrapper = el.$('^ax-appkit-codemirror');
               let codemirror = wrapper.$('textarea').$codemirror;
               if (wrapper.classList.contains('fullscreen')) {
@@ -200,11 +200,11 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
         },
         codemirrorTag: {
           $on: {
-            'keyup: update textarea value': (e, el) => {
+            'keyup: update textarea value': (el) => (e) => {
               el.$send('ax.appkit.form.control.change');
               el.$('textarea').$codemirror.save();
             },
-            'keydown: check for exit': (e, el) => {
+            'keydown: check for exit': (el) => (e) => {
               let control = el.$('^ax-appkit-codemirror-control');
               let allowEsc =
                 el.$('textarea').$codemirror.options.keyMap != 'vim';
@@ -281,7 +281,7 @@ ax.extension.codemirror.report.control = function (r, options = {}) {
         ...options,
         codemirrorTag: {
           $on: {
-            'keydown: check for exit': (e, el) => {
+            'keydown: check for exit': (el) => (e) => {
               let control = el.$('^ax-appkit-codemirror-control');
 
               if (control.classList.contains('fullscreen')) {
@@ -358,7 +358,7 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
       }),
       {
         $on: {
-          'change: set editor keyMap': (e, el) => {
+          'change: set editor keyMap': (el) => (e) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('keyMap', el.value);
@@ -418,7 +418,7 @@ ax.extension.codemirror.toolbar.mode = function (options = {}) {
       {
         name: selectName,
         $on: {
-          'change: set editor mode': (e, el) => {
+          'change: set editor mode': (el) => (e) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('mode', el.value);

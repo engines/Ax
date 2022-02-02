@@ -12,7 +12,7 @@ ax.extension.report.field.label = function (options = {}) {
     ...options.wrapperTag,
 
     $on: {
-      'click: focus on output': (e, el) => {
+      'click: focus on output': (el) => (e) => {
         let target = el.$('^ax-appkit-report-field ax-appkit-report-control');
         target && target.$focus();
       },

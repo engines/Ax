@@ -17,7 +17,7 @@ const a = ax.a,
 ax.extension.button = function (options = {}) {
   let a = ax.a;
 
-  let handler = options.onclick || (() => {});
+  let handler = options.onclick || (() => () => {});
 
   let label = a['ax-appkit-button-label'](options.label || '', {
     style: {
@@ -43,8 +43,8 @@ ax.extension.button = function (options = {}) {
     value: options.value,
     ...options.buttonTag,
     $on: {
-      'click: button onclick': (e, el) => {
-        confirmation(el) && handler(e, el);
+      'click: button onclick': (el) => (e) => {
+        confirmation(el) && handler(el)(e);
       },
       ...(options.buttonTag || {}).$on,
     },
@@ -946,7 +946,7 @@ ax.extension.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (e, el) => applyPlaceholder(el),
+      'change: update placeholder styling': (el) => (e) => applyPlaceholder(el),
       ...(options.selectTag || {}).$on,
     },
   };
@@ -1515,7 +1515,6 @@ ax.extension.router.element.open = (options) => (el) => (
   if (path[0] != '/') {
     path = options.scope + (path ? `/${path}` : '');
   }
-
   el.$locate(path, query, anchor);
 };
 
@@ -1615,35 +1614,38 @@ ax.extension.router.interface.mount = (setup) => {
         }
       },
 
-      $load: (el) => (path, query, anchor) => {
-        config.path = path;
-        config.query = query;
-        config.anchor = anchor;
+      $load: (el) => {
+        console.log(el)
+        return (path, query, anchor) => {
+          config.path = path;
+          config.query = query;
+          config.anchor = anchor;
 
-        let locatedView = view(config, el);
+          let locatedView = view(config, el);
 
-        if (
-          config.lazy &&
-          el.$matched &&
-          locatedView.matched &&
-          el.$scope == locatedView.scope
-        ) {
-          let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
-          routes.forEach((r) => {
-            r.$load(path, query, anchor);
-          });
-        } else {
-          el.$scope = locatedView.scope;
-          el.$matched = locatedView.matched;
-          let component = componentWrapper(locatedView.component);
-
-          if (config.transition) {
-            // Disable pointer events on outgoing view
-            el.$('ax-appkit-router-view').style.pointerEvents = 'none';
-            el.$('ax-appkit-transition').$to(component);
+          if (
+            config.lazy &&
+            el.$matched &&
+            locatedView.matched &&
+            el.$scope == locatedView.scope
+          ) {
+            let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
+            routes.forEach((r) => {
+              r.$load(path, query, anchor);
+            });
           } else {
-            el.$nodes = component;
-            el.$scrollToAnchor();
+            el.$scope = locatedView.scope;
+            el.$matched = locatedView.matched;
+            let component = componentWrapper(locatedView.component);
+
+            if (config.transition) {
+              // Disable pointer events on outgoing view
+              el.$('ax-appkit-router-view').style.pointerEvents = 'none';
+              el.$('ax-appkit-transition').$to(component);
+            } else {
+              el.$nodes = component;
+              el.$scrollToAnchor();
+            }
           }
         }
       },

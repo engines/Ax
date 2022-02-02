@@ -59,10 +59,10 @@ ax.extension.form.field.controls.textarea = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         el.$valid();
       },
-      'input: send control change event and resize': (e, el) => {
+      'input: send control change event and resize': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
         el.$resize();
       },

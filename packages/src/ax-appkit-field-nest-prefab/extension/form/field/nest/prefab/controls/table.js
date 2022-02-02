@@ -25,7 +25,7 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                       ? ff.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (e, el) => {
+                              'click: toggle help': (el) => (e) => {
                                 el.$showHelp = !el.$showHelp;
                                 el.$render()
                                 el.$(
@@ -219,11 +219,11 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
             $tag: 'tbody',
             ...options.itemsTag,
             $on: {
-              sortstart: (e, el) => {
+              sortstart: (el) => (e) => {
                 let item = e.detail.item;
                 el.$dragging = item;
               },
-              sortupdate: (e, el) => {
+              sortupdate: (el) => (e) => {
                 el.$dragging = undefined;
                 el.$send('ax.appkit.form.nest.item.move');
               },
@@ -288,13 +288,13 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                           tabindex: 0,
                           ...options.deleteTag,
                           $on: {
-                            click: (e, el) =>
+                            click: (el) => (e) =>
                               alert(
                                 `Drag ${
                                   options.singular || 'item'
                                 } here to remove it.`
                               ),
-                            dragover: (e, el) => {
+                            dragover: (el) => (e) => {
                               let items = el.$(
                                 '^ax-appkit-form-nest-table-wrapper |ax-appkit-form-nest-items'
                               );
@@ -319,7 +319,7 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                     a['ax-appkit-form-nest-drag-on'](
                       ff.button({
                         label: '⬍',
-                        onclick: (e, el) => {
+                        onclick: (el) => (e) => {
                           let dragOn = el.$('^ax-appkit-form-nest-drag-on');
                           let dragOff = el.$(
                             '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-off'
@@ -346,7 +346,7 @@ ax.extension.form.field.nest.prefab.controls.table = function (f, options) {
                     a['ax-appkit-form-nest-drag-off'](
                       ff.button({
                         label: '⬍',
-                        onclick: (e, el) => {
+                        onclick: (el) => (e) => {
                           let dragOff = el.$('^ax-appkit-form-nest-drag-off');
                           let dragOn = el.$(
                             '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-on'

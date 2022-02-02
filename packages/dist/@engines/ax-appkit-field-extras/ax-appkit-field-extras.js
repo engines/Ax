@@ -790,10 +790,10 @@ ax.extension.form.field.extras.controls.country = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (el) => (e) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -843,10 +843,10 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (el) => (e) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -927,7 +927,7 @@ ax.extension.form.field.extras.controls.multiselect = function (
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (e, el) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1061,17 +1061,17 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: secure text': (e, el) => {
+      'input: secure text': (el) => (e) => {
         for (let input of el.$inputs()) {
           secure(input);
         }
       },
-      'input: check validity': (e, el) => {
+      'input: check validity': (el) => (e) => {
         for (let input of el.$inputs()) {
           input.$valid();
         }
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1151,7 +1151,7 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
     $on: {
-      change: (e, el) => {
+      change: (el) => (e) => {
         let select = el.$('select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(
@@ -1261,10 +1261,10 @@ ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (el) => (e) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (el) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1676,7 +1676,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
               }),
               x.button({
                 label: '👁',
-                onclick: (e, el) => {
+                onclick: (el) => (e) => {
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
@@ -1904,7 +1904,7 @@ ax.extension.form.field.extras.controls.multiselect.select = function (
       selections: options.selections,
       selectTag: {
         $on: {
-          'change: add item to selection': (e, el) => {
+          'change: add item to selection': (el) => (e) => {
             el.$(
               '^ax-appkit-form-control ax-appkit-form-multiselect-selected'
             ).$add({
@@ -1983,7 +1983,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
                 a.button('✖', { type: 'button' }),
                 {
                   $on: {
-                    'click: remove item from selection': (e, el) => {
+                    'click: remove item from selection': (el) => (e) => {
                       if (!el.disabled) {
                         el.$('^ax-appkit-form-control')
                           .$('select')

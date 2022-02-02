@@ -100,7 +100,7 @@ ax.extension.form.field.dependent.components.dependent = function (
       ...(options.dependentTag || {}).style,
     },
     $on: {
-      'ax.appkit.form.control.change': (e, el) => {
+      'ax.appkit.form.control.change': (el) => (e) => {
         el.$checkDependents();
       },
       ...(options.dependentTag || {}).$on,

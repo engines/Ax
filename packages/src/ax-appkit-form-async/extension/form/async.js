@@ -59,7 +59,7 @@ ax.extension.form.async = (target, options = {}) =>
     ],
     ...options.asyncformTag,
     $on: {
-      'submit: async submit': (e, el) => {
+      'submit: async submit': (el) => (e) => {
         e.preventDefault();
         setTimeout(() => ax.extension.form.async.submit(e, el, options), 0);
       },

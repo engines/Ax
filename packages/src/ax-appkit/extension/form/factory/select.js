@@ -20,7 +20,7 @@ ax.extension.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (e, el) => applyPlaceholder(el),
+      'change: update placeholder styling': (el) => (e) => applyPlaceholder(el),
       ...(options.selectTag || {}).$on,
     },
   };

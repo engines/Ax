@@ -21,7 +21,7 @@ ax.extension.report.field.nest.prefab.controls.table = function (r, options) {
                       ? r.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (e, el) => {
+                              'click: toggle help': (el) => (e) => {
                                 el.$showHelp = !el.$showHelp;
                                 el.$render()
                                 el.$(

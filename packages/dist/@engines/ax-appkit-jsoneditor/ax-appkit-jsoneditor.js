@@ -80,7 +80,7 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
       }
     },
     $on: {
-      'keydown: check for editor exit': (e, el) => {
+      'keydown: check for editor exit': (el) => (e) => {
         if (e.keyCode == 27 && e.shiftKey) {
           // shift+ESC pressed - move focus backward
           ax.x.lib.tabable.previous(el).focus();
