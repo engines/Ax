@@ -268,7 +268,7 @@ ax.extension.popup = function (component, options = {}) {
     );
 };
 
-ax.style({
+ax.css({
   'ax-appkit-context': {
     position: 'relative',
   },

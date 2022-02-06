@@ -2,10 +2,12 @@ ax.extension.form.field.nest.components.nest.items.up = function (
   f,
   options = {}
 ) {
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
+
   return f.button({
     label: '⏶',
     onclick: (el) => (e) => {
-      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {

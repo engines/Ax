@@ -8,10 +8,6 @@ ax.css.rules.object = function (styles, selectors = []) {
     let selected = styles[selectorList];
     for (let selector of selectorList.split(',')) {
       selector = selector.trim();
-      selector = selector.replace(
-        /\|([a-zA-Z0-9-_]+)/g,
-        (match) => `[data-ax-pseudotag="${ax.kebab(match.replace(/^\|/, ''))}"]`
-      );
       selector = selector.replace(/^([a-zA-Z0-9-_]+)/, (match) =>
         ax.kebab(match)
       );

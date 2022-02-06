@@ -2,6 +2,7 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
   let a = ax.a;
 
   let singular = f.singular;
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
   let label = `✚ Add${singular ? ` ${singular}` : ''}`;
 
@@ -9,7 +10,7 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
     f.button({
       label: label,
       onclick: (el) => (e) => {
-        let items = el.$('^ax-appkit-form-nest |ax-appkit-form-nest-items');
+        let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },
       ...options,

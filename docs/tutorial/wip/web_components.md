@@ -25,7 +25,7 @@ ax((a) => a['hello-world']);
 ~~~javascript
 (async function() {
   await import('https://cdn.jsdelivr.net/npm/elix@14.0.0/define/Tabs.js');
-  ax.style({
+  ax.css({
     elixTabs: {
       height: '150px',
       width: '300px',

@@ -24,11 +24,8 @@ ax.extension.form.async = (target, options = {}) =>
             $output: (el) => () =>
               options.digest ? options.digest(el.$value()) : el.$value(),
             $value: (el) => () => {
-              let controls = ax.x.lib
-                .unnested(
-                  el,
-                  'ax-appkit-form-control:not(.ax-appkit-form-control-without-value), |ax-appkit-form-nest-items'
-                )
+              let controls = el
+                .$controls()
                 .filter((control) => control.$enabled);
               let object = {};
               for (let control of controls) {

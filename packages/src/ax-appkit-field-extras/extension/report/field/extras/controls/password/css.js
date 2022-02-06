@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   'ax-appkit-report-password': {
     button: {
       fontSize: '1em',

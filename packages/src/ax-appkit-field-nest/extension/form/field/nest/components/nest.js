@@ -3,6 +3,8 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   let x = ax.x;
 
   let nestForm = options.form || (() => null);
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
+
   let ff = this.nest.factory({
     parent: f,
     scope: f.scope ? `${f.scope}[${options.key}]` : options.key,
@@ -56,21 +58,18 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
 
   let controlTagOptions = {
     $controls: (el) => () => {
-      return x.lib.unnested(
-        el,
-        'ax-appkit-form-control, |ax-appkit-form-nest-items'
-      );
+      return x.lib.unnested(el, `ax-appkit-form-control, ${itemsTagName}`);
     },
     $value: (el) => () => {
       let controls = ax.x.lib
         .unnested(
           el,
-          'ax-appkit-form-control:not(.ax-appkit-form-control-without-value), |ax-appkit-form-nest-items'
+          `ax-appkit-form-control:not(.ax-appkit-form-control-without-value), ${itemsTagName}`
         )
         .filter((control) => control.$enabled);
       let object = {};
       for (let control of controls) {
-        if (control.$ax.$pseudotag == 'ax-appkit-form-nest-items') {
+        if (control.$ax.$tag == itemsTagName) {
           object = control.$value();
           break;
         }

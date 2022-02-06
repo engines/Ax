@@ -48,7 +48,7 @@ ax((a) => [
     a['input[name="score"][type="number"]'],
     a['button[type="submit"]']('Submit'),
   ], {
-    $on: {submit: () => alert('Form submitted!')},
+    $on: {submit: (el) => (evt) => alert('Form submitted!')},
     action: '/test',
     method: 'POST',
   }),

@@ -927,7 +927,9 @@ ax.extension.form.field.extras.controls.multiselect = function (
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (el) => (e) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (
+        el
+      ) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1681,7 +1683,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
                   text.$showPassword = text.$showPassword * -1;
-                  el.$render()
+                  el.$render();
                 },
                 ...options.button,
               }),
@@ -1872,7 +1874,7 @@ ax.extension.report.field.extras.controls.url = (r, options = {}) => {
   );
 };
 
-ax.style({
+ax.css({
   'ax-appkit-form-multiselect-selected-item': {
     display: 'block',
     overflow: 'auto',
@@ -1945,18 +1947,18 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
       let index = selected.indexOf(item);
       if (index !== -1) {
         selected.splice(index, 1);
-        el.$update(selected)
+        el.$update(selected);
       }
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
     $add: (el) => (item, index) => {
-      el.$update([item].concat(el.$selected))
+      el.$update([item].concat(el.$selected));
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
     $update: (el) => (selected) => {
-      el.$selected = selected
+      el.$selected = selected;
       if (el.$selected.length === 0) {
         el.style.display = 'none';
         el.$('^ax-appkit-form-multiselect-selected').previousSibling.required =
@@ -2023,7 +2025,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
   });
 };
 
-ax.style({
+ax.css({
   'ax-appkit-report-password': {
     button: {
       fontSize: '1em',

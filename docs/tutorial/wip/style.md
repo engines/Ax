@@ -5,7 +5,7 @@
 Style
 =====
 
-Use `ax.style()` to add a `<style>` tag to `<head>`.
+Use `ax.css()` to add CSS to a document.
 
 <!--PLAYGROUND-->
 ~~~javascript

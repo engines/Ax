@@ -95,7 +95,7 @@ ax.extension.panes = (options = {}) => {
   );
 };
 
-ax.style({
+ax.css({
   'ax-appkit-panes': {
     position: 'fixed',
     top: 0,

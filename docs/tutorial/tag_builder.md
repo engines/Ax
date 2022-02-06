@@ -15,7 +15,7 @@ Specify content with `$text` and `$html` properties.
 <!--PLAYGROUND-->
 ~~~javascript
 ax((a) => [
-  a({$text: 'euro'}),
+  a({$text: 'Euro symbol: '}),
   a({$html: '&euro;'}),
 ]);
 ~~~

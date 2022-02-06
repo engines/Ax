@@ -106,7 +106,7 @@ ax.extension.cycle = function (options = {}) {
         } else {
           el.$count++;
         }
-        el.$render()
+        el.$render();
       }, period);
     },
     ...options.cycleTag,
@@ -1615,7 +1615,7 @@ ax.extension.router.interface.mount = (setup) => {
       },
 
       $load: (el) => {
-        console.log(el)
+        console.log(el);
         return (path, query, anchor) => {
           config.path = path;
           config.query = query;
@@ -1647,7 +1647,7 @@ ax.extension.router.interface.mount = (setup) => {
               el.$scrollToAnchor();
             }
           }
-        }
+        };
       },
       ...options.mountTag,
     };

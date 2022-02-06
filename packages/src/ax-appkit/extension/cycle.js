@@ -17,7 +17,7 @@ ax.extension.cycle = function (options = {}) {
         } else {
           el.$count++;
         }
-        el.$render()
+        el.$render();
       }, period);
     },
     ...options.cycleTag,

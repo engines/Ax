@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   'ax-appkit-easymde .EasyMDEContainer': {
     '> textarea': {
       display: 'none',

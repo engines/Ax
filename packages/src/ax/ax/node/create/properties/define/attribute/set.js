@@ -1,5 +1,6 @@
 /**
- * Make a data attribute from a string or object.
+ * Set attributes on an element.
+ * Value can be a string or an object.
  */
 ax.node.create.properties.define.attribute.set = function (
   element,
@@ -7,13 +8,12 @@ ax.node.create.properties.define.attribute.set = function (
   value
 ) {
   const define = ax.node.create.properties.define;
-  if (value && ax.is.object(value)) {
+  if (ax.is.object(value)) {
     for (let key of Object.keys(value)) {
-      let kebab = ax.kebab(key);
       define.attribute.set(element, keys.concat(key), value[key]);
     }
   } else {
-    let kebab = keys.join('-');
+    let kebab = keys.map((key) => ax.kebab(key)).join('-');
     element.setAttribute(kebab, value);
   }
 };

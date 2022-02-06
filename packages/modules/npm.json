@@ -12,92 +12,74 @@
   "packages": {
     "@engines": {
       "ax": {
-        "nameXXXXXXXXXXXX": "@engines/ax",
         "description": "Ax Function is for creating dynamic web content.",
         "homepage": "https://github.com/engines/Ax/docs/packages/axf#readme"
       },
       "ax-appkit": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit",
         "description": "Axf Core is an Ax extension that provides a router, http utility, form builder and report builder.",
         "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit#readme"
       },
       "ax-appkit-chartjs": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-chartjs",
         "description": "An Ax extension for Chart.js.",
         "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-chartjs#readme"
       },
       "ax-appkit-codemirror": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-codemirror",
         "description": "An Ax extension for CodeMirror.",
         "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-codemirror#readme"
       },
       "ax-appkit-dropdown": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-dropdown",
         "description": "An Ax extension for dropdown menus and popups.",
         "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-dropdown#readme"
       },
       "ax-appkit-easymde": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-easymde",
         "description": "An Ax extension for EasyMDE.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-easymde#readme"
       },
       "ax-appkit-field": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-field",
         "description": "An Ax extension that adds a field control to the ax-appkit-kit form builder and report builder.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-kit-field#readme"
       },
       "ax-appkit-field-dependent": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-field-dependent",
         "description": "An Ax extension that makes field control visibility dependent upon values in other fields.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-dependent#readme"
       },
       "ax-appkit-field-extras": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-field-extras",
         "description": "An Ax extension that adds some extra controls, including country, language, timezone, password.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-extras#readme"
       },
       "ax-appkit-field-nest": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-field-nest",
         "description": "An Ax extension that allows fields to be nested.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-nest#readme"
       },
       "ax-appkit-field-nest-prefab": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-field-nest-prefab",
         "description": "An Ax extension with some pre-built field controls for easy nesting, such as table, many, one.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-field-nest-prefab#readme"
       },
       "ax-appkit-filepond": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-filepond",
         "description": "An Ax extension for Filepond.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-filepond#readme"
       },
       "ax-appkit-form-async": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-form-async",
         "description": "An Ax extension that makes ax-appkit-kit forms submit asynchronously.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-form-async#readme"
       },
       "ax-appkit-jsoneditor": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-jsoneditor",
         "description": "An Ax extension for JSONEditor.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-jsoneditor#readme"
       },
       "ax-appkit-markedjs": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-markedjs",
         "description": "An Ax extension for Marked.js.",
         "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-markedjs#readme"
       },
       "ax-appkit-panes": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-panes",
         "description": "An Ax extension for splitting viewport into vertical or horizontal panes.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-panes#readme"
       },
       "ax-appkit-twitter-bootstrap4": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-twitter-bootstrap4",
         "description": "An Ax extension that adds bootstrap styling classes to the ax-appkit-kit form builder and report builder.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-twitter-bootstrap4#readme"
       },
       "ax-appkit-xtermjs": {
-        "nameXXXXXXXXXXXX": "@engines/ax-appkit-xtermjs",
         "description": "An Ax extension for Xterm.js.",
         "homepage": "https://github.com/engines/Ax/docs/packages/ax-appkit-xtermjs#readme"
       }

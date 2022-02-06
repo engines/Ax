@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   'ax-appkit-codemirror': {
     display: 'block',
     'div.CodeMirror': {

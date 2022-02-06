@@ -66,7 +66,9 @@ ax.extension.form.field.extras.controls.multiselect = function (
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (el) => (e) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (
+        el
+      ) => (e) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

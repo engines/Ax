@@ -67,7 +67,7 @@ ax.extension.xtermjs = (options = {}) => (a, x) =>
     }
   );
 
-ax.style({
+ax.css({
   'ax-appkit-xtermjs': {
     display: 'block',
     '&.fullscreen': {

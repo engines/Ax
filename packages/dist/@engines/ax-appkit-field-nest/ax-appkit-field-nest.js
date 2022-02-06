@@ -16,9 +16,6 @@ ax.extension.report.field.nest = {};
 
 ax.extension.form.field.nest.components = {};
 
-ax.extension.form.field.nest.sortable =
-  dependencies.sortable || window.sortable;
-
 ax.extension.form.field.nest.lib = {};
 
 ax.extension.form.field.nest.shim = {
@@ -74,6 +71,8 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   let x = ax.x;
 
   let nestForm = options.form || (() => null);
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
+
   let ff = this.nest.factory({
     parent: f,
     scope: f.scope ? `${f.scope}[${options.key}]` : options.key,
@@ -127,21 +126,18 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
 
   let controlTagOptions = {
     $controls: (el) => () => {
-      return x.lib.unnested(
-        el,
-        'ax-appkit-form-control, |ax-appkit-form-nest-items'
-      );
+      return x.lib.unnested(el, `ax-appkit-form-control, ${itemsTagName}`);
     },
     $value: (el) => () => {
       let controls = ax.x.lib
         .unnested(
           el,
-          'ax-appkit-form-control:not(.ax-appkit-form-control-without-value), |ax-appkit-form-nest-items'
+          `ax-appkit-form-control:not(.ax-appkit-form-control-without-value), ${itemsTagName}`
         )
         .filter((control) => control.$enabled);
       let object = {};
       for (let control of controls) {
-        if (control.$ax.$pseudotag == 'ax-appkit-form-nest-items') {
+        if (control.$ax.$tag == itemsTagName) {
           object = control.$value();
           break;
         }
@@ -222,6 +218,7 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
   let a = ax.a;
 
   let singular = f.singular;
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
   let label = `✚ Add${singular ? ` ${singular}` : ''}`;
 
@@ -229,7 +226,7 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
     f.button({
       label: label,
       onclick: (el) => (e) => {
-        let items = el.$('^ax-appkit-form-nest |ax-appkit-form-nest-items');
+        let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },
       ...options,
@@ -255,6 +252,11 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
   let x = ax.x;
 
   let formFn = options.form || (() => null);
+
+  let itemsTagName =
+    (options.itemsTag || {}).$tag || 'ax-appkit-form-nest-items';
+  let itemTagName = (options.itemTag || {}).$tag || 'ax-appkit-form-nest-item';
+
   let item = function (itemData, index) {
     let ff = this.items.factory({
       parent: f,
@@ -267,7 +269,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       formOptions: f.formOptions,
     });
 
-    return a['li|ax-appkit-form-nest-item'](formFn(ff), {
+    return a[itemTagName](formFn(ff), {
       name: ff.scope,
 
       $controls: (el) => () => {
@@ -334,7 +336,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
     itemsData = [];
   }
 
-  return a['ul|ax-appkit-form-nest-items'](itemsData.map(item), {
+  return a[itemsTagName](itemsData.map(item), {
     name: f.scope,
     $add: (el) => () => {
       let newItem = item({}, el.children.length);
@@ -402,8 +404,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       el.setAttribute('name', newScope);
     },
 
-    $itemElements: (el) => () =>
-      x.lib.unnested(el, '|ax-appkit-form-nest-item'),
+    $itemElements: (el) => () => x.lib.unnested(el, itemTagName),
 
     ...options.itemsTag,
   });
@@ -469,10 +470,12 @@ ax.extension.form.field.nest.components.nest.items.down = function (
   f,
   options = {}
 ) {
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
+
   return f.button({
     label: '⏷',
     onclick: (el) => (e) => {
-      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemsElement = el.$(`^${itemTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {
@@ -510,6 +513,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
   options = {}
 ) {
   let singular = f.singular || 'item';
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
   let confirmation;
 
   if (ax.is.false(options.confirm)) {
@@ -524,7 +528,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
     label: '✖',
     confirm: confirmation,
     onclick: (el) => (e) => {
-      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemsElement = el.$(`^${itemTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {
@@ -546,10 +550,12 @@ ax.extension.form.field.nest.components.nest.items.up = function (
   f,
   options = {}
 ) {
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
+
   return f.button({
     label: '⏶',
     onclick: (el) => (e) => {
-      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {

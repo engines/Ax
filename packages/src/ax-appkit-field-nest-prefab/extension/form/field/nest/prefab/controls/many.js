@@ -62,7 +62,7 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
                   .$disable();
                 let buttons = el
                   .$(
-                    '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                    '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                   )
                   .$$('button').$$;
                 for (let button of buttons) {
@@ -81,7 +81,7 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
                   .$enable();
                 let buttons = el
                   .$(
-                    '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                    '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                   )
                   .$$('button').$$;
                 for (let button of buttons) {
@@ -111,7 +111,7 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
                                 ),
                               dragover: (el) => (e) => {
                                 let items = el.$(
-                                  '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                                  '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                                 );
                                 let item = items.$dragging;
                                 if (item.contains(item)) {
@@ -143,10 +143,10 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-delete'
                             );
                             el.$(
-                              '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                              '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                             ).$startDrag();
                             el.$(
-                              '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                              '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                             )
                               .$itemElements()
                               .forEach((item) => (item.tabIndex = 1));
@@ -171,10 +171,10 @@ ax.extension.form.field.nest.prefab.controls.many = function (f, options) {
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-delete'
                             );
                             el.$(
-                              '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                              '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                             ).$stopDrag();
                             el.$(
-                              '^ax-appkit-form-nest-many-wrapper |ax-appkit-form-nest-items'
+                              '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                             )
                               .$itemElements()
                               .forEach((item) =>

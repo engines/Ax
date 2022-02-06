@@ -13,8 +13,8 @@ ax.node.create.properties.define = function (element) {
             this.define.attribute(element, property, value);
           }
         }
-      } else if (property == '$pseudotag') {
-        element.dataset.axPseudotag = element.$ax.$pseudotag;
+        // } else if (property == '$pseudotag') {
+        //   element.dataset.axPseudotag = element.$ax.$pseudotag;
       } else {
         if (
           !property.match(

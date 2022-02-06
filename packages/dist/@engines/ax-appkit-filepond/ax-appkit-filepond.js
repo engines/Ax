@@ -22,7 +22,7 @@ ax.extension.filepond = (options = {}) => {
   });
 };
 
-ax.style({
+ax.css({
   'ax-appkit-filepond': {
     display: 'block',
   },

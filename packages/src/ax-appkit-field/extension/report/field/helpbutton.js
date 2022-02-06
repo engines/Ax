@@ -12,7 +12,7 @@ ax.extension.report.field.helpbutton = function (options = {}) {
     $on: {
       'click: toggle help': (el) => (e) => {
         el.$showHelp = !el.$showHelp;
-        el.$render()
+        el.$render();
         el.$(
           '^ax-appkit-report-field',
           'ax-appkit-report-field-help'

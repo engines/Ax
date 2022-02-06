@@ -3,6 +3,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
   options = {}
 ) {
   let singular = f.singular || 'item';
+  let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
   let confirmation;
 
   if (ax.is.false(options.confirm)) {
@@ -17,7 +18,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
     label: '✖',
     confirm: confirmation,
     onclick: (el) => (e) => {
-      let itemsElement = el.$('^|ax-appkit-form-nest-items');
+      let itemsElement = el.$(`^${itemTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {

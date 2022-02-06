@@ -15,7 +15,7 @@
  * The default insertion method is to append a child. Set options.method
  * 'replaceWith' to replace the target, or 'prependChild' to prepend a child.
  */
-let ax = function (component, options = {}) {
+let ax = (component, options = {}) => {
   let element = ax.node(component);
   let insert = () => ax.insert(element, options);
 
@@ -33,20 +33,19 @@ let ax = function (component, options = {}) {
 };
 
 /**
- * Process style definitions.
+ * Creates a <style> tag in <head> and inserts styles.
+ * styles can be a string or an object.
  */
 ax.css = function (...styles) {
-  return styles
-    .map((style) => {
-      if (ax.is.string(style)) {
-        return style;
-      } else if (ax.is.array(style)) {
-        return ax.css(style);
-      } else {
-        return ax.css.rules(style);
-      }
-    })
-    .join('');
+  ax.insert(
+    ax.node.create({
+      $tag: 'style',
+      $html: this.css.styles(...styles),
+    }),
+    {
+      target: 'head',
+    }
+  );
 };
 
 /**
@@ -151,22 +150,6 @@ ax.script = function (attributes = {}) {
 };
 
 /**
- * Creates a <style> tag in <head> and inserts styles.
- * styles can be a string or an object.
- */
-ax.style = function (...styles) {
-  ax.insert(
-    ax.node.create({
-      $tag: 'style',
-      $html: this.css(...styles),
-    }),
-    {
-      target: 'head',
-    }
-  );
-};
-
-/**
  * Tag Builder namespace.
  * The Tag Builder creates arbitrary HTML elements.
  * It is instantiated as `ax.a`.
@@ -191,6 +174,23 @@ ax.css.rules = function (styles, selectors = []) {
   } else {
     return '';
   }
+};
+
+/**
+ * Process style definitions.
+ */
+ax.css.styles = function (...styles) {
+  return styles
+    .map((style) => {
+      if (ax.is.string(style)) {
+        return style;
+      } else if (ax.is.array(style)) {
+        return ax.css(...style);
+      } else {
+        return ax.css.rules(style);
+      }
+    })
+    .join('');
 };
 
 /**
@@ -450,10 +450,6 @@ ax.css.rules.object = function (styles, selectors = []) {
     let selected = styles[selectorList];
     for (let selector of selectorList.split(',')) {
       selector = selector.trim();
-      selector = selector.replace(
-        /\|([a-zA-Z0-9-_]+)/g,
-        (match) => `[data-ax-pseudotag="${ax.kebab(match.replace(/^\|/, ''))}"]`
-      );
       selector = selector.replace(/^([a-zA-Z0-9-_]+)/, (match) =>
         ax.kebab(match)
       );
@@ -502,7 +498,7 @@ ax.node.create.properties = function (element) {
  */
 ax.tag.proxy.attributes = function (property, attributes = {}) {
   // if the property starts with a word, use the word as nodename
-  // if the property has a '|' word, use as pseudotag
+  //  // if the property has a '|' word, use as pseudotag
   // if the property has a '#' word, use as id
   // if the property has '.' words, use as class
   // if the property has '[]' attrs, use as attributes
@@ -513,13 +509,13 @@ ax.tag.proxy.attributes = function (property, attributes = {}) {
   }
 
   let nodename = (property.match(/^([\w-]+)/) || [])[1];
-  let pseudotag = (property.match(/\|([\w-]+)/) || [])[1];
+  // let pseudotag = (property.match(/\|([\w-]+)/) || [])[1];
   let id = (property.match(/#([\w-]+)/) || [])[1];
   let classes = property.match(/\.[\w-]+/g) || [];
   let attrs = property.match(/\[.*?\]/g) || [];
 
   if (nodename) attributes.$tag = attributes.$tag || nodename;
-  if (pseudotag) attributes.$pseudotag = attributes.$pseudotag || pseudotag;
+  // if (pseudotag) attributes.$pseudotag = attributes.$pseudotag || pseudotag;
   if (id) attributes.id = attributes.id || id;
   for (let klass of classes) {
     attributes.class = `${klass.replace('.', '')} ${
@@ -580,9 +576,7 @@ ax.node.create.properties.accessors = function (element) {
   return this.accessors.nodes(
     this.accessors.html(
       this.accessors.text(
-        this.accessors.on(
-          this.accessors.off(this.accessors.send(element))
-        )
+        this.accessors.on(this.accessors.off(this.accessors.send(element)))
       )
     )
   );
@@ -618,8 +612,8 @@ ax.node.create.properties.define = function (element) {
             this.define.attribute(element, property, value);
           }
         }
-      } else if (property == '$pseudotag') {
-        element.dataset.axPseudotag = element.$ax.$pseudotag;
+        // } else if (property == '$pseudotag') {
+        //   element.dataset.axPseudotag = element.$ax.$pseudotag;
       } else {
         if (
           !property.match(
@@ -647,9 +641,9 @@ ax.node.create.properties.events = function (element) {
   element.$events = {};
 
   for (let handle in element.$ax.$on) {
-    element.$events[handle] = element.$ax.$on[handle](element);
+    element.$events[handle] = element.$ax.$on[handle];
     element.addEventListener(handle.split(':')[0], (e) =>
-      element.$events[handle](e)
+      element.$events[handle](element)(e)
     );
   }
 
@@ -792,9 +786,9 @@ ax.node.create.properties.accessors.on = function (element) {
   element.$on = function (handlers) {
     for (let handle in handlers) {
       element.$off(handle);
-      element.$events[handle] = handlers[handle](element);
+      element.$events[handle] = handlers[handle];
       element.addEventListener(handle.split(':')[0], (e) =>
-        element.$events[handle](e)
+        element.$events[handle](element)(e)
       );
     }
   };
@@ -858,11 +852,22 @@ ax.node.create.properties.define.attribute = function (element, key, value) {
   this.attribute.set(element, [key], value);
 };
 
+ax.node.create.properties.define.state = function (element, property) {
+  Object.defineProperty(element, property, {
+    get: () => element.$ax[property],
+    set: (state) => {
+      element.$ax[property] = state;
+      element.$render();
+    },
+  });
+};
+
 /**
  * Define style attribute on element, with style
  * being a string or an object.
  */
-ax.node.create.properties.define.style = function (element, style) {
+ax.node.create.properties.define.style = function (element) {
+  let style = element.$ax.style;
   if (ax.is.object(style)) {
     let result = '';
     for (let key of Object.keys(style)) {
@@ -892,11 +897,11 @@ ax.node.create.properties.render.empty = function (element) {
  * Recursive removal of event handlers and call of $exit functions.
  */
 ax.node.create.properties.render.exit = function (element) {
-  if (element.$ax && ax.is.function(element.$ax.$exit))
-    element.$ax.$exit(element);
-
   for (let child of element.childNodes)
     ax.node.create.properties.render.exit(child);
+
+  if (element.$ax && ax.is.function(element.$ax.$exit))
+    element.$ax.$exit(element);
 };
 
 /**
@@ -968,7 +973,7 @@ ax.node.create.properties.render.text = function (element) {
  * Query Tool, for collecting and operating on groups of elements.
  */
 ax.node.create.properties.tools.query = function (selector) {
-  selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
+  // selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
 
   let collection = Array.from(this.querySelectorAll(selector));
 
@@ -1057,7 +1062,8 @@ ax.node.create.properties.accessors.text.set = function (element, text) {
 };
 
 /**
- * Make a data attribute from a string or object.
+ * Set attributes on an element.
+ * Value can be a string or an object.
  */
 ax.node.create.properties.define.attribute.set = function (
   element,
@@ -1065,13 +1071,12 @@ ax.node.create.properties.define.attribute.set = function (
   value
 ) {
   const define = ax.node.create.properties.define;
-  if (value && ax.is.object(value)) {
+  if (ax.is.object(value)) {
     for (let key of Object.keys(value)) {
-      let kebab = ax.kebab(key);
       define.attribute.set(element, keys.concat(key), value[key]);
     }
   } else {
-    let kebab = keys.join('-');
+    let kebab = keys.map((key) => ax.kebab(key)).join('-');
     element.setAttribute(kebab, value);
   }
 };
@@ -1090,7 +1095,7 @@ ax.node.create.properties.tools.query.proxy = function (
  * Select an element based on traversal instruction.
  */
 ax.node.create.properties.tools.traverse.select = function (element, selector) {
-  selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
+  // selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
   if (!element) {
     return null;
   } else if (/^\s*\^/.test(selector)) {

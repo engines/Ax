@@ -3,6 +3,11 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
   let x = ax.x;
 
   let formFn = options.form || (() => null);
+
+  let itemsTagName =
+    (options.itemsTag || {}).$tag || 'ax-appkit-form-nest-items';
+  let itemTagName = (options.itemTag || {}).$tag || 'ax-appkit-form-nest-item';
+
   let item = function (itemData, index) {
     let ff = this.items.factory({
       parent: f,
@@ -15,7 +20,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       formOptions: f.formOptions,
     });
 
-    return a['li|ax-appkit-form-nest-item'](formFn(ff), {
+    return a[itemTagName](formFn(ff), {
       name: ff.scope,
 
       $controls: (el) => () => {
@@ -82,7 +87,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
     itemsData = [];
   }
 
-  return a['ul|ax-appkit-form-nest-items'](itemsData.map(item), {
+  return a[itemsTagName](itemsData.map(item), {
     name: f.scope,
     $add: (el) => () => {
       let newItem = item({}, el.children.length);
@@ -150,8 +155,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
       el.setAttribute('name', newScope);
     },
 
-    $itemElements: (el) => () =>
-      x.lib.unnested(el, '|ax-appkit-form-nest-item'),
+    $itemElements: (el) => () => x.lib.unnested(el, itemTagName),
 
     ...options.itemsTag,
   });

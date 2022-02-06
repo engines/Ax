@@ -1,1 +1,7 @@
-npm run dev
+BRANCH=$(git symbolic-ref --short -q HEAD)
+echo "On branch ${BRANCH}."
+if [[ $BRANCH == 'master' ]]; then
+  echo 'Change to a different branch.'
+else
+  npm run dev
+fi

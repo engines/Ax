@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   'ax-appkit-form-nest [draggable]': {
     cursor: 'grab',
     'input, textarea, select, button': {

@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   'ax-appkit-xtermjs': {
     display: 'block',
     '&.fullscreen': {

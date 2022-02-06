@@ -71,7 +71,7 @@ const playground = (js, options = {}) => (a, x) =>
           },
         }),
       ]),
-      a["app-playground-iframe-wrapper"](a.iframe(null, { class: "d-none" })),
+      a["app-playground-iframe-wrapper"](a.iframe([], { class: "d-none" })),
     ],
   });
 

@@ -49,25 +49,22 @@ import axAppkitXtermjs from '@engines/ax-appkit-xtermjs';
 // Load ax extensions
 ax.extend(
   axAppkit,
-  [axAppkitChartjs,{Chart: Chart}],
-  [axAppkitCodemirror,{CodeMirror: CodeMirror}],
+  [axAppkitChartjs, {Chart: Chart}],
+  [axAppkitCodemirror, {CodeMirror: CodeMirror}],
   axAppkitDropdown,
   axAppkitField,
   axAppkitFieldDependent,
   axAppkitFieldExtras,
-  [axAppkitFieldNest,{sortable: sortable}],
+  [axAppkitFieldNest, {sortable: sortable}],
   axAppkitFieldNestPrefab,
-  [axAppkitFilepond,{FilePond: FilePond}],
+  [axAppkitFilepond, {FilePond: FilePond}],
   axAppkitFormAsync,
   // axAppkitJsoneditor,
   [axAppkitMarkedjs, {marked: marked}],
   axAppkitPanes,
-  [axAppkitEasymde,{EasyMDE: EasyMDE}],
+  [axAppkitEasymde, {EasyMDE: EasyMDE}],
   axAppkitTwitterBootstrap4,
   [axAppkitXtermjs, {Terminal: Terminal, FitAddon: FitAddon}],
 );
-
-// Make ax global
-window.ax = ax
 
 export default ax;

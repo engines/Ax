@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit-field-nest",
+  "version": "0.0.25",
   "description": "An Ax extension that allows fields to be nested.",
   "main": "ax-appkit-field-nest.js",
   "repository": {

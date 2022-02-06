@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   "app-playground": {
     display: "block",
     ".CodeMirror": {

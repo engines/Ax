@@ -12,7 +12,7 @@
 
 ax.extension.bootstrap = {};
 
-ax.style({
+ax.css({
   'ax-appkit-control-collection-item-body': {
     width: 'calc( 100% - 120px)',
   },

@@ -7,6 +7,7 @@ const devServer = require("./tasks/devServer.js"),
   sort = require("gulp-sort"),
   mustache = require("gulp-mustache"),
   rename = require("gulp-rename"),
+  git = require('gulp-git'),
   fs = require("fs"),
   lib = require("./tasks/lib.js"),
   config = require("./packages/modules/npm.json"),
@@ -16,7 +17,13 @@ gulp.task("dev:source-monitor", devServer["source-monitor"]);
 gulp.task("dev:webserver", devServer["webserver"]);
 
 gulp.task("publish", function (done) {
-  gulp.series(["setVersion", "prettySource", "buildAx", "publishAx"])(done);
+  git.revParse({args:'--abbrev-ref HEAD'}, function (err, branch) {
+    if (branch == 'master') {
+      gulp.series(["setVersion", "prettySource", "buildAx", "publishAx"])(done);
+    } else {
+      console.log('Change to master branch to publish');
+    }
+  });
 });
 
 gulp.task("setVersion", function (done) {

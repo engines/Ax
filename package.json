@@ -14,5 +14,7 @@
     "prompt": "^1.0.0",
     "require-dir": "^1.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "gulp-git": "^2.10.1"
+  }
 }

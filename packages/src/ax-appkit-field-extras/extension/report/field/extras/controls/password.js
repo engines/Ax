@@ -50,7 +50,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
                   text.$showPassword = text.$showPassword * -1;
-                  el.$render()
+                  el.$render();
                 },
                 ...options.button,
               }),

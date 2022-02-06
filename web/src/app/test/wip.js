@@ -1,5 +1,42 @@
 export default (router) => (a, x) => [
 
+  a['!']('&euro;'),
+
+  a['my-widget']([
+    a['my-widget-counter']([], {
+      $nodes: (el) => [a.h1(el.$count)],
+      $count: 10,
+      $decrement: (el) => (evt) => {
+        el.$count--
+        el.$render()
+      },
+      $increment: (el) => (evt) => {
+        el.$count++
+        el.$render()
+      },
+    }),
+    a.button("⯇", {$on: {click: (el) => el.$('^ my-widget-counter').$decrement}}),
+    a.button("⯈", {$on: {click: (el) => el.$('^ my-widget-counter').$increment}}),
+  ]),
+
+
+  a.h1('WTF', {class: {is: {really: 'cool'}}, oneWay: 'out'}),
+
+  a.table([
+    a.tbody([
+      a.tr([
+        a.td(['One']),
+        a.td(['Two']),
+        a.td(['Three']),
+      ]),
+      a.tr([
+        a.td(['Four']),
+        a.td(['Five']),
+        a.td(['Six']),
+      ]),
+    ]),
+  ], {class: 'table'}),
+
   x.codemirror({
     value: 'let i = 0;\n',
     lineNumbers: true,
@@ -35,12 +72,13 @@ export default (router) => (a, x) => [
       // }),
       f.field({
         key: 'pets',
-        as: 'many',
+        as: 'table',
         singular: 'pet',
         addable: true,
         moveable: true,
         removeable: true,
         draggable: true,
+        deletable: true,
         form: (ff) => [
 
           ff.field({

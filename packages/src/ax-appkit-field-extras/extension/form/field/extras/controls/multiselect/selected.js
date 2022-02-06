@@ -12,18 +12,18 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
       let index = selected.indexOf(item);
       if (index !== -1) {
         selected.splice(index, 1);
-        el.$update(selected)
+        el.$update(selected);
       }
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
     $add: (el) => (item, index) => {
-      el.$update([item].concat(el.$selected))
+      el.$update([item].concat(el.$selected));
       el.$send('ax.appkit.form.multiselect.selected.change');
     },
 
     $update: (el) => (selected) => {
-      el.$selected = selected
+      el.$selected = selected;
       if (el.$selected.length === 0) {
         el.style.display = 'none';
         el.$('^ax-appkit-form-multiselect-selected').previousSibling.required =

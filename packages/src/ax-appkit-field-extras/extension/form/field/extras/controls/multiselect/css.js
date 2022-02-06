@@ -1,4 +1,4 @@
-ax.style({
+ax.css({
   'ax-appkit-form-multiselect-selected-item': {
     display: 'block',
     overflow: 'auto',

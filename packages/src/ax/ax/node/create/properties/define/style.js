@@ -2,7 +2,8 @@
  * Define style attribute on element, with style
  * being a string or an object.
  */
-ax.node.create.properties.define.style = function (element, style) {
+ax.node.create.properties.define.style = function (element) {
+  let style = element.$ax.style;
   if (ax.is.object(style)) {
     let result = '';
     for (let key of Object.keys(style)) {
