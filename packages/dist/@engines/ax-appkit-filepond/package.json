@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit-filepond",
+  "version": "0.0.26",
   "description": "An Ax extension for Filepond.",
   "main": "ax-appkit-filepond.js",
   "repository": {

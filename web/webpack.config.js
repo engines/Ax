@@ -3,15 +3,6 @@ const resolve = require('path').resolve,
 
 module.exports = {
   devServer: {
-
-    // disableHostCheck: true,
-    // transportMode: 'ws',
-    // injectClient: false,
-    // https: false,
-    // port: 8080,
-    // overlay: true,
-    // public: 'http://localhost:8080',
-
     contentBase: [
       resolve(__dirname, "public"),
       resolve(__dirname, "node_modules")

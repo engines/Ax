@@ -1615,7 +1615,6 @@ ax.extension.router.interface.mount = (setup) => {
       },
 
       $load: (el) => {
-        console.log(el);
         return (path, query, anchor) => {
           config.path = path;
           config.query = query;
