@@ -14,7 +14,7 @@ const a = ax.a,
   x = ax.x,
   is = ax.is;
 
-ax.extension.button = function (options = {}) {
+ax.extensions.button = function (options = {}) {
   let a = ax.a;
 
   let handler = options.onclick || (() => () => {});
@@ -53,7 +53,7 @@ ax.extension.button = function (options = {}) {
   return a.button(label, buttonTag);
 };
 
-ax.extension.check = function (options = {}) {
+ax.extensions.check = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -74,20 +74,21 @@ ax.extension.check = function (options = {}) {
   };
 
   let labelTagOptions = {
+    $nodes: [options.label || ''],
     for: inputId,
     ...options.labelTag,
   };
 
   return a['ax-appkit-check'](
     [
-      a.input(null, inputTagOptions),
-      a.label(options.label || '', labelTagOptions),
+      a.input(inputTagOptions),
+      a.label(labelTagOptions),
     ],
-    options.checkTag
+    options.checkTag || {}
   );
 };
 
-ax.extension.cycle = function (options = {}) {
+ax.extensions.cycle = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -112,12 +113,12 @@ ax.extension.cycle = function (options = {}) {
     ...options.cycleTag,
   };
 
-  return a['ax-appkit-cycle'](null, cycleTag);
+  return a['ax-appkit-cycle'](cycleTag);
 };
 
-ax.extension.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();
+ax.extensions.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();
 
-ax.extension.form = function (options = {}) {
+ax.extensions.form = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -130,10 +131,11 @@ ax.extension.form = function (options = {}) {
   return f.form(options);
 };
 
-ax.extension.out = function (value, options = {}) {
+ax.extensions.out = function (value, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
+  let outTag = options.outTag || {}
   let component;
 
   if (ax.is.undefined(value)) {
@@ -156,10 +158,10 @@ ax.extension.out = function (value, options = {}) {
     }
   }
 
-  return a['ax-appkit-out'](component, options.outTag);
+  return a['ax-appkit-out'](component, outTag);
 };
 
-ax.extension.report = function (options = {}) {
+ax.extensions.report = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -172,7 +174,7 @@ ax.extension.report = function (options = {}) {
   return r.report(options);
 };
 
-ax.extension.router = (options = {}) => (a, x) => {
+ax.extensions.router = (options = {}) => (a, x) => {
   if (options.home) {
     if (window.location.pathname.match(/^$|^\/$/)) {
       window.history.replaceState({}, 'Home', options.home);
@@ -182,86 +184,7 @@ ax.extension.router = (options = {}) => (a, x) => {
   return ax.x.router.element(options);
 };
 
-ax.extension.table = function (options = {}) {
-  let a = ax.a;
-
-  let component = [];
-
-  let trTag = (i, row) => {
-    if (ax.is.function(options.trTag)) {
-      return options.trTag(i, row);
-    } else {
-      return options.trTag;
-    }
-  };
-
-  let thTag = (i, j, content) => {
-    if (ax.is.function(options.thTag)) {
-      return options.thTag(i, j, content);
-    } else {
-      return options.thTag;
-    }
-  };
-
-  let tdTag = (i, j, content) => {
-    if (ax.is.function(options.tdTag)) {
-      return options.tdTag(i, j, content);
-    } else {
-      return options.tdTag;
-    }
-  };
-
-  let headers;
-  if (options.headers == false) {
-    headers = {
-      rows: [],
-      cols: [],
-    };
-  } else if (options.headers == true || !options.headers) {
-    headers = {
-      rows: [0],
-      cols: [],
-    };
-  } else {
-    headers = {
-      rows: options.headers.rows || [],
-      cols: options.headers.cols || [],
-    };
-  }
-
-  let tableCellFor = (i, j, content) => {
-    if (headers.rows.includes(i)) {
-      let attributes = {
-        scope: col,
-        ...thTag(i, j, content),
-      };
-      return a.th(content, attributes);
-    } else if (headers.cols.includes(j)) {
-      let attributes = {
-        scope: row,
-        ...thTag(i, j, content),
-      };
-      return a.th(content, attributes);
-    } else {
-      return a.td(content, tdTag(i, j, content));
-    }
-  };
-
-  (options.rows || []).forEach(function (row, i) {
-    component.push(
-      a.tr(
-        row.map(function (content, j) {
-          return tableCellFor(i, j, content);
-        }),
-        trTag(i, row)
-      )
-    );
-  });
-
-  return a.table(component, options.tableTag);
-};
-
-ax.extension.time = function (options = {}) {
+ax.extensions.time = function (options = {}) {
   const a = ax.a;
 
   let timeTag = {
@@ -270,21 +193,21 @@ ax.extension.time = function (options = {}) {
     ...options.timeTag,
   };
 
-  return a.time(null, timeTag);
+  return a.time(timeTag);
 };
 
-ax.extension.transition = {};
+ax.extensions.transition = {};
 
 ax.AxAppkitFetch = class {
   constructor(options = {}) {
-    this.multiple = this.determineMultiple(options);
+    this.fetchCount = this.determineFetchCount(options);
+    this.multiple = this.isMultiple(options);
     this.url = options.url;
     this.method = options.method;
     this.query = options.query;
     this.headers = options.headers;
     this.body = options.body;
-    this.placeholder = options.placeholder || null;
-    // this.id = options.fetchTagId || null;
+    this.placeholder = options.placeholder || '';
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -293,28 +216,33 @@ ax.AxAppkitFetch = class {
     this.completeCallback = options.complete;
   }
 
-  determineMultiple(options) {
+  determineFetchCount(options) {
     return Math.max(
       ...['url', 'method', 'query', 'method', 'headers', 'body'].map((key) =>
-        is.array(options[key]) ? options[key].length : 0
+        ax.is.array(options[key]) ? options[key].length : 0
       )
     );
   }
 
+  isMultiple(options) {
+    return ['url', 'method', 'query', 'method', 'headers', 'body'].some((key) =>
+      ax.is.array(options[key])
+    );
+  }
+
   render() {
-    return a['ax-appkit-fetch'](this.placeholder, {
+    return ax.a['ax-appkit-fetch'](this.placeholder, {
       $init: (el) => {
         this.element = el;
         this.init();
       },
-      // id: this.fetchTagId,
       ...this.fetchTag,
     });
   }
 
   init() {
     // No fetches when url is empty array.
-    if (is.array(this.url) && this.url.length == 0) {
+    if (this.multiple && this.fetchCount == 0) {
       this.renderSuccessResult([]);
       this.callComplete();
       return;
@@ -329,7 +257,7 @@ ax.AxAppkitFetch = class {
 
   performFetches() {
     return Promise.all(
-      [...Array(this.multiple || 1)].map((_, i) => {
+      [...Array(this.fetchCount || 1)].map((_, i) => {
         let url = this.propertyFor('url', i);
         let query = this.propertyFor('query', i);
         if (query) url = `${url}?${x.lib.query.stringify(query)}`;
@@ -348,7 +276,7 @@ ax.AxAppkitFetch = class {
   }
 
   propertyFor(key, i) {
-    return is.array(this[key]) ? this[key][i] : this[key];
+    return ax.is.array(this[key]) ? this[key][i] : this[key];
   }
 
   buildResults(responses) {
@@ -394,12 +322,9 @@ ax.AxAppkitFetch = class {
       let status = result.status;
       let contentType = result.contentType;
       if (this.preprocessWhen[status])
-        body =
-          this.preprocessWhen[status](body, this.element, response) || null;
+        body = this.preprocessWhen[status](body, this.element, response);
       if (this.preprocessWhen[contentType])
-        body =
-          this.preprocessWhen[contentType](body, this.element, response) ||
-          null;
+        body = this.preprocessWhen[contentType](body, this.element, response);
       result.body = body;
       return result;
     });
@@ -418,50 +343,44 @@ ax.AxAppkitFetch = class {
     if (this.errorCallback) {
       let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
-      let returnedElement = this.errorCallback(body, this.element, response);
-      if (returnedElement) this.element.$nodes = returnedElement;
+      let node = this.errorCallback(body, this.element, response);
+      this.element.$nodes = [node];
     } else {
-      this.element.$nodes = () => a['ax-appkit-fetch-response.error'](bodies);
+      this.element.$nodes = [ax.a['ax-appkit-fetch-response.error'](bodies)];
     }
   }
 
   renderSuccessResult(results) {
     let bodies = results.map((result) => result.body);
     let responses = results.map((result) => result.response);
+    let body = this.multiple ? bodies : bodies[0];
     if (this.successCallback) {
-      let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
       try {
-        let returnedElement = this.successCallback(
-          body,
-          this.element,
-          response
-        );
-        if (returnedElement) {
-          this.element.$nodes = () => returnedElement;
-        } else {
-          this.element.$nodes = [];
-        }
+        let node = this.successCallback(body, this.element, response);
+        this.element.$nodes = [node];
       } catch (err) {
         console.error(err);
         this.element.$nodes = [];
       }
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.success'](
-        a.pre(JSON.stringify(this.multiple ? bodies : bodies[0], null, 2))
-      );
+      this.element.$nodes = [
+        ax.a['ax-appkit-fetch-response.success'](
+          ax.a.pre(JSON.stringify(body, null, 2))
+        )
+      ];
     }
   }
 
   renderCatch(error) {
     console.error(error);
     if (this.catchCallback) {
-      let returnedElement = this.catchCallback(error, this.element);
-      if (returnedElement) this.element.$nodes = () => returnedElement;
+      let node = this.catchCallback(error, this.element);
+      this.element.$nodes = [node];
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.error'](
+      this.element.$nodes = [ax.a['ax-appkit-fetch-response.error'](
         a.pre(error.message)
-      );
+      )];
     }
   }
 
@@ -470,7 +389,7 @@ ax.AxAppkitFetch = class {
   }
 };
 
-ax.extension.form.factory = function (options) {
+ax.extensions.form.factory = function (options) {
   let shims = [this.shim, ...(options.formOptions.shims || [])];
 
   return new (function () {
@@ -499,7 +418,7 @@ ax.extension.form.factory = function (options) {
   })();
 };
 
-ax.extension.form.shim = {
+ax.extensions.form.shim = {
   form: (f) => (options) => ax.x.form.factory.form(f, options),
   input: (f) => (options) => ax.x.form.factory.input(options),
   select: (f) => (options) => ax.x.form.factory.select(options),
@@ -512,13 +431,13 @@ ax.extension.form.shim = {
   cancel: (f) => (options) => ax.x.form.factory.cancel(f, options),
 };
 
-ax.extension.lib.animate = {};
+ax.extensions.lib.animate = {};
 
-ax.extension.lib.array = {};
+ax.extensions.lib.array = {};
 
-ax.extension.lib.coerce = {};
+ax.extensions.lib.coerce = {};
 
-ax.extension.lib.compact = function (value) {
+ax.extensions.lib.compact = function (value) {
   let compact = ax.x.lib.compact;
 
   if (ax.is.array(value)) {
@@ -526,23 +445,23 @@ ax.extension.lib.compact = function (value) {
   } else if (ax.is.object(value)) {
     return compact.object(value);
   } else if (['', undefined, null].includes(value)) {
-    return null;
+    return '';
   } else {
     return value;
   }
 };
 
-ax.extension.lib.element = {};
+ax.extensions.lib.element = {};
 
-ax.extension.lib.form = {};
+ax.extensions.lib.form = {};
 
-ax.extension.lib.name = {};
+ax.extensions.lib.name = {};
 
-ax.extension.lib.object = {};
+ax.extensions.lib.object = {};
 
-ax.extension.lib.query = {};
+ax.extensions.lib.query = {};
 
-ax.extension.lib.tabable = function (element) {
+ax.extensions.lib.tabable = function (element) {
   if (element.tabIndex >= 0 && ax.x.lib.element.visible(element)) {
     return true;
   } else {
@@ -550,9 +469,9 @@ ax.extension.lib.tabable = function (element) {
   }
 };
 
-ax.extension.lib.text = {};
+ax.extensions.lib.text = {};
 
-ax.extension.lib.unnested = function (el, tag) {
+ax.extensions.lib.unnested = function (el, tag) {
   let controls = el.$$(tag).$$;
   let result = [];
 
@@ -571,9 +490,9 @@ ax.extension.lib.unnested = function (el, tag) {
   return result;
 };
 
-ax.extension.lib.uuid = {};
+ax.extensions.lib.uuid = {};
 
-ax.extension.out.element = function (value) {
+ax.extensions.out.element = function (value) {
   let a = ax.a;
   let x = ax.x;
 
@@ -584,7 +503,7 @@ ax.extension.out.element = function (value) {
   } else if (ax.is.null(value)) {
     return a['ax-appkit-out-null'](null);
   } else if (ax.is.undefined(value)) {
-    return a['ax-appkit-out-null'](a.i('UNDEFINED'));
+    return a['ax-appkit-out-undefined'](a.i('UNDEFINED'));
   } else if (ax.is.function(value)) {
     return a['ax-appkit-out-function'](`𝑓 ${value}`);
   } else if (ax.is.object(value)) {
@@ -604,7 +523,7 @@ ax.extension.out.element = function (value) {
   }
 };
 
-ax.extension.report.factory = function (options) {
+ax.extensions.report.factory = function (options) {
   let shims = [this.shim, ...(options.reportOptions.shims || [])];
 
   return new (function () {
@@ -633,7 +552,7 @@ ax.extension.report.factory = function (options) {
   })();
 };
 
-ax.extension.report.shim = {
+ax.extensions.report.shim = {
   report: (r) => (options) => ax.x.report.factory.report(r, options),
   button: (r) => (options) => ax.x.report.factory.button(options),
   checkbox: (r) => (options) => ax.x.report.factory.checkbox(options),
@@ -645,23 +564,23 @@ ax.extension.report.shim = {
   text: (r) => (options) => ax.x.report.factory.text(options),
 };
 
-ax.extension.router.element = (options) => {
+ax.extensions.router.element = (options) => {
   let routerTag = {
     id: options.id,
-    $init: ax.extension.router.element.init,
-    $nodes: ax.extension.router.element.nodes(options),
-    $pop: ax.extension.router.element.pop,
-    $open: ax.extension.router.element.open(options),
-    $locate: ax.extension.router.element.locate,
-    $location: ax.extension.router.element.location,
-    $load: ax.extension.router.element.load,
+    $init: ax.extensions.router.element.init,
+    $nodes: ax.extensions.router.element.nodes(options),
+    $pop: ax.extensions.router.element.pop,
+    $open: ax.extensions.router.element.open(options),
+    $locate: ax.extensions.router.element.locate,
+    $location: ax.extensions.router.element.location,
+    $load: ax.extensions.router.element.load,
     ...options.routerTag,
   };
 
-  return a['ax-appkit-router']([], routerTag);
+  return a['ax-appkit-router'](routerTag);
 };
 
-ax.extension.router.interface = (config) => {
+ax.extensions.router.interface = (config) => {
   let result = {};
   result.path = config.path;
   result.query = config.query;
@@ -682,14 +601,14 @@ ax.extension.router.interface = (config) => {
   return result;
 };
 
-ax.extension.transition.fade = function (options = {}) {
+ax.extensions.transition.fade = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
   let duration = (options.duration || 500) / 2;
-
-  return a['ax-appkit-transition'](null, {
+  return a['ax-appkit-transition']({
     $init: (el) => {
+
       el.style.display = 'none';
       if (options.initial) {
         el.$in(options.initial);
@@ -728,13 +647,13 @@ ax.extension.transition.fade = function (options = {}) {
   });
 };
 
-ax.extension.form.factory.button = function (options = {}) {
+ax.extensions.form.factory.button = function (options = {}) {
   let x = ax.x;
 
   return x.button(options);
 };
 
-ax.extension.form.factory.cancel = (f, options = {}) => {
+ax.extensions.form.factory.cancel = (f, options = {}) => {
   let label = options.label || '✖️ Cancel';
 
   let onclick =
@@ -756,7 +675,7 @@ ax.extension.form.factory.cancel = (f, options = {}) => {
   return f.button(buttonOptions);
 };
 
-ax.extension.form.factory.checkbox = function (options = {}) {
+ax.extensions.form.factory.checkbox = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -773,11 +692,11 @@ ax.extension.form.factory.checkbox = function (options = {}) {
       labelTag: options.labelTag,
       checkTag: options.checkTag,
     }),
-    options.checkboxTag
+    options.checkboxTag || {}
   );
 };
 
-ax.extension.form.factory.checkboxes = function (options = {}) {
+ax.extensions.form.factory.checkboxes = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -812,17 +731,17 @@ ax.extension.form.factory.checkboxes = function (options = {}) {
         checkTag: options.checkTag,
       });
     }),
-    options.checkboxesTag
+    options.checkboxesTag || {}
   );
 };
 
-ax.extension.form.factory.form = (f, options = {}) => {
+ax.extensions.form.factory.form = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
-  let form = options.form || (() => null);
+  let form = options.form || (() => '');
 
-  let formTagOptions = {
+  let formTag = {
     id: options.id,
     method: options.method || 'POST',
     action: options.url || options.action,
@@ -832,21 +751,21 @@ ax.extension.form.factory.form = (f, options = {}) => {
     ...options.formTag,
   };
 
-  return a.form(form(f), formTagOptions);
+  return a.form(form(f), formTag);
 };
 
-ax.extension.form.factory.input = function (options = {}) {
+ax.extensions.form.factory.input = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let datalist = null;
+  let datalist = '';
   let datalistId;
 
   if (options.datalist) {
     datalistId = x.lib.uuid.generate();
     datalist = a.datalist(
       options.datalist.map((item) =>
-        a.option(null, {
+        a.option({
           value: item,
         })
       ),
@@ -877,12 +796,12 @@ ax.extension.form.factory.input = function (options = {}) {
   };
 
   return a['ax-appkit-form-input-wrapper'](
-    [a.input([], inputTagOptions), datalist],
-    options.wrapperTag
+    [a.input(inputTagOptions), datalist],
+    options.wrapperTag || {}
   );
 };
 
-ax.extension.form.factory.radios = function (options = {}) {
+ax.extensions.form.factory.radios = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -920,11 +839,11 @@ ax.extension.form.factory.radios = function (options = {}) {
         checkTag: options.checkTag,
       });
     }),
-    options.radiosTag
+    options.radiosTag || {}
   );
 };
 
-ax.extension.form.factory.select = function (options = {}) {
+ax.extensions.form.factory.select = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -953,11 +872,11 @@ ax.extension.form.factory.select = function (options = {}) {
 
   return a['ax-appkit-form-select-wrapper'](
     a.select(this.select.options(options), selectTagOptions),
-    options.wrapperTag
+    options.wrapperTag || {}
   );
 };
 
-ax.extension.form.factory.submit = (f, options = {}) => {
+ax.extensions.form.factory.submit = (f, options = {}) => {
   let label = options.label === false ? '' : options.label || '✔ Submit';
 
   let buttonOptions = {
@@ -975,7 +894,7 @@ ax.extension.form.factory.submit = (f, options = {}) => {
   return f.button(buttonOptions);
 };
 
-ax.extension.form.factory.textarea = function (options = {}) {
+ax.extensions.form.factory.textarea = function (options = {}) {
   let a = ax.a;
 
   let value = options.value || '';
@@ -990,31 +909,31 @@ ax.extension.form.factory.textarea = function (options = {}) {
 
   return a['ax-appkit-form-textarea-wrapper'](
     a.textarea(value, textareaTagOptions),
-    options.wrapperTag
+    options.wrapperTag || {}
   );
 };
 
-ax.extension.lib.animate.fade = {};
+ax.extensions.lib.animate.fade = {};
 
-ax.extension.lib.coerce.boolean = function (value) {
+ax.extensions.lib.coerce.boolean = function (value) {
   value = value || false;
   let string = value.toString().toLowerCase();
   return value && string !== 'false' && string !== 'off' && string !== '0';
 };
 
-ax.extension.lib.coerce.number = function (value) {
+ax.extensions.lib.coerce.number = function (value) {
   return Number(value) || 0;
 };
 
-ax.extension.lib.coerce.string = function (value) {
+ax.extensions.lib.coerce.string = function (value) {
   return ax.is.undefined(value) ? '' : String(value);
 };
 
-ax.extension.lib.compact.array = function (array) {
+ax.extensions.lib.compact.array = function (array) {
   return array.map((value) => this(value)).filter((value) => value != null);
 };
 
-ax.extension.lib.compact.object = function (object) {
+ax.extensions.lib.compact.object = function (object) {
   for (const key in object) {
     object[key] = this(object[key]);
     if (
@@ -1028,7 +947,7 @@ ax.extension.lib.compact.object = function (object) {
   return object;
 };
 
-ax.extension.lib.element.visible = function (element) {
+ax.extensions.lib.element.visible = function (element) {
   return !!(
     element.offsetWidth ||
     element.offsetHeight ||
@@ -1036,11 +955,11 @@ ax.extension.lib.element.visible = function (element) {
   );
 };
 
-ax.extension.lib.form.collection = {};
+ax.extensions.lib.form.collection = {};
 
-ax.extension.lib.form.data = {};
+ax.extensions.lib.form.data = {};
 
-ax.extension.lib.form.selections = function (selections) {
+ax.extensions.lib.form.selections = function (selections) {
   if (ax.is.array(selections)) {
     selections = selections.map(function (selection) {
       if (ax.is.array(selection)) {
@@ -1075,12 +994,12 @@ ax.extension.lib.form.selections = function (selections) {
   return selections;
 };
 
-ax.extension.lib.name.dismantle = (string) =>
+ax.extensions.lib.name.dismantle = (string) =>
   (string.match(/\w+|\[\w*\]|\[\.\.\]/g) || []).map((part) =>
     part.replace(/\[|\]/g, '')
   );
 
-ax.extension.lib.object.assign = function (object, keys, value) {
+ax.extensions.lib.object.assign = function (object, keys, value) {
   if (keys.length) {
     let key = keys.shift();
     object[key] = this.assign(object[key] || {}, keys, value);
@@ -1090,37 +1009,37 @@ ax.extension.lib.object.assign = function (object, keys, value) {
   }
 };
 
-ax.extension.lib.object.dig = function (
+ax.extensions.lib.object.dig = function (
   object,
   keys = [],
-  defaultValue = null
+  defaultValue = undefined
 ) {
   let result = object;
 
   for (let key in keys) {
-    if (result == null) {
+    if (result == undefined) {
       return defaultValue;
     } else {
-      result = result[keys[key]] || null;
+      result = result[keys[key]] || undefined;
     }
   }
 
   return result || defaultValue;
 };
 
-ax.extension.lib.object.omit = function (obj, keys) {
+ax.extensions.lib.object.omit = function (obj, keys) {
   return Object.keys(obj)
     .filter((key) => keys.indexOf(key) < 0)
     .reduce((result, key) => ((result[key] = obj[key]), result));
 };
 
-ax.extension.lib.object.pick = function (obj, keys) {
+ax.extensions.lib.object.pick = function (obj, keys) {
   return keys
     .filter((key) => key in obj)
     .reduce((result, key) => ((result[key] = obj[key]), result));
 };
 
-ax.extension.lib.query.parse = function (queryString) {
+ax.extensions.lib.query.parse = function (queryString) {
   var result = {};
 
   if (queryString) {
@@ -1134,7 +1053,7 @@ ax.extension.lib.query.parse = function (queryString) {
   return result;
 };
 
-ax.extension.lib.query.stringify = function (object, options = {}) {
+ax.extensions.lib.query.stringify = function (object, options = {}) {
   let queryString = [];
   let property;
 
@@ -1154,7 +1073,7 @@ ax.extension.lib.query.stringify = function (object, options = {}) {
   return queryString.join('&');
 };
 
-ax.extension.lib.tabable.next = function (element) {
+ax.extensions.lib.tabable.next = function (element) {
   let elements = Array.from(window.document.querySelectorAll('*'));
 
   // start search at last child node
@@ -1177,7 +1096,7 @@ ax.extension.lib.tabable.next = function (element) {
   return target;
 };
 
-ax.extension.lib.tabable.previous = function (element) {
+ax.extensions.lib.tabable.previous = function (element) {
   let elements = Array.from(window.document.querySelectorAll('*'));
 
   let index = elements.indexOf(element);
@@ -1197,19 +1116,19 @@ ax.extension.lib.tabable.previous = function (element) {
   return target;
 };
 
-ax.extension.lib.text.capitalize = function (string = '') {
+ax.extensions.lib.text.capitalize = function (string = '') {
   return string.toString().charAt(0).toUpperCase() + string.slice(1);
 };
 
-ax.extension.lib.text.humanize = function (string = '') {
+ax.extensions.lib.text.humanize = function (string = '') {
   return string.toString().replace(/_/g, ' ');
 };
 
-ax.extension.lib.text.labelize = function (string = '') {
+ax.extensions.lib.text.labelize = function (string = '') {
   return this.capitalize(this.humanize(string));
 };
 
-ax.extension.lib.uuid.generate = function () {
+ax.extensions.lib.uuid.generate = function () {
   return '00000000-0000-4000-0000-000000000000'.replace(/0/g, (c) =>
     (
       c ^
@@ -1218,13 +1137,13 @@ ax.extension.lib.uuid.generate = function () {
   );
 };
 
-ax.extension.report.factory.button = function (options = {}) {
+ax.extensions.report.factory.button = function (options = {}) {
   let x = ax.x;
 
   return x.button(options);
 };
 
-ax.extension.report.factory.checkbox = function (options = {}) {
+ax.extensions.report.factory.checkbox = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1246,7 +1165,7 @@ ax.extension.report.factory.checkbox = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.checkboxes = function (options = {}) {
+ax.extensions.report.factory.checkboxes = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1284,7 +1203,7 @@ ax.extension.report.factory.checkboxes = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.output = function (options = {}) {
+ax.extensions.report.factory.output = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1300,7 +1219,7 @@ ax.extension.report.factory.output = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.radios = function (options = {}) {
+ax.extensions.report.factory.radios = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1342,11 +1261,11 @@ ax.extension.report.factory.radios = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.report = (r, options = {}) => {
+ax.extensions.report.factory.report = (r, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
-  let report = options.report || (() => null);
+  let report = options.report || (() => '');
 
   let reportTagOptions = {
     ...options.reportTag,
@@ -1355,7 +1274,7 @@ ax.extension.report.factory.report = (r, options = {}) => {
   return a['ax-appkit-report'](report(r), reportTagOptions);
 };
 
-ax.extension.report.factory.select = function (options = {}) {
+ax.extensions.report.factory.select = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1395,7 +1314,7 @@ ax.extension.report.factory.select = function (options = {}) {
   });
 };
 
-ax.extension.report.factory.string = function (options = {}) {
+ax.extensions.report.factory.string = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1417,7 +1336,7 @@ ax.extension.report.factory.string = function (options = {}) {
   });
 };
 
-ax.extension.report.factory.text = function (options = {}) {
+ax.extensions.report.factory.text = function (options = {}) {
   let a = ax.a;
 
   let component;
@@ -1435,22 +1354,22 @@ ax.extension.report.factory.text = function (options = {}) {
       readonly: true,
       ...options.textareaTag,
     }),
-    options.textTag
+    options.textTag || {}
   );
 };
 
-ax.extension.router.element.init = (el) => {
+ax.extensions.router.element.init = (el) => {
   window.addEventListener('popstate', el.$pop);
 };
 
-ax.extension.router.element.load = (el) => (path, query, anchor) => {
+ax.extensions.router.element.load = (el) => (path, query, anchor) => {
   let mounted = x.lib.unnested(el, 'ax-appkit-router-mount');
   mounted.forEach((r) => {
     r.$load(path, query, anchor);
   });
 };
 
-ax.extension.router.element.locate = (el) => (path, query, anchor) => {
+ax.extensions.router.element.locate = (el) => (path, query, anchor) => {
   path = path || '/';
 
   query = x.lib.query.stringify(query);
@@ -1470,7 +1389,7 @@ ax.extension.router.element.locate = (el) => (path, query, anchor) => {
   dispatchEvent(event);
 };
 
-ax.extension.router.element.location = (el) => () => {
+ax.extensions.router.element.location = (el) => () => {
   let location = window.location;
 
   return {
@@ -1480,7 +1399,7 @@ ax.extension.router.element.location = (el) => () => {
   };
 };
 
-ax.extension.router.element.nodes = (options) => (el) => {
+ax.extensions.router.element.nodes = (options) => (el) => {
   let start = el.$location();
 
   let config = {
@@ -1507,7 +1426,7 @@ ax.extension.router.element.nodes = (options) => (el) => {
   }
 };
 
-ax.extension.router.element.open = (options) => (el) => (
+ax.extensions.router.element.open = (options) => (el) => (
   path,
   query,
   anchor
@@ -1518,14 +1437,14 @@ ax.extension.router.element.open = (options) => (el) => (
   el.$locate(path, query, anchor);
 };
 
-ax.extension.router.element.pop = (el) => () => {
+ax.extensions.router.element.pop = (el) => () => {
   let location = el.$location();
   el.$load(location.path, location.query, location.anchor);
   el.$send('ax.appkit.router.pop');
 };
 
-ax.extension.router.interface.load = (config) =>
-  function (locator = '', query = {}, anchor = null) {
+ax.extensions.router.interface.load = (config) =>
+  function (locator = '', query = {}, anchor) {
     let path = window.location.pathname;
 
     if (locator) {
@@ -1543,7 +1462,7 @@ ax.extension.router.interface.load = (config) =>
     config.router.$load(path, query, anchor);
   };
 
-ax.extension.router.interface.mount = (setup) => {
+ax.extensions.router.interface.mount = (setup) => {
   return (options = {}) => {
     let a = ax.a;
     let x = ax.x;
@@ -1615,7 +1534,6 @@ ax.extension.router.interface.mount = (setup) => {
       },
 
       $load: (el) => {
-        console.log(el);
         return (path, query, anchor) => {
           config.path = path;
           config.query = query;
@@ -1652,14 +1570,14 @@ ax.extension.router.interface.mount = (setup) => {
       ...options.mountTag,
     };
 
-    return a['ax-appkit-router-mount'](null, mountTag);
+    return a['ax-appkit-router-mount'](mountTag);
   };
 };
 
-ax.extension.router.interface.open = (config) => (
+ax.extensions.router.interface.open = (config) => (
   locator = '',
   query = {},
-  anchor = null
+  anchor
 ) => {
   let path = window.location.pathname;
 
@@ -1675,7 +1593,7 @@ ax.extension.router.interface.open = (config) => (
   config.router.$open(path, query, anchor);
 };
 
-ax.extension.form.factory.select.options = function (options) {
+ax.extensions.form.factory.select.options = function (options) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1730,7 +1648,7 @@ ax.extension.form.factory.select.options = function (options) {
   });
 };
 
-ax.extension.lib.animate.fade.in = function (el, options = {}) {
+ax.extensions.lib.animate.fade.in = function (el, options = {}) {
   let duration = options.duration || 250;
   el.style.transition = `opacity 0ms`;
   el.style.opacity = 0;
@@ -1747,7 +1665,7 @@ ax.extension.lib.animate.fade.in = function (el, options = {}) {
   }, 10);
 };
 
-ax.extension.lib.animate.fade.out = function (el, options = {}) {
+ax.extensions.lib.animate.fade.out = function (el, options = {}) {
   let duration = options.duration || 250;
   el.style.transition = `opacity 0ms`;
   el.style.opacity = 1;
@@ -1764,7 +1682,7 @@ ax.extension.lib.animate.fade.out = function (el, options = {}) {
   }, 10);
 };
 
-ax.extension.lib.animate.fade.toggle = function (el, options = {}) {
+ax.extensions.lib.animate.fade.toggle = function (el, options = {}) {
   if (el.style.display === 'none') {
     this.in(el, options);
   } else {
@@ -1772,7 +1690,7 @@ ax.extension.lib.animate.fade.toggle = function (el, options = {}) {
   }
 };
 
-ax.extension.lib.form.collection.value = function (value) {
+ax.extensions.lib.form.collection.value = function (value) {
   if (ax.is.array(value)) {
     return value;
   } else if (value) {
@@ -1782,7 +1700,7 @@ ax.extension.lib.form.collection.value = function (value) {
   }
 };
 
-ax.extension.lib.form.data.objectify = function (data) {
+ax.extensions.lib.form.data.objectify = function (data) {
   let x = ax.x;
   let object = {};
 
@@ -1793,12 +1711,12 @@ ax.extension.lib.form.data.objectify = function (data) {
   return object;
 };
 
-ax.extension.lib.form.data.stringify = function (data) {
+ax.extensions.lib.form.data.stringify = function (data) {
   let x = ax.x;
   return JSON.stringify(x.lib.form.data.objectify(data));
 };
 
-ax.extension.lib.form.data.urlencoded = function (data) {
+ax.extensions.lib.form.data.urlencoded = function (data) {
   let x = ax.x;
   let parts = [];
 
@@ -1809,7 +1727,10 @@ ax.extension.lib.form.data.urlencoded = function (data) {
   return parts.join('&');
 };
 
-ax.extension.router.interface.mount.transition = (transition, options = {}) => {
+ax.extensions.router.interface.mount.transition = (
+  transition,
+  options = {}
+) => {
   if (ax.is.string(transition)) {
     return ax.x.transition[transition](options);
   } else if (ax.is.array(transition)) {
@@ -1823,7 +1744,7 @@ ax.extension.router.interface.mount.transition = (transition, options = {}) => {
   }
 };
 
-ax.extension.router.interface.mount.view = (config, mountElement) => {
+ax.extensions.router.interface.mount.view = (config, mountElement) => {
   let scope = config.scope || '';
   let scopedpath = config.path.slice(scope.length);
   let match = config.match || {};
@@ -1893,12 +1814,12 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
 
   return {
     matched: matched,
-    component: ax.a['ax-appkit-router-view'](component),
+    component: ax.a['ax-appkit-router-view']([component]),
     scope: scope,
   };
 };
 
-ax.extension.router.interface.mount.view.match = (routesKey, scopedpath) => {
+ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
   let params = {};
   let splat = [];
   let slash;
@@ -1936,11 +1857,11 @@ ax.extension.router.interface.mount.view.match = (routesKey, scopedpath) => {
       scope: scope,
     };
   } else {
-    return null;
+    return '';
   }
 };
 
-ax.extension.router.interface.mount.view.match.regexp = (route) => {
+ax.extensions.router.interface.mount.view.match.regexp = (route) => {
   let routeRegexp = route
     .replace(/\*$/, '&&catchall&&')
     .replace(/\*/g, '&&wildcard&&')

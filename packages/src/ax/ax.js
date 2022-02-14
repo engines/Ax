@@ -5,8 +5,8 @@
  * The default insertion method is to append a child. Set options.method
  * 'replaceWith' to replace the target, or 'prependChild' to prepend a child.
  */
-let ax = (component, options = {}) => {
-  let element = ax.node(component);
+let ax = function (node, options = {}) {
+  let element = ax.node(node);
   let insert = () => ax.insert(element, options);
 
   // Ensure that the document is ready to write to.

@@ -10,29 +10,52 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.panes = (options = {}) => {
+ax.extensions.panes = (options = {}) => {
   let a = ax.a;
 
-  let proximate = options.proximate || null;
-  let adjacent = options.adjacent || null;
+  let proximate = options.proximate || '';
+  let adjacent = options.adjacent || '';
   let orientation = options.vertical ? 'vertical' : 'horizontal';
+
+  let listeners
+
+  let clear = (el) => (e) => {
+    el.classList.remove('dragable');
+    window.document.removeEventListener('mousemove', listeners.mousemove);
+    window.document.removeEventListener('mouseup', listeners.mouseup);
+  }
+
+  let move = (el) => (e) => {
+    if (e.target != document) {
+      let percent;
+      if (options.vertical) {
+        let position = el.clientHeight - (e.clientY - el.offsetTop);
+        percent = (100 * position) / el.clientHeight;
+      } else {
+        let position = el.clientWidth - (e.clientX - el.offsetLeft);
+        percent = 100 * (1 - position / el.clientWidth);
+      }
+      el.$percent = percent;
+      el.$resize();
+    }
+  }
+
 
   return a['ax-appkit-panes'](
     [
       a['ax-appkit-panes-proximate'](proximate),
-      a['ax-appkit-panes-drag'](null, {
+      a['ax-appkit-panes-drag']({
         $on: {
           mousedown: (el) => (e) => {
             e.preventDefault();
-            el.$('^ax-appkit-panes').classList.add('dragable');
-            window.document.addEventListener(
-              'mousemove',
-              el.$('^ax-appkit-panes').$move
-            );
-            window.document.addEventListener(
-              'mouseup',
-              el.$('^ax-appkit-panes').$clear
-            );
+            let panesEl = el.$('^ax-appkit-panes')
+            panesEl.classList.add('dragable');
+            listeners = {
+              mousemove: move(panesEl),
+              mouseup: clear(panesEl)
+            }
+            window.document.addEventListener('mousemove', listeners.mousemove);
+            window.document.addEventListener('mouseup', listeners.mouseup);
           },
         },
       }),
@@ -70,26 +93,6 @@ ax.extension.panes = (options = {}) => {
           },
         });
       },
-      $move: (el) => (e) => {
-        if (e.target != document) {
-          let percent;
-
-          if (options.vertical) {
-            let position = el.clientHeight - (e.clientY - el.offsetTop);
-            percent = (100 * position) / el.clientHeight;
-          } else {
-            let position = el.clientWidth - (e.clientX - el.offsetLeft);
-            percent = 100 * (1 - position / el.clientWidth);
-          }
-          el.$percent = percent;
-          el.$resize();
-        }
-      },
-      $clear: (el) => () => {
-        el.classList.remove('dragable');
-        window.document.removeEventListener('mousemove', el.$move);
-        window.document.removeEventListener('mouseup', el.$clear);
-      },
       ...options.panesTag,
     }
   );
@@ -97,84 +100,107 @@ ax.extension.panes = (options = {}) => {
 
 ax.css({
   'ax-appkit-panes': {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-
-    'ax-appkit-panes-proximate': {
-      display: 'block',
-      position: 'absolute',
-      left: 0,
+    $: {
+      position: 'fixed',
       top: 0,
+      left: 0,
+      right: 0,
       bottom: 0,
-      right: 'calc( 50% + 2px )',
-      overflow: 'auto',
+    },
+    'ax-appkit-panes-proximate': {
+      $: {
+        display: 'block',
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 'calc( 50% + 2px )',
+        overflow: 'auto',
+      }
     },
 
     'ax-appkit-panes-adjacent': {
-      display: 'block',
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      bottom: 0,
-      left: 'calc( 50% + 2px )',
-      overflowY: 'auto',
-      overflowX: 'hidden',
+      $: {
+        display: 'block',
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        left: 'calc( 50% + 2px )',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      },
     },
 
     'ax-appkit-panes-drag': {
-      display: 'block',
-      position: 'absolute',
-      left: 'calc( 50% - 2px )',
-      top: 0,
-      bottom: 0,
-      width: '4px',
-      backgroundColor: '#0003',
+      $: {
+        display: 'block',
+        position: 'absolute',
+        left: 'calc( 50% - 2px )',
+        top: 0,
+        bottom: 0,
+        width: '4px',
+        backgroundColor: '#0003',
+      },
       '&:hover': {
-        backgroundColor: '#0006',
+        $: {
+          backgroundColor: '#0006',
+        },
       },
     },
 
     '&.dragable': {
-      cursor: 'grabbing',
+      $: {
+        cursor: 'grabbing',
+      },
       'ax-appkit-panes-drag': {
-        background: '#aaa',
+        $: {
+          background: '#aaa',
+        },
       },
     },
 
     '&:not(.dragable)': {
       'ax-appkit-panes-drag': {
-        cursor: 'ew-resize',
+        $: {
+          cursor: 'ew-resize',
+        },
       },
     },
 
     '&.vertical': {
       'ax-appkit-panes-proximate': {
-        bottom: 'calc( 50% + 2px )',
-        right: 0,
+        $: {
+          right: 0,
+          bottom: 'calc( 50% + 2px )',
+        },
       },
 
       'ax-appkit-panes-adjacent': {
-        left: 0,
-        top: 'calc( 50% + 2px )',
+        $: {
+          left: 0,
+          top: 'calc( 50% + 2px )',
+        },
       },
 
       'ax-appkit-panes-drag': {
-        display: 'block',
-        position: 'absolute',
-        top: 'calc( 50% - 2px )',
-        left: 0,
-        right: 0,
-        height: '4px',
-        width: '100%',
-        background: '#eee',
+        $: {
+          display: 'block',
+          position: 'absolute',
+          top: 'calc( 50% - 2px )',
+          left: 0,
+          right: 0,
+          height: '4px',
+          width: '100%',
+          background: '#eee',
+        },
       },
 
       '&:not(.dragable)': {
         'ax-appkit-panes-drag': {
-          cursor: 'ns-resize',
+          $: {
+            cursor: 'ns-resize',
+          },
         },
       },
     },

@@ -10,11 +10,11 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.form.field = {};
+ax.extensions.form.field = {};
 
-ax.extension.report.field = {};
+ax.extensions.report.field = {};
 
-ax.extension.form.field.button = (target, options = {}) =>
+ax.extensions.form.field.button = (target, options = {}) =>
   target({
     ...options,
     buttonTag: {
@@ -31,7 +31,7 @@ ax.extension.form.field.button = (target, options = {}) =>
     },
   });
 
-ax.extension.form.field.collection = function (f, control, options = {}) {
+ax.extensions.form.field.collection = function (f, control, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -45,20 +45,20 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
             [
               options.moveable
                 ? this.collection.up(f, options.upButton || {})
-                : null,
+                : '',
               options.moveable
                 ? this.collection.down(f, options.downButton || {})
-                : null,
+                : '',
               options.removeable
                 ? this.collection.remove(f, {
                     singular: options.singular,
                     ...options.removeButton,
                   })
-                : null,
+                : '',
             ],
-            options.itemButtonsTag
+            options.itemButtonsTag || {}
           ),
-          options.itemHeaderTag
+          options.itemHeaderTag || {}
         ),
         a['ax-appkit-control-collection-item-body'](
           control({
@@ -66,10 +66,10 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
             name: `${options.name}[]`,
             value: value,
           }),
-          options.itemBodyTag
+          options.itemBodyTag || {}
         ),
       ],
-      options.itemTag
+      options.itemTag || {}
     );
 
   let components = values.map((value) => itemFn(value));
@@ -122,15 +122,15 @@ ax.extension.form.field.collection = function (f, control, options = {}) {
               singular: options.singular,
               ...options.addButton,
             })
-          : null,
+          : '',
       ],
-      options.collectionTag
+      options.collectionTag || {}
     ),
     controlTagOptions
   );
 };
 
-ax.extension.form.field.control = function (f, options = {}) {
+ax.extensions.form.field.control = function (f, options = {}) {
   let controlFn = f.controls[options.as || 'input'];
   if (!controlFn) {
     console.error(`Failed to create form field using options:`, options);
@@ -170,9 +170,9 @@ ax.extension.form.field.control = function (f, options = {}) {
   }
 };
 
-ax.extension.form.field.controls = {};
+ax.extensions.form.field.controls = {};
 
-ax.extension.form.field.field = function (f, options = {}) {
+ax.extensions.form.field.field = function (f, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -193,19 +193,19 @@ ax.extension.form.field.field = function (f, options = {}) {
             // Controls don't normally need labels. Checkbox is exception.
             // Label for checkbox needs to be specified in options.control.
             // options.label and options.labelTag consumed by field.header()
-            label: null,
-            labelTag: null,
+            label: false,
+            labelTag: {},
           }),
           f.hint(options),
         ],
-        options.bodyTag
+        options.bodyTag || {}
       ),
     ],
-    options.fieldTag
+    options.fieldTag || {}
   );
 };
 
-ax.extension.form.field.fieldset = function (f, options = {}) {
+ax.extensions.form.field.fieldset = function (f, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -213,8 +213,8 @@ ax.extension.form.field.fieldset = function (f, options = {}) {
     'ax-appkit-form-control.ax-appkit-form-control-without-value'
   ](
     [
-      options.legend ? a.legend(options.legend, options.legendTag) : null,
-      options.body || null,
+      options.legend ? a.legend(options.legend, options.legendTag || {}) : '',
+      options.body || '',
     ],
     {
       $controls: (el) => () => {
@@ -253,27 +253,28 @@ ax.extension.form.field.fieldset = function (f, options = {}) {
         this.header(f, options),
         a['ax-appkit-form-field-body'](
           [f.help(options), control, f.hint(options)],
-          options.bodyTag
+          options.bodyTag || {}
         ),
       ],
-      options.fieldsetTag
+      options.fieldsetTag || {}
     )
   );
 };
 
-ax.extension.form.field.header = function (f, options = {}) {
+ax.extensions.form.field.header = function (f, options = {}) {
   let component;
 
   if (options.header == true) {
     options.header = null;
   } else if (options.header == false) {
-    return null;
+    return '';
   }
 
   if (options.header) {
+    // TODO: is header declared? same in report
     component = header;
   } else {
-    let caption = options.label === false ? null : f.label(options);
+    let caption = options.label === false ? '' : f.label(options);
     if (options.help) {
       component = [caption, f.helpbutton(options)];
     } else {
@@ -281,10 +282,10 @@ ax.extension.form.field.header = function (f, options = {}) {
     }
   }
 
-  return ax.a['ax-appkit-form-field-header'](component, options.headerTag);
+  return ax.a['ax-appkit-form-field-header'](component, options.headerTag || {});
 };
 
-ax.extension.form.field.help = function (options = {}) {
+ax.extensions.form.field.help = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -300,16 +301,16 @@ ax.extension.form.field.help = function (options = {}) {
             ...(options.helpTag || {}).style,
           },
         }),
-        options.wrapperTag
+        options.wrapperTag || {}
       )
-    : null;
+    : '';
 };
 
-ax.extension.form.field.helpbutton = function (options = {}) {
+ax.extensions.form.field.helpbutton = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  return a['ax-appkit-form-field-helpbutton'](null, {
+  return a['ax-appkit-form-field-helpbutton']({
     $showHelp: false,
     $nodes: (el) => {
       let show = el.$showHelp;
@@ -333,21 +334,21 @@ ax.extension.form.field.helpbutton = function (options = {}) {
   });
 };
 
-ax.extension.form.field.hint = function (options = {}) {
+ax.extensions.form.field.hint = function (options = {}) {
   let a = ax.a;
 
   return options.hint
-    ? a['ax-appkit-form-field-hint'](a.small(options.hint), options.hintTag)
-    : null;
+    ? a['ax-appkit-form-field-hint'](a.small(options.hint), options.hintTag || {})
+    : '';
 };
 
-ax.extension.form.field.label = function (options = {}) {
+ax.extensions.form.field.label = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
   let lib = x.lib;
 
   let label = options.label || lib.text.labelize(options.key);
-  let component = a.label(label, options.labelTag);
+  let component = a.label(label, options.labelTag || {});
 
   let wrapperTag = {
     ...options.wrapperTag,
@@ -364,7 +365,7 @@ ax.extension.form.field.label = function (options = {}) {
   return a['ax-appkit-form-field-label-wrapper'](component, wrapperTag);
 };
 
-ax.extension.form.field.shim = {
+ax.extensions.form.field.shim = {
   button: (f, target) => (options = {}) =>
     ax.x.form.field.button(target, options),
   field: (f, target) => (options = {}) => ax.x.form.field.field(f, options),
@@ -394,7 +395,7 @@ ax.extension.form.field.shim = {
   },
 };
 
-ax.extension.report.field.collection = function (f, control, options = {}) {
+ax.extensions.report.field.collection = function (f, control, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -404,8 +405,7 @@ ax.extension.report.field.collection = function (f, control, options = {}) {
     a['ax-appkit-control-collection-item'](
       [
         a['ax-appkit-control-collection-item-header'](
-          null,
-          options.itemHeaderTag
+          options.itemHeaderTag || {}
         ),
         a['ax-appkit-control-collection-item-body'](
           control({
@@ -413,10 +413,10 @@ ax.extension.report.field.collection = function (f, control, options = {}) {
             name: `${options.name}[]`,
             value: value,
           }),
-          options.itemBodyTag
+          options.itemBodyTag || {}
         ),
       ],
-      options.itemTag
+      options.itemTag || {}
     );
 
   let components = values.map((value) => itemFn(value));
@@ -434,14 +434,14 @@ ax.extension.report.field.collection = function (f, control, options = {}) {
 
   return a['ax-appkit-report-control'](
     a['ax-appkit-control-collection'](
-      [a['ax-appkit-control-collection-items'](components, options.itemsTag)],
-      options.collectionTag
+      [a['ax-appkit-control-collection-items'](components, options.itemsTag || {})],
+      options.collectionTag || {}
     ),
     controlTagOptions
   );
 };
 
-ax.extension.report.field.control = function (r, options = {}) {
+ax.extensions.report.field.control = function (r, options = {}) {
   let controlFn = r.controls[options.as || 'output'];
   if (!controlFn) {
     console.error(`Failed to create report field using options:`, options);
@@ -473,9 +473,9 @@ ax.extension.report.field.control = function (r, options = {}) {
   }
 };
 
-ax.extension.report.field.controls = {};
+ax.extensions.report.field.controls = {};
 
-ax.extension.report.field.field = function (r, options = {}) {
+ax.extensions.report.field.field = function (r, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -493,26 +493,26 @@ ax.extension.report.field.field = function (r, options = {}) {
           r.help(options),
           r.control({
             ...options,
-            label: null,
-            labelTag: null,
+            label: false,
+            labelTag: {},
           }),
           r.hint(options),
         ],
-        options.bodyTag
+        options.bodyTag || {}
       ),
     ],
-    options.fieldTag
+    options.fieldTag || {}
   );
 };
 
-ax.extension.report.field.fieldset = function (f, options = {}) {
+ax.extensions.report.field.fieldset = function (f, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
   let control = a['ax-appkit-report-control'](
     [
-      options.legend ? a.legend(options.legend, options.legendTag) : null,
-      options.body || null,
+      options.legend ? a.legend(options.legend, options.legendTag || {}) : '',
+      options.body || '',
     ],
     {
       $focus: (el) => () => {
@@ -530,22 +530,24 @@ ax.extension.report.field.fieldset = function (f, options = {}) {
         this.header(f, options),
         a['ax-appkit-report-field-body'](
           [f.help(options), control, f.hint(options)],
-          options.bodyTag
+          options.bodyTag || {}
         ),
       ],
-      options.fieldsetTag
+      options.fieldsetTag || {}
     )
   );
 };
 
-ax.extension.report.field.header = function (r, options = {}) {
+ax.extensions.report.field.header = function (r, options = {}) {
   if (options.type == 'hidden') {
-    return null;
+    return '';
   } else {
     let component;
 
     if (options.header == true) {
       options.header = null;
+    } else if (options.header == false) {
+      return '';
     }
 
     if (options.header) {
@@ -559,11 +561,11 @@ ax.extension.report.field.header = function (r, options = {}) {
       }
     }
 
-    return ax.a['ax-appkit-report-field-header'](component, options.headerTag);
+    return ax.a['ax-appkit-report-field-header'](component, options.headerTag || {});
   }
 };
 
-ax.extension.report.field.help = function (options = {}) {
+ax.extensions.report.field.help = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -581,16 +583,16 @@ ax.extension.report.field.help = function (options = {}) {
             ...(options.helpTag || {}).style,
           },
         }),
-        options.wrapperTag
+        options.wrapperTag || {}
       )
-    : null;
+    : '';
 };
 
-ax.extension.report.field.helpbutton = function (options = {}) {
+ax.extensions.report.field.helpbutton = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  return a['ax-appkit-report-field-helpbutton'](null, {
+  return a['ax-appkit-report-field-helpbutton']({
     $showHelp: false,
     $nodes: (el) => {
       return a['ax-appkit-report-field-helpbutton-text'](
@@ -615,25 +617,25 @@ ax.extension.report.field.helpbutton = function (options = {}) {
   });
 };
 
-ax.extension.report.field.hint = function (options = {}) {
+ax.extensions.report.field.hint = function (options = {}) {
   let a = ax.a;
 
   let hint = options.hint;
 
   return hint
-    ? a['ax-appkit-report-field-hint'](a.small(hint), options.hintTag)
-    : null;
+    ? a['ax-appkit-report-field-hint'](a.small(hint), options.hintTag || {})
+    : '';
 };
 
-ax.extension.report.field.label = function (options = {}) {
+ax.extensions.report.field.label = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
   let lib = x.lib;
 
-  if (ax.is.false(options.label)) return null;
+  if (ax.is.false(options.label)) return '';
   let label = options.label || lib.text.labelize(options.key);
-  if (!label) return null;
-  let component = a.label(label, options.labelTag);
+  if (!label) return '';
+  let component = a.label(label, options.labelTag || {});
 
   let wrapperTag = {
     ...options.wrapperTag,
@@ -650,7 +652,7 @@ ax.extension.report.field.label = function (options = {}) {
   return a['ax-appkit-report-field-label-wrapper'](component, wrapperTag);
 };
 
-ax.extension.report.field.shim = {
+ax.extensions.report.field.shim = {
   field: (r, target) => (options = {}) => ax.x.report.field.field(r, options),
   fieldset: (f, target) => (options = {}) =>
     ax.x.report.field.fieldset(f, options),
@@ -683,7 +685,7 @@ ax.extension.report.field.shim = {
   },
 };
 
-ax.extension.report.field.validation = function (options = {}) {
+ax.extensions.report.field.validation = function (options = {}) {
   let a = ax.a;
 
   let message;
@@ -711,10 +713,10 @@ ax.extension.report.field.validation = function (options = {}) {
     validity.patternMismatch = true;
   }
 
-  if (validity.valid) return null;
+  if (validity.valid) return '';
 
   if (ax.is.function(options.invalid)) {
-    message = options.invalid(options.value, validity) || null;
+    message = options.invalid(options.value, validity) || '';
   } else if (ax.is.string(options.invalid)) {
     message = options.invalid;
   } else if (!validity.valueMissing && options.controlInvalid) {
@@ -723,11 +725,11 @@ ax.extension.report.field.validation = function (options = {}) {
 
   return a['ax-appkit-report-field-validation.error'](
     a.small(message),
-    options.validationTag
+    options.validationTag || {}
   );
 };
 
-ax.extension.form.field.collection.add = function (f, options) {
+ax.extensions.form.field.collection.add = function (f, options) {
   let label = `✚ Add${options.singular ? ` ${options.singular}` : ''}`;
 
   return f.button({
@@ -745,7 +747,7 @@ ax.extension.form.field.collection.add = function (f, options) {
   });
 };
 
-ax.extension.form.field.collection.down = function (f, options) {
+ax.extensions.form.field.collection.down = function (f, options) {
   return f.button({
     label: '⏷',
     onclick: (el) => (e) => {
@@ -764,7 +766,7 @@ ax.extension.form.field.collection.down = function (f, options) {
   });
 };
 
-ax.extension.form.field.collection.remove = function (f, options) {
+ax.extensions.form.field.collection.remove = function (f, options) {
   let singular = options.singular || 'item';
   let confirmation;
 
@@ -798,7 +800,7 @@ ax.extension.form.field.collection.remove = function (f, options) {
   });
 };
 
-ax.extension.form.field.collection.up = function (f, options) {
+ax.extensions.form.field.collection.up = function (f, options) {
   return f.button({
     label: '⏶',
     onclick: (el) => (e) => {
@@ -817,7 +819,7 @@ ax.extension.form.field.collection.up = function (f, options) {
   });
 };
 
-ax.extension.form.field.controls.checkbox = function (f, options) {
+ax.extensions.form.field.controls.checkbox = function (f, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -889,7 +891,7 @@ ax.extension.form.field.controls.checkbox = function (f, options) {
   return a['ax-appkit-form-control'](f.checkbox(options), controlTagOptions);
 };
 
-ax.extension.form.field.controls.checkboxes = function (f, options) {
+ax.extensions.form.field.controls.checkboxes = function (f, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -946,7 +948,7 @@ ax.extension.form.field.controls.checkboxes = function (f, options) {
   return a['ax-appkit-form-control'](f.checkboxes(options), controlTagOptions);
 };
 
-ax.extension.form.field.controls.hidden = (f, options = {}) => {
+ax.extensions.form.field.controls.hidden = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
@@ -981,7 +983,7 @@ ax.extension.form.field.controls.hidden = (f, options = {}) => {
   );
 };
 
-ax.extension.form.field.controls.input = function (f, options) {
+ax.extensions.form.field.controls.input = function (f, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1051,7 +1053,7 @@ ax.extension.form.field.controls.input = function (f, options) {
   return a['ax-appkit-form-control'](f.input(options), controlTagOptions);
 };
 
-ax.extension.form.field.controls.radios = function (f, options) {
+ax.extensions.form.field.controls.radios = function (f, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1134,7 +1136,7 @@ ax.extension.form.field.controls.radios = function (f, options) {
   return a['ax-appkit-form-control'](f.radios(options), controlTagOptions);
 };
 
-ax.extension.form.field.controls.select = function (f, options) {
+ax.extensions.form.field.controls.select = function (f, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1205,7 +1207,7 @@ ax.extension.form.field.controls.select = function (f, options) {
   return a['ax-appkit-form-control'](f.select(options), controlTagOptions);
 };
 
-ax.extension.form.field.controls.textarea = (f, options = {}) => {
+ax.extensions.form.field.controls.textarea = (f, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
@@ -1280,7 +1282,7 @@ ax.extension.form.field.controls.textarea = (f, options = {}) => {
   return a['ax-appkit-form-control'](f.textarea(options), controlTagOptions);
 };
 
-ax.extension.report.field.controls.checkbox = function (r, options) {
+ax.extensions.report.field.controls.checkbox = function (r, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1301,7 +1303,7 @@ ax.extension.report.field.controls.checkbox = function (r, options) {
   );
 };
 
-ax.extension.report.field.controls.checkboxes = function (r, options) {
+ax.extensions.report.field.controls.checkboxes = function (r, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1321,7 +1323,7 @@ ax.extension.report.field.controls.checkboxes = function (r, options) {
   );
 };
 
-ax.extension.report.field.controls.hidden = (r, options = {}) => {
+ax.extensions.report.field.controls.hidden = (r, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
@@ -1334,10 +1336,10 @@ ax.extension.report.field.controls.hidden = (r, options = {}) => {
     ...options.controlTag,
   };
 
-  return a['ax-appkit-report-control'](null, controlTagOptions);
+  return a['ax-appkit-report-control'](controlTagOptions);
 };
 
-ax.extension.report.field.controls.output = function (r, options = {}) {
+ax.extensions.report.field.controls.output = function (r, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -1359,7 +1361,7 @@ ax.extension.report.field.controls.output = function (r, options = {}) {
   );
 };
 
-ax.extension.report.field.controls.radios = function (r, options) {
+ax.extensions.report.field.controls.radios = function (r, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1379,7 +1381,7 @@ ax.extension.report.field.controls.radios = function (r, options) {
   );
 };
 
-ax.extension.report.field.controls.select = function (r, options) {
+ax.extensions.report.field.controls.select = function (r, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1400,7 +1402,7 @@ ax.extension.report.field.controls.select = function (r, options) {
   );
 };
 
-ax.extension.report.field.controls.string = function (r, options) {
+ax.extensions.report.field.controls.string = function (r, options) {
   let a = ax.a;
 
   let controlTagOptions = {
@@ -1421,7 +1423,7 @@ ax.extension.report.field.controls.string = function (r, options) {
   );
 };
 
-ax.extension.report.field.controls.text = (r, options = {}) => {
+ax.extensions.report.field.controls.text = (r, options = {}) => {
   let a = ax.a;
   let x = ax.x;
 
@@ -1450,7 +1452,10 @@ ax.extension.report.field.controls.text = (r, options = {}) => {
   );
 };
 
-ax.extension.form.field.controls.textarea.resize = function (control, options) {
+ax.extensions.form.field.controls.textarea.resize = function (
+  control,
+  options
+) {
   if (options.resize) {
     let resize = options.resize;
     let textarea = control.$('textarea');

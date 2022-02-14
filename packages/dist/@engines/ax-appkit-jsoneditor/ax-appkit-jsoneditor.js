@@ -10,21 +10,23 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.jsoneditor = {};
+ax.extensions.jsoneditor = {};
 
 ax.css({
   'ax-appkit-form-codemirror': {
     '.jsoneditor-tree': {
-      background: 'white',
+      $: {
+        background: 'white',
+      },
     },
   },
 });
 
-ax.extension.jsoneditor.JSONEditor = window.JSONEditor;
+ax.extensions.jsoneditor.JSONEditor = window.JSONEditor;
 
-ax.extension.jsoneditor.form = {};
+ax.extensions.jsoneditor.form = {};
 
-ax.extension.jsoneditor.form.control = function (f, options = {}) {
+ax.extensions.jsoneditor.form.control = function (f, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -98,13 +100,13 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
     [
       a['ax-appkit-form-jsoneditor'](
         [
-          a.input(null, {
+          a.input({
             name: options.name,
             type: 'hidden',
           }),
           a.div,
         ],
-        options.jsoneditorTag
+        options.jsoneditorTag || {}
       ),
     ],
     controlTagOptions

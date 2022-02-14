@@ -1,0 +1,1 @@
+ax.extensions.jsoneditor.form = {};

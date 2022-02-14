@@ -10,24 +10,28 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.bootstrap = {};
+ax.extensions.bootstrap = {};
 
 ax.css({
   'ax-appkit-control-collection-item-body': {
-    width: 'calc( 100% - 120px)',
+    $: {
+      width: 'calc( 100% - 120px)',
+    },
   },
   'ax-appkit-report': {
     '.form-control': {
-      border: 'none',
+      $: {
+        border: 'none',
+      },
     },
   },
 });
 
-ax.extension.bootstrap.form = {};
+ax.extensions.bootstrap.form = {};
 
-ax.extension.bootstrap.report = {};
+ax.extensions.bootstrap.report = {};
 
-ax.extension.bootstrap.form.shim = {
+ax.extensions.bootstrap.form.shim = {
   field: (f, target) => {
     return (options = {}) => {
       let horizontal = ax.is.undefined(options.horizontal)
@@ -425,7 +429,7 @@ ax.extension.bootstrap.form.shim = {
     }),
 };
 
-ax.extension.bootstrap.report.shim = {
+ax.extensions.bootstrap.report.shim = {
   field: (r, target) => (options = {}) => {
     let horizontal = ax.is.undefined(options.horizontal)
       ? r.reportOptions.horizontal

@@ -10,14 +10,14 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.chartjs = function (options = {}) {
+ax.extensions.chartjs = function (options = {}) {
   var a = ax.a;
   var x = ax.x;
 
   return a['ax-appkit-chartjs'](
     a.div(
       [
-        a.canvas(null, {
+        a.canvas({
           $init: (el) => {
             el.$chart = new x.chartjs.Chart(el.getContext('2d'), {
               ...options,
@@ -27,12 +27,12 @@ ax.extension.chartjs = function (options = {}) {
           ...options.canvasTag,
         }),
       ],
-      options.divTag
+      options.divTag || {}
     ),
-    options.chartjsTag
+    options.chartjsTag || {}
   );
 };
 
-ax.extension.chartjs.Chart = dependencies.Chart || window.Chart;
+ax.extensions.chartjs.Chart = dependencies.Chart || window.Chart;
 
 }));

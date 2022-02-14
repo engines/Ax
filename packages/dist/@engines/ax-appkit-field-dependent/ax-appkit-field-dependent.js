@@ -10,13 +10,13 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.form.field.dependent = {};
+ax.extensions.form.field.dependent = {};
 
-ax.extension.report.field.dependent = {};
+ax.extensions.report.field.dependent = {};
 
-ax.extension.form.field.dependent.components = {};
+ax.extensions.form.field.dependent.components = {};
 
-ax.extension.form.field.dependent.shim = {
+ax.extensions.form.field.dependent.shim = {
   field: (f, target) => (options = {}) =>
     ax.x.form.field.dependent.components.dependent(f, target, options),
 
@@ -77,9 +77,9 @@ ax.extension.form.field.dependent.shim = {
     }),
 };
 
-ax.extension.report.field.dependent.components = {};
+ax.extensions.report.field.dependent.components = {};
 
-ax.extension.report.field.dependent.shim = {
+ax.extensions.report.field.dependent.shim = {
   field: (r, target) => (options = {}) => {
     return ax.x.report.field.dependent.components.dependent({
       body: target(options),
@@ -104,7 +104,7 @@ ax.extension.report.field.dependent.shim = {
   },
 };
 
-ax.extension.form.field.dependent.components.dependent = function (
+ax.extensions.form.field.dependent.components.dependent = function (
   f,
   target,
   options
@@ -251,7 +251,7 @@ ax.extension.form.field.dependent.components.dependent = function (
   return a['ax-appkit-form-field-dependent'](target(options), dependentTag);
 };
 
-ax.extension.report.field.dependent.components.dependent = function (options) {
+ax.extensions.report.field.dependent.components.dependent = function (options) {
   let a = ax.a;
   let x = ax.x;
 
@@ -316,7 +316,7 @@ ax.extension.report.field.dependent.components.dependent = function (options) {
   return a['ax-appkit-report-field-dependent'](options.body, dependentTag);
 };
 
-ax.extension.form.field.dependent.components.dependent.collect = (
+ax.extensions.form.field.dependent.components.dependent.collect = (
   indexedScope,
   options
 ) => {
@@ -360,7 +360,7 @@ ax.extension.form.field.dependent.components.dependent.collect = (
   return collection;
 };
 
-ax.extension.form.field.dependent.components.dependent.dependency = (
+ax.extensions.form.field.dependent.components.dependent.dependency = (
   el,
   options
 ) => {
@@ -387,7 +387,7 @@ ax.extension.form.field.dependent.components.dependent.dependency = (
   }
 };
 
-ax.extension.form.field.dependent.components.dependent.match = function (
+ax.extensions.form.field.dependent.components.dependent.match = function (
   options
 ) {
   let field = options.field;
@@ -409,7 +409,7 @@ ax.extension.form.field.dependent.components.dependent.match = function (
   }
 };
 
-ax.extension.report.field.dependent.components.dependent.dependency = (
+ax.extensions.report.field.dependent.components.dependent.dependency = (
   el,
   options
 ) => {

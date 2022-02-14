@@ -10,11 +10,11 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.context = function (options = {}) {
+ax.extensions.context = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
-  let component = options.content || null;
+  let component = options.content || '';
 
   let popupTagOptions = {
     ...options.popupTag,
@@ -75,7 +75,7 @@ ax.extension.context = function (options = {}) {
           popupContents = options.menu;
         }
       } else {
-        popupContents = options.popup || null;
+        popupContents = options.popup || '';
       }
 
       let popup = context.$('ax-appkit-context-popup');
@@ -121,13 +121,13 @@ ax.extension.context = function (options = {}) {
     a['ax-appkit-context'](
       [
         a['ax-appkit-context-content'](component, contentTagOptions),
-        a['ax-appkit-context-popup'](null, popupTagOptions),
+        a['ax-appkit-context-popup'](popupTagOptions),
       ],
       contextTagOptions
     );
 };
 
-ax.extension.menu = (options = {}) => (a, x) => {
+ax.extensions.menu = (options = {}) => (a, x) => {
   let items = options.menu || [];
 
   return a['ax-appkit-menu'](
@@ -149,7 +149,7 @@ ax.extension.menu = (options = {}) => (a, x) => {
   );
 };
 
-ax.extension.popup = function (component, options = {}) {
+ax.extensions.popup = function (component, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -232,7 +232,7 @@ ax.extension.popup = function (component, options = {}) {
           popupContents = options.menu;
         }
       } else {
-        popupContents = options.popup || null;
+        popupContents = options.popup || '';
       }
 
       let popup = context.$('ax-appkit-context-popup');
@@ -262,7 +262,7 @@ ax.extension.popup = function (component, options = {}) {
     a['ax-appkit-context'](
       [
         a['ax-appkit-context-content'](component, contentTagOptions),
-        a['ax-appkit-context-popup'](null, popupTagOptions),
+        a['ax-appkit-context-popup'](popupTagOptions),
       ],
       contextTagOptions
     );
@@ -270,66 +270,88 @@ ax.extension.popup = function (component, options = {}) {
 
 ax.css({
   'ax-appkit-context': {
-    position: 'relative',
+    $: {
+      position: 'relative',
+    },
   },
   'ax-appkit-context-popup': {
-    display: 'none',
-    left: '0px',
+    $: {
+      display: 'none',
+      left: '0px',
+    },
   },
   'ax-appkit-menu': {
-    display: 'block',
-    width: '150px',
-    zIndex: 1,
-    'ax-appkit-menu-item': {
+    $: {
       display: 'block',
-      width: '100%',
-      userSelect: 'none',
-      position: 'relative',
-      'ax-appkit-menu-submenu-open': {
-        whiteSpace: 'nowrap',
+      width: '150px',
+      zIndex: 1,
+    },
+    'ax-appkit-menu-item': {
+      $: {
         display: 'block',
-        width: '125px',
-        lineHeight: '1.5',
-        padding: '0.375rem',
-        overflowX: 'hidden',
+        width: '100%',
+        userSelect: 'none',
+        position: 'relative',
+      },
+      'ax-appkit-menu-submenu-open': {
+        $: {
+          whiteSpace: 'nowrap',
+          display: 'block',
+          width: '125px',
+          lineHeight: '1.5',
+          padding: '0.375rem',
+          overflowX: 'hidden',
+        },
       },
       'ax-appkit-menu-submenu-open-caret': {
-        float: 'right',
-        lineHeight: '1.5',
-        padding: '0.375rem',
+        $: {
+          float: 'right',
+          lineHeight: '1.5',
+          padding: '0.375rem',
+        },
       },
       'ax-appkit-menu-submenu': {
-        position: 'absolute',
-        left: '150px',
-        top: '0px',
-        display: 'none',
+        $: {
+          position: 'absolute',
+          left: '150px',
+          top: '0px',
+          display: 'none',
+        },
       },
       '&:hover': {
-        backgroundColor: 'lightgray',
+        $: {
+          backgroundColor: 'lightgray',
+        },
       },
       button: {
-        lineHeight: '1.5',
-        padding: '0.375rem',
-        width: '100%',
-        border: '1px solid transparent',
-        background: 'none',
-        textAlign: 'left',
+        $: {
+          lineHeight: '1.5',
+          padding: '0.375rem',
+          width: '100%',
+          border: '1px solid transparent',
+          background: 'none',
+          textAlign: 'left',
+        },
       },
     },
     hr: {
-      marginTop: '0.375rem',
-      marginBottom: '0.375rem',
+      $: {
+        marginTop: '0.375rem',
+        marginBottom: '0.375rem',
+      },
     },
     menu: {
-      margin: 0,
-      padding: 0,
-      backgroundColor: 'white',
-      boxShadow: '0px 0px 5px gray',
+      $: {
+        margin: 0,
+        padding: 0,
+        backgroundColor: 'white',
+        boxShadow: '0px 0px 5px gray',
+      },
     },
   },
 });
 
-ax.extension.menu.item = (item, options = {}) => (a, x) => {
+ax.extensions.menu.item = (item, options = {}) => (a, x) => {
   let component;
 
   if (item.menu) {

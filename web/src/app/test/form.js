@@ -1,4 +1,4 @@
-export default (router) => (a, x) => [
+export default (router) => (a, x) => a['app-test-form']([
   router,
   a.h1('Form'),
   x.form({
@@ -149,4 +149,4 @@ export default (router) => (a, x) => [
   a.button('Enable', {
     $on: {click: (el) => (e) => form.$enable()},
   }),
-]
+])

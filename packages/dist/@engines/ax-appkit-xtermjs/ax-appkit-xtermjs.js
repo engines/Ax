@@ -10,11 +10,11 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.xtermjs = (options = {}) => (a, x) =>
+ax.extensions.xtermjs = (options = {}) => (a, x) =>
   a['ax-appkit-xtermjs'](
     [
-      ax.is.false(options.toolbar) ? null : x.xtermjs.toolbar(options),
-      a.div(null, {
+      ax.is.false(options.toolbar) ? '' : x.xtermjs.toolbar(options),
+      a.div({
         $init: (el) => {
           let intersection = new IntersectionObserver(() => {
             if (!el.$xterm) {
@@ -69,79 +69,103 @@ ax.extension.xtermjs = (options = {}) => (a, x) =>
 
 ax.css({
   'ax-appkit-xtermjs': {
-    display: 'block',
+    $: {
+      display: 'block',
+    },
     '&.fullscreen': {
-      height: 'calc( 100vh - 1.5rem )',
-      position: 'fixed',
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      zIndex: 999,
-      'ax-appkit-xtermjs-toolbar': {
-        zIndex: '257',
+      $: {
+        height: 'calc( 100vh - 1.5rem )',
         position: 'fixed',
         top: 0,
+        bottom: 0,
         left: 0,
         right: 0,
-        overflow: 'hidden',
+        zIndex: 999,
+      },
+      'ax-appkit-xtermjs-toolbar': {
+        $: {
+          zIndex: '257',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          overflow: 'hidden',
+        },
         'ax-appkit-xtermjs-label': {
-          display: 'block',
-          maxHeight: '1.8rem',
+          $: {
+            display: 'block',
+            maxHeight: '1.8rem',
+          },
         },
       },
       '& > div': {
-        height: '100% !important',
+        $: {
+          height: '100% !important',
+        },
         '.xterm-screen': {
-          marginTop: 'calc(1.8rem + 1px)',
+          $: {
+            marginTop: 'calc(1.8rem + 1px)',
+          },
         },
       },
     },
     '& > div': {
-      display: 'block',
-      height: '300px',
+      $: {
+        display: 'block',
+        height: '300px',
+      },
     },
     '.terminal.xterm': {
-      border: '1px solid #ccc',
-      padding: '1px',
+      $: {
+        border: '1px solid #ccc',
+        padding: '1px',
+      },
     },
   },
   'ax-appkit-xtermjs-toolbar': {
-    display: 'block',
-    overflow: 'auto',
-    backgroundColor: 'white',
-    border: '1px solid #e6e6e6',
-    borderBottom: 'none',
+    $: {
+      display: 'block',
+      overflow: 'auto',
+      backgroundColor: 'white',
+      border: '1px solid #e6e6e6',
+      borderBottom: 'none',
+    },
     button: {
-      padding: '0px 5px',
-      margin: '1px',
-      fontSize: '1.2rem',
-      border: 'none',
-      backgroundColor: 'transparent',
-      cursor: 'pointer',
+      $: {
+        padding: '0px 5px',
+        margin: '1px',
+        fontSize: '1.2rem',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+      },
     },
     'ax-appkit-xtermjs-label': {
-      display: 'block',
-      padding: '4px 4px',
+      $: {
+        display: 'block',
+        padding: '4px 4px',
+      },
     },
     'ax-appkit-xtermjs-toolbar-right': {
-      float: 'right',
+      $: {
+        float: 'right',
+      },
     },
   },
 });
 
-ax.extension.xtermjs.Terminal = dependencies.Terminal || window.Terminal;
+ax.extensions.xtermjs.Terminal = dependencies.Terminal || window.Terminal;
 // The FitAddon module exports an object, bit Xterm expects a constructor function.
 let plugin = dependencies.FitAddon || window.FitAddon || {};
 if (ax.is.object(plugin)) {
-  ax.extension.xtermjs.FitAddon = plugin.FitAddon;
+  ax.extensions.xtermjs.FitAddon = plugin.FitAddon;
 } else {
-  ax.extension.xtermjs.FitAddon = plugin;
+  ax.extensions.xtermjs.FitAddon = plugin;
 }
 
-ax.extension.xtermjs.report = {};
+ax.extensions.xtermjs.report = {};
 
-ax.extension.xtermjs.toolbar = (options = {}) => (a, x) =>
+ax.extensions.xtermjs.toolbar = (options = {}) => (a, x) =>
   a['ax-appkit-xtermjs-toolbar'](
     [
       a['ax-appkit-xtermjs-toolbar-right'](
@@ -167,12 +191,12 @@ ax.extension.xtermjs.toolbar = (options = {}) => (a, x) =>
           })
         )
       ),
-      a['ax-appkit-xtermjs-label'](options.label || null),
+      a['ax-appkit-xtermjs-label'](options.label || ''),
     ],
-    options.toolbarTag
+    options.toolbarTag || {}
   );
 
-ax.extension.xtermjs.report.control = function (r, options = {}) {
+ax.extensions.xtermjs.report.control = function (r, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -219,7 +243,7 @@ ax.extension.xtermjs.report.control = function (r, options = {}) {
   );
 };
 
-ax.extension.xtermjs.report.shim = {
+ax.extensions.xtermjs.report.shim = {
   controls: {
     xtermjs: (r, target) => (options = {}) =>
       ax.x.xtermjs.report.control(r, options),

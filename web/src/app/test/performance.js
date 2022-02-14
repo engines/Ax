@@ -1,4 +1,4 @@
-export default (router) => (a, x) => [
+export default (router) => (a, x) => a['app-test-performance']([
   a.h1('Performance'),
   a.h5('Removed elements not deleted',{class: 'float-left'}),
   a.p('1000 small renders per second for 5 minutes',{class: 'float-right'}),
@@ -14,4 +14,4 @@ export default (router) => (a, x) => [
   a.img(null,{class: 'w-100 mb-4',src: '/performance/easymde.png'}),
   // a.h5('window.performance'),
   // performance,
-]
+])

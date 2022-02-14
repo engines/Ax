@@ -5,5 +5,10 @@
  * into the Factory.
  */
 ax.node.function = function (fn) {
-  return ax.node(fn(ax.a, ax.x));
+  let node = fn(ax.a, ax.x)
+  if (ax.is.array(node)) {
+    console.error('A node may not be an array.\n', fn + '\n returned\n', node)
+    return ax.node.json(node)
+  }
+  return ax.node(node);
 };

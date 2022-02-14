@@ -10,7 +10,7 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.markedjs = function (options = {}) {
+ax.extensions.markedjs = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -22,7 +22,7 @@ ax.extension.markedjs = function (options = {}) {
     if (options.inline) {
       return x.markedjs.marked.inlineLexer(string, options.markedjs);
     } else {
-      return x.markedjs.marked(string, options.markedjs);
+      return x.markedjs.marked.marked(string, options.markedjs);
     }
   };
 
@@ -47,11 +47,11 @@ ax.extension.markedjs = function (options = {}) {
   });
 };
 
-ax.extension.markedjs.marked = dependencies.marked || window.marked;
+ax.extensions.markedjs.marked = dependencies.marked || window.marked;
 
-ax.extension.markedjs.report = {};
+ax.extensions.markedjs.report = {};
 
-ax.extension.markedjs.report.control = function (r, options = {}) {
+ax.extensions.markedjs.report.control = function (r, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -70,7 +70,7 @@ ax.extension.markedjs.report.control = function (r, options = {}) {
   }
 
   return a['ax-appkit-report-control'](
-    a['ax-appkit-report-markdown'](component, options.markdownTag),
+    a['ax-appkit-report-markdown'](component, options.markdownTag || {}),
     {
       'data-name': options.name,
       $value: (el) => () => {

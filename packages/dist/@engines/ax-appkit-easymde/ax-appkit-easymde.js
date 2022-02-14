@@ -10,93 +10,113 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.easymde = (options = {}) => (a, x) =>
-  a['ax-appkit-easymde'](
-    a.textarea(options.value || '', {
-      $init: (el) => {
-        el.$observer = new IntersectionObserver(() => {
-          if (!el.$easymde) {
-            el.$easymde = new x.easymde.EasyMDE({
-              element: el,
-              toolbar: x.easymde.toolbar(),
-              placeholder: options.placeholder,
-              autoDownloadFontAwesome: false,
-              ...options.easymde,
-            });
-          }
-        });
-        el.$observer.observe(el);
+ax.extensions.easymde = (options = {}) => (a, x) =>
+a['ax-appkit-easymde'](
+  a.textarea(options.value || '', {
+    $init: (el) => {
+      el.$observer = new IntersectionObserver(() => {
+        if (!el.$easymde) {
+          el.$easymde = new x.easymde.EasyMDE({
+            element: el,
+            toolbar: x.easymde.toolbar(),
+            placeholder: options.placeholder,
+            autoDownloadFontAwesome: false,
+            ...options.easymde,
+          });
+        }
+      });
+      el.$observer.observe(el);
+    },
+    $exit: (el) => {
+      el.$observer.disconnect();
+      el.$observer = null;
+      el.$easymde = null;
+    },
+    ...options.textareaTag,
+    $updateValue: (el) => () => {
+      el.value = el.$easymde.value();
+    },
+    $on: {
+      'keydown: check for editor exit': (el) => (e) => {
+        if (e.keyCode == 27) {
+          // ESC pressed - move focus forward
+          ax.x.lib.tabable.next(e.target).focus();
+        }
       },
-      $exit: (el) => {
-        el.$observer.disconnect();
-        el.$observer = null;
-        el.$easymde = null;
-      },
-      ...options.textareaTag,
-      $updateValue: (el) => () => {
-        el.value = el.$easymde.value();
-      },
-      $on: {
-        'keydown: check for editor exit': (el) => (e) => {
-          if (e.keyCode == 27) {
-            // ESC pressed - move focus forward
-            ax.x.lib.tabable.next(e.target).focus();
-          }
-        },
-        ...(options.textareaTag || {}).$on,
-      },
-    }),
-    {
-      $refresh: (el) => () => {
-        el.$('textarea').$easymde.codemirror.refresh();
-      },
-      ...options.easymdeTag,
-    }
-  );
+      ...(options.textareaTag || {}).$on,
+    },
+  }),
+  {
+    $refresh: (el) => () => {
+      el.$('textarea').$easymde.codemirror.refresh();
+    },
+    ...options.easymdeTag,
+  }
+);
 
 ax.css({
   'ax-appkit-easymde .EasyMDEContainer': {
     '> textarea': {
-      display: 'none',
+      $: {
+        display: 'none',
+      },
     },
     'div.CodeMirror.disabled': {
-      backgroundColor: '#e9ecef',
+      $: {
+        backgroundColor: '#e9ecef',
+      },
     },
     'div.CodeMirror-fullscreen': {
-      zIndex: 999,
+      $: {
+        zIndex: 999,
+      },
     },
     '.editor-statusbar': {
-      padding: '0px 5px',
+      $: {
+        padding: '0px 5px',
+      },
     },
     '.editor-toolbar': {
       button: {
-        color: '#666',
+        $: {
+          color: '#666',
+        },
       },
       'button:hover': {
-        color: '#333',
+        $: {
+          color: '#333',
+        },
       },
-      backgroundColor: 'white',
-      opacity: 1,
-      border: '1px solid #e6e6e6',
-      borderBottom: 'none',
+      $: {
+        backgroundColor: 'white',
+        opacity: 1,
+        border: '1px solid #e6e6e6',
+        borderBottom: 'none',
+      },
       '&:before': {
-        margin: 0,
+        $: {
+          margin: 0,
+        },
       },
       '&:after': {
-        margin: 0,
+        $: {
+          margin: 0,
+        },
       },
       '.fullscreen': {
-        zIndex: 999,
+        $: {
+          zIndex: 999,
+        },
       },
     },
   },
 });
 
-ax.extension.easymde.EasyMDE = dependencies.EasyMDE || window.EasyMDE;
+ax.extensions.easymde.EasyMDE = dependencies.EasyMDE || window.EasyMDE;
 
-ax.extension.easymde.form = {};
+ax.extensions.easymde.form = {};
 
-ax.extension.easymde.toolbar = () => [
+ax.extensions.easymde.toolbar = () => [
   {
     name: 'bold',
     action: ax.x.easymde.EasyMDE.toggleBold,
@@ -174,7 +194,7 @@ ax.extension.easymde.toolbar = () => [
   },
 ];
 
-ax.extension.easymde.form.control = function (f, options) {
+ax.extensions.easymde.form.control = function (f, options) {
   let a = ax.a,
     x = ax.x;
 
@@ -232,7 +252,7 @@ ax.extension.easymde.form.control = function (f, options) {
   );
 };
 
-ax.extension.easymde.form.shim = {
+ax.extensions.easymde.form.shim = {
   controls: {
     easymde: (f, target) => (options = {}) => (a, x) =>
       x.easymde.form.control(f, options),

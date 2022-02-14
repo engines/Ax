@@ -10,9 +10,9 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.form.async = (target, options = {}) =>
-  ax.a['ax-appkit-asyncform'](null, {
-    $nodes: () => [
+ax.extensions.form.async = (target, options = {}) =>
+  ax.a['ax-appkit-asyncform']({
+    $nodes: [
       ax.a['ax-appkit-asyncform-output'],
       ax.a['ax-appkit-asyncform-body'](
         target({
@@ -20,7 +20,7 @@ ax.extension.form.async = (target, options = {}) =>
           formTag: {
             method: options.method,
             $controls: (el) => () =>
-              ax.x.lib.unnested(el, 'ax-appkit-form-control'),
+              ax.x.lib.unnested(el, 'ax-appkit-form-control:not(.ax-appkit-form-control-without-value)'),
             $output: (el) => () =>
               options.digest ? options.digest(el.$value()) : el.$value(),
             $value: (el) => () => {
@@ -70,17 +70,17 @@ ax.extension.form.async = (target, options = {}) =>
     $on: {
       'submit: async submit': (el) => (e) => {
         e.preventDefault();
-        setTimeout(() => ax.extension.form.async.submit(e, el, options), 0);
+        setTimeout(() => ax.extensions.form.async.submit(e, el, options), 0);
       },
       ...(options.asyncformTag || {}).$on,
     },
   });
 
-ax.extension.form.async.shim = {
+ax.extensions.form.async.shim = {
   form: (f, target) => (options = {}) => ax.x.form.async(target, options),
 };
 
-ax.extension.form.async.submit = (e, el, options) => {
+ax.extensions.form.async.submit = (e, el, options) => {
   let formEl = el.$('form');
   let outputEl = el.$('ax-appkit-asyncform-output');
   let formData = formEl.$formData();

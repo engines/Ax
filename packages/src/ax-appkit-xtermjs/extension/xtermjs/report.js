@@ -1,1 +1,0 @@
-ax.extension.xtermjs.report = {};

@@ -10,14 +10,14 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.codemirror = function (options = {}) {
+ax.extensions.codemirror = function (options = {}) {
   let a = ax.a;
   let x = ax.x;
 
   return a['ax-appkit-codemirror'](
     [
       ax.is.false(options.toolbar)
-        ? null
+        ? ''
         : x.codemirror.toolbar({
             keymap: false,
             ...options,
@@ -59,105 +59,137 @@ ax.extension.codemirror = function (options = {}) {
         ...options.textareaTag,
       }),
     ],
-    options.codemirrorTag
+    options.codemirrorTag || {}
   );
 };
 
 ax.css({
   'ax-appkit-codemirror': {
-    display: 'block',
+    $: {
+      display: 'block',
+    },
     'div.CodeMirror': {
-      minHeight: '2em',
-      borderRadius: 'unset',
-      padding: 'unset',
-      fontFamily: 'monospace',
-      zIndex: 1,
+      $: {
+        minHeight: '2em',
+        borderRadius: 'unset',
+        padding: 'unset',
+        fontFamily: 'monospace',
+        zIndex: 1,
+      },
       'div.CodeMirror-scroll': {
-        minHeight: 'unset',
+        $: {
+          minHeight: 'unset',
+        },
       },
     },
     'div.CodeMirror.disabled': {
-      backgroundColor: '#e9ecef',
+      $: {
+        backgroundColor: '#e9ecef',
+      },
     },
     '&.fullscreen': {
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      right: '0',
-      bottom: '0',
-      border: 'none',
-      borderRadius: '0px',
-      zIndex: '999',
+      $: {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        border: 'none',
+        borderRadius: '0px',
+        zIndex: '999',
+      },
       'ax-appkit-codemirror-toolbar': {
-        overflow: 'hidden',
+        $: {
+          overflow: 'hidden',
+        },
         'ax-appkit-codemirror-label': {
-          display: 'block',
-          maxHeight: '1.8rem',
+          $: {
+            display: 'block',
+            maxHeight: '1.8rem',
+          },
         },
       },
     },
   },
   'ax-appkit-codemirror-toolbar': {
-    display: 'block',
-    overflow: 'auto',
-    color: '#333',
-    backgroundColor: 'white',
-    border: '1px solid #e6e6e6',
-    borderBottom: 'none',
+    $: {
+      display: 'block',
+      overflow: 'auto',
+      color: '#333',
+      backgroundColor: 'white',
+      border: '1px solid #e6e6e6',
+      borderBottom: 'none',
+    },
     button: {
-      padding: '0px 5px',
-      margin: '1px',
-      fontSize: '1.2em',
-      border: 'none',
-      backgroundColor: 'transparent',
-      cursor: 'pointer',
+      $: {
+        padding: '0px 5px',
+        margin: '1px',
+        fontSize: '1.2em',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+      },
     },
     select: {
-      border: 'none',
-      backgroundColor: 'transparent',
-      height: '1.5rem',
+      $: {
+        border: 'none',
+        backgroundColor: 'transparent',
+        height: '1.5rem',
+      },
     },
     'ax-appkit-codemirror-label': {
-      display: 'block',
-      padding: '4px 4px',
+      $: {
+        display: 'block',
+        padding: '4px 4px',
+      },
     },
     'ax-appkit-codemirror-toolbar-right': {
-      float: 'right',
+      $: {
+        float: 'right',
+      },
       label: {
-        margin: '0px',
-        padding: '0px 5px',
+        $: {
+          margin: '0px',
+          padding: '0px 5px',
+        },
       },
       '& > *': {
-        verticalAlign: 'text-bottom',
+        $: {
+          verticalAlign: 'text-bottom',
+        },
       },
     },
     'ax-appkit-codemirror-mode': {
-      display: 'inline-block',
-      border: '1px solid #e6e6e6',
-      margin: '0px 2px',
+      $: {
+        display: 'inline-block',
+        border: '1px solid #e6e6e6',
+        margin: '0px 2px',
+      },
     },
     'ax-appkit-codemirror-keymap': {
-      display: 'inline-block',
-      border: '1px solid #e6e6e6',
-      margin: '0px 2px',
+      $: {
+        display: 'inline-block',
+        border: '1px solid #e6e6e6',
+        margin: '0px 2px',
+      },
     },
   },
 });
 
-ax.extension.codemirror.CodeMirror =
+ax.extensions.codemirror.CodeMirror =
   dependencies.CodeMirror || window.CodeMirror;
 
-ax.extension.codemirror.form = {};
+ax.extensions.codemirror.form = {};
 
-ax.extension.codemirror.report = {};
+ax.extensions.codemirror.report = {};
 
-ax.extension.codemirror.toolbar = function (options = {}) {
+ax.extensions.codemirror.toolbar = function (options = {}) {
   let a = ax.a;
 
   return a['ax-appkit-codemirror-toolbar']([
     a['ax-appkit-codemirror-toolbar-right']([
-      ax.extension.codemirror.toolbar.mode(options),
-      ax.extension.codemirror.toolbar.keymap(options),
+      ax.extensions.codemirror.toolbar.mode(options),
+      ax.extensions.codemirror.toolbar.keymap(options),
       a['ax-appkit-codemirror-fullscreen'](
         a.button('🗖', {
           type: 'button',
@@ -181,11 +213,11 @@ ax.extension.codemirror.toolbar = function (options = {}) {
         })
       ),
     ]),
-    a['ax-appkit-codemirror-label'](options.label || null),
+    a['ax-appkit-codemirror-label'](options.label || ''),
   ]);
 };
 
-ax.extension.codemirror.form.control = function (r, options = {}) {
+ax.extensions.codemirror.form.control = function (r, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -262,7 +294,7 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
   );
 };
 
-ax.extension.codemirror.form.shim = {
+ax.extensions.codemirror.form.shim = {
   controls: {
     codemirror: (f, target) => (options = {}) => {
       return ax.x.codemirror.form.control(f, options);
@@ -270,7 +302,7 @@ ax.extension.codemirror.form.shim = {
   },
 };
 
-ax.extension.codemirror.report.control = function (r, options = {}) {
+ax.extensions.codemirror.report.control = function (r, options = {}) {
   let a = ax.a;
   let x = ax.x;
 
@@ -318,14 +350,14 @@ ax.extension.codemirror.report.control = function (r, options = {}) {
   );
 };
 
-ax.extension.codemirror.report.shim = {
+ax.extensions.codemirror.report.shim = {
   controls: {
     codemirror: (f, target) => (options = {}) =>
       ax.x.codemirror.report.control(f, options),
   },
 };
 
-ax.extension.codemirror.toolbar.keymap = function (options = {}) {
+ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
   let a = ax.a,
     x = ax.x;
 
@@ -369,7 +401,7 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
   };
 
   if (!keymap) {
-    component = null;
+    component = '';
   } else if (ax.is.string(keymap)) {
     component = a.label(keymapLabel(keymap));
   } else if (ax.is.object(keymap)) {
@@ -379,11 +411,11 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
   }
 
   return component
-    ? a['ax-appkit-codemirror-keymap'](component, options.keymapTag)
-    : null;
+    ? a['ax-appkit-codemirror-keymap'](component, options.keymapTag || {})
+    : '';
 };
 
-ax.extension.codemirror.toolbar.mode = function (options = {}) {
+ax.extensions.codemirror.toolbar.mode = function (options = {}) {
   let a = ax.a,
     x = ax.x;
 
@@ -427,12 +459,12 @@ ax.extension.codemirror.toolbar.mode = function (options = {}) {
       }
     );
   } else {
-    component = null;
+    component = '';
   }
 
   return component
-    ? a['ax-appkit-codemirror-mode'](component, options.modeTag)
-    : null;
+    ? a['ax-appkit-codemirror-mode'](component, options.modeTag || {})
+    : '';
 };
 
 }));
