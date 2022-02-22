@@ -10,11 +10,15 @@
   }
 }(this, function(ax, dependencies={}) {
 
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
 ax.extensions.form.async = (target, options = {}) =>
-  ax.a['ax-appkit-asyncform']({
+  a['ax-appkit-asyncform']({
     $nodes: [
-      ax.a['ax-appkit-asyncform-output'],
-      ax.a['ax-appkit-asyncform-body'](
+      a['ax-appkit-asyncform-output'],
+      a['ax-appkit-asyncform-body'](
         target({
           ...options,
           formTag: {
@@ -68,7 +72,7 @@ ax.extensions.form.async = (target, options = {}) =>
     ],
     ...options.asyncformTag,
     $on: {
-      'submit: async submit': (el) => (e) => {
+      'submit: async submit': (e, el) => {
         e.preventDefault();
         setTimeout(() => ax.extensions.form.async.submit(e, el, options), 0);
       },

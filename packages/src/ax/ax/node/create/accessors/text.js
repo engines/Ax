@@ -6,7 +6,7 @@ ax.node.create.accessors.text = function (element) {
 
   Object.defineProperty(element, '$text', {
     get: function () {
-      return element.innerHTML;
+      return element.textContent;
     },
     set: function (text) {
       accessors.text.set(element, text);

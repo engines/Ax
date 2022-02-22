@@ -1,7 +1,4 @@
 ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
-  let a = ax.a,
-    x = ax.x;
-
   let keymap = options.keymap;
 
   let installedKeymaps = x.codemirror.CodeMirror.keyMap;
@@ -31,7 +28,7 @@ ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
       }),
       {
         $on: {
-          'change: set editor keyMap': (el) => (e) => {
+          'change: set editor keyMap': (e, el) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('keyMap', el.value);

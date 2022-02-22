@@ -1,6 +1,5 @@
 import css from "./playground/css";
-// import "@engines/ax-appkit-codemirror/node_modules/codemirror/lib/codemirror.css";
-// import "@engines/ax-appkit-codemirror/node_modules/codemirror/mode/javascript/javascript.js";
+
 import html from "./playground/html";
 
 const playground = (js, options = {}) => (a, x) =>
@@ -21,16 +20,16 @@ const playground = (js, options = {}) => (a, x) =>
        a({
           $tag: "button",
           class: "btn btn-primary",
-          $nodes: [app.icon("fa fa-play")],
+          $nodes: [app.icon("fas fa-play")],
           title: 'Execute code',
           $on: {
-            click: (el) => (e) => {
+            click: (e, el) => {
               let js = el.$("^app-playground textarea").$codemirror.getValue();
               let iframeWrapper = el.$(
                 "^app-playground app-playground-iframe-wrapper"
               );
               iframeWrapper.$render();
-              let iframe = iframeWrapper.$("iframe").$render();
+              let iframe = iframeWrapper.$("iframe")
               iframe.classList.remove("d-none");
               let iDoc = iframe.contentDocument;
               iDoc.body.innerHTML = "";
@@ -48,10 +47,10 @@ const playground = (js, options = {}) => (a, x) =>
        a({
           $tag: "button",
           class: "btn btn-outline-primary",
-          $nodes: [app.icon("fa fa-stop")],
+          $nodes: [app.icon("fas fa-stop")],
           title: 'Close output window',
           $on: {
-            click: (el) => (e) => {
+            click: (e, el) => {
               let iframe = el.$("^app-playground iframe");
               iframe.classList.add("d-none");
             },
@@ -60,10 +59,10 @@ const playground = (js, options = {}) => (a, x) =>
        a({
           $tag: "button",
           class: "btn btn-outline-primary",
-          $nodes: [app.icon("fa fa-undo")],
+          $nodes: [app.icon("fas fa-undo")],
           title: 'Reset editor',
           $on: {
-            click: (el) => (e) => {
+            click: (e, el) => {
               let playground = el.$("^app-playground");
               playground.$render();
               playground.$(".btn-group").scrollIntoView();

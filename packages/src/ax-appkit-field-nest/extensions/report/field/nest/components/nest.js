@@ -1,7 +1,4 @@
 ax.extensions.report.field.nest.components.nest = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let nestReport = options.report || (() => '');
 
   let nestFactory = this.nest.factory({

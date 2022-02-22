@@ -1,7 +1,4 @@
 ax.extensions.form.field.controls.hidden = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {

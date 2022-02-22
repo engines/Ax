@@ -6,7 +6,10 @@ ax.node.create.render.text = function (element) {
   let text = element.$ax.$text;
 
   // Call function, if required.
-  if (ax.is.function(text)) text = text(element);
+  if (ax.is.function(text)) {
+    debugger
+    text = text(element);
+  }
   if (ax.is.array(text)) text = text.flat(Infinity).join('');
 
   // Add content.

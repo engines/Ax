@@ -21,6 +21,6 @@ ax.extensions.report.field.header = function (r, options = {}) {
       }
     }
 
-    return ax.a['ax-appkit-report-field-header'](component, options.headerTag || {});
+    return a['ax-appkit-report-field-header'](component, options.headerTag || {});
   }
 };

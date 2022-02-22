@@ -1,7 +1,4 @@
 ax.extensions.popup = function (component, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let popupTagOptions = {
     ...options.popupTag,
     style: {
@@ -13,7 +10,7 @@ ax.extensions.popup = function (component, options = {}) {
 
   let contextTagOptions = {
     $on: {
-      'click: close submenus': (el) => (e) => {
+      'click: close submenus': (e, el) => {
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -87,7 +84,7 @@ ax.extensions.popup = function (component, options = {}) {
       let popup = context.$('ax-appkit-context-popup');
 
       el.$on({
-        'click: show popup': (el) => (e) => {
+        'click: show popup': (e, el) => {
           e.preventDefault();
           e.stopPropagation();
           if (x.lib.element.visible(popup)) {
@@ -107,8 +104,7 @@ ax.extensions.popup = function (component, options = {}) {
     ...options.contentTag,
   };
 
-  return (a, x) =>
-    a['ax-appkit-context'](
+  return a['ax-appkit-context'](
       [
         a['ax-appkit-context-content'](component, contentTagOptions),
         a['ax-appkit-context-popup'](popupTagOptions),

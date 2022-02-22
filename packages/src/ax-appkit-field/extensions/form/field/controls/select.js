@@ -1,6 +1,4 @@
 ax.extensions.form.field.controls.select = function (f, options) {
-  let a = ax.a;
-
   let controlTagOptions = {
     $init: (el) => {
       el.$valid();
@@ -53,13 +51,13 @@ ax.extensions.form.field.controls.select = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (el) => (e) => {
+      'click: do nothing when readonly': (e, el) => {
         if (options.readonly) e.preventDefault();
       },
-      'change: check validity': (el) => (e) => {
+      'change: check validity': (e, el) => {
         el.$valid();
       },
-      'change: send control change event': (el) => (e) => {
+      'change: send control change event': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

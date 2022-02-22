@@ -1,4 +1,4 @@
-ax.extensions.router.interface.mount.transition = (
+ax.extensions.router.interface.routes.transition = (
   transition,
   options = {}
 ) => {

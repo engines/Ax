@@ -1,7 +1,4 @@
 ax.extensions.codemirror.form.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-form-control'](
     a['ax-appkit-codemirror-control']([
       x.codemirror({
@@ -13,11 +10,11 @@ ax.extensions.codemirror.form.control = function (r, options = {}) {
         },
         codemirrorTag: {
           $on: {
-            'keyup: update textarea value': (el) => (e) => {
+            'keyup: update textarea value': (e, el) => {
               el.$send('ax.appkit.form.control.change');
               el.$('textarea').$codemirror.save();
             },
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-codemirror-control');
               let allowEsc =
                 el.$('textarea').$codemirror.options.keyMap != 'vim';

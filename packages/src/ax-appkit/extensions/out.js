@@ -1,7 +1,4 @@
 ax.extensions.out = function (value, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let outTag = options.outTag || {}
   let component;
 

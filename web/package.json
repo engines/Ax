@@ -38,6 +38,7 @@
     "@engines/ax-appkit-xtermjs": "file:../packages/dist/@engines/ax-appkit-xtermjs",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "bootstrap": "^4.5.0",
+    "calendar-native-web-component": "0.0.32",
     "chart.js": "^2.9.3",
     "codemirror": "^5.56.0",
     "easymde": "^2.11.0",

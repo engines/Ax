@@ -8,7 +8,7 @@ ax.node.create = function (properties) {
     let element = ax.node.create.element(properties);
     element.$ax = properties;
     this.create.shadow(element);
-    this.create.attributes(element);
+    this.create.properties(element);
     this.create.tools(element);
     this.create.accessors(element);
     this.create.events(element);

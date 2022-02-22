@@ -1,7 +1,4 @@
 ax.extensions.form.factory.select = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let applyPlaceholder = (el) => {
     let selected = el.$$('option')[el.selectedIndex];
     if (selected.classList.contains('placeholder')) {
@@ -20,7 +17,7 @@ ax.extensions.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (el) => (e) => applyPlaceholder(el),
+      'change: update placeholder styling': (e, el) => applyPlaceholder(el),
       ...(options.selectTag || {}).$on,
     },
   };

@@ -144,9 +144,9 @@ export default (router) => (a, x) => a['app-test-form']([
     ],
   }),
   a.button('Disable', {
-    $on: {click: (el) => (e) => form.$disable()},
+    $on: {click: (e, el) => form.$disable()},
   }),
   a.button('Enable', {
-    $on: {click: (el) => (e) => form.$enable()},
+    $on: {click: (e, el) => form.$enable()},
   }),
 ])

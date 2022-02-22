@@ -1,7 +1,4 @@
 ax.extensions.xtermjs.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-control'](
     a['ax-appkit-xtermjs-control']([
       x.xtermjs({
@@ -9,7 +6,7 @@ ax.extensions.xtermjs.report.control = function (r, options = {}) {
         ...options,
         xtermjsTag: {
           $on: {
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-xtermjs-control');
               if (control.classList.contains('fullscreen')) {
                 if (e.keyCode == 27) {

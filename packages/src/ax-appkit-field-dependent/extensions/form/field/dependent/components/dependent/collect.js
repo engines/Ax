@@ -2,8 +2,6 @@ ax.extensions.form.field.dependent.components.dependent.collect = (
   indexedScope,
   options
 ) => {
-  let x = ax.x;
-
   let collection;
 
   if (ax.is.string(options)) {

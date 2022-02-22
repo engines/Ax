@@ -1,7 +1,4 @@
 ax.extensions.form.factory.checkboxes = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 

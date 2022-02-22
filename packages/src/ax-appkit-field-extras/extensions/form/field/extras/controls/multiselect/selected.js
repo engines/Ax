@@ -2,8 +2,6 @@ ax.extensions.form.field.extras.controls.multiselect.selected = function (
   f,
   options = {}
 ) {
-  let a = ax.a;
-
   return a['ax-appkit-form-multiselect-selected']({
     $selected: [],
 
@@ -50,7 +48,7 @@ ax.extensions.form.field.extras.controls.multiselect.selected = function (
                 a.button('✖', { type: 'button' }),
                 {
                   $on: {
-                    'click: remove item from selection': (el) => (e) => {
+                    'click: remove item from selection': (e, el) => {
                       if (!el.disabled) {
                         el.$('^ax-appkit-form-control')
                           .$('select')

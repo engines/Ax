@@ -1,7 +1,4 @@
 ax.extensions.jsoneditor.form.control = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let controlTagOptions = {
     $init: (el) => {
       let jsoneditorOptions = {
@@ -54,7 +51,7 @@ ax.extensions.jsoneditor.form.control = function (f, options = {}) {
       }
     },
     $on: {
-      'keydown: check for editor exit': (el) => (e) => {
+      'keydown: check for editor exit': (e, el) => {
         if (e.keyCode == 27 && e.shiftKey) {
           // shift+ESC pressed - move focus backward
           ax.x.lib.tabable.previous(el).focus();

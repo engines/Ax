@@ -1,7 +1,4 @@
 ax.extensions.report.field.nest.components.nest.items = function (f, options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let reportFn = options.report || (() => '');
   let item = function (itemData, index) {
     let ff = this.items.factory({

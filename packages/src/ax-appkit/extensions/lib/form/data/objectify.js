@@ -1,5 +1,4 @@
 ax.extensions.lib.form.data.objectify = function (data) {
-  let x = ax.x;
   let object = {};
 
   for (var pair of data.entries()) {

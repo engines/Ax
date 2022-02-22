@@ -1,4 +1,4 @@
-ax.node.create.attributes.state = function (element, property, options = {}) {
+ax.node.create.properties.state = function (element, property, options = {}) {
   Object.defineProperty(element, property, {
     get: () => {
       let value = element.$ax[property];
@@ -7,7 +7,7 @@ ax.node.create.attributes.state = function (element, property, options = {}) {
     },
     set: (state) => {
       element.$ax[property] = state;
-      if (options.active) element.$render();
+      if (options.reactive) element.$render();
     },
   });
 };

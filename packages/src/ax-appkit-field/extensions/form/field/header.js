@@ -19,5 +19,5 @@ ax.extensions.form.field.header = function (f, options = {}) {
     }
   }
 
-  return ax.a['ax-appkit-form-field-header'](component, options.headerTag || {});
+  return a['ax-appkit-form-field-header'](component, options.headerTag || {});
 };

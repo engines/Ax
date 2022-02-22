@@ -10,30 +10,31 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extensions.markedjs = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
 
-  let content = options.markdown;
+ax.extensions.markedjs = function (options = {}) {
+  let markdown = options.markdown;
   let html;
 
   let processMarkdown = function (string) {
     string = (string || '').toString();
     if (options.inline) {
-      return x.markedjs.marked.inlineLexer(string, options.markedjs);
+      return x.markedjs.marked.parseInline(string, options.markedjs);
     } else {
-      return x.markedjs.marked.marked(string, options.markedjs);
+      return x.markedjs.marked.parse(string, options.markedjs);
     }
   };
 
-  if (content instanceof Array) {
+  if (markdown instanceof Array) {
     let result = [];
-    content.forEach(function (item) {
+    markdown.flat(Infinity).forEach(function (item) {
       result.push(processMarkdown(item));
     });
     html = result.join('');
   } else {
-    html = processMarkdown(content);
+    html = processMarkdown(markdown);
   }
 
   if (options.sanitize) {
@@ -52,9 +53,6 @@ ax.extensions.markedjs.marked = dependencies.marked || window.marked;
 ax.extensions.markedjs.report = {};
 
 ax.extensions.markedjs.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = options.value;
   let component;
 

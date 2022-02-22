@@ -1,7 +1,4 @@
 ax.extensions.markedjs.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = options.value;
   let component;
 

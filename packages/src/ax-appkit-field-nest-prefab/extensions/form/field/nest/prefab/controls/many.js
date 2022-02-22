@@ -1,12 +1,9 @@
 ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
-  let a = ax.a,
-    x = ax.x;
-
   let sortable = x.form.field.nest.sortable;
 
   return f.controls.nest({
     ...options,
-    form: (ff) => (a, x) => {
+    form: (ff) => {
       return a['ax-appkit-form-nest-many-wrapper'](
         [
           ff.items({
@@ -45,11 +42,11 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
             itemsTag: {
               ...options.itemsTag,
               $on: {
-                sortstart: (el) => (e) => {
+                sortstart: (e, el) => {
                   let item = e.detail.item;
                   el.$dragging = item;
                 },
-                sortupdate: (el) => (e) => {
+                sortupdate: (e, el) => {
                   el.$dragging = undefined;
                   el.$send('ax.appkit.form.nest.item.move');
                 },
@@ -103,13 +100,13 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                             tabindex: 0,
                             ...options.deleteTag,
                             $on: {
-                              click: (el) => (e) =>
+                              click: (e, el) =>
                                 alert(
                                   `Drag ${
                                     options.singular || 'item'
                                   } here to remove it.`
                                 ),
-                              dragover: (el) => (e) => {
+                              dragover: (e, el) => {
                                 let items = el.$(
                                   '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                                 );
@@ -134,7 +131,7 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                       a['ax-appkit-form-nest-drag-on'](
                         ff.button({
                           label: '⬍',
-                          onclick: (el) => (e) => {
+                          onclick: (e, el) => {
                             let dragOn = el.$('^ax-appkit-form-nest-drag-on');
                             let dragOff = el.$(
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-off'
@@ -162,7 +159,7 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                       a['ax-appkit-form-nest-drag-off'](
                         ff.button({
                           label: '⬍',
-                          onclick: (el) => (e) => {
+                          onclick: (e, el) => {
                             let dragOff = el.$('^ax-appkit-form-nest-drag-off');
                             let dragOn = el.$(
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-on'

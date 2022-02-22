@@ -10,8 +10,11 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extensions.xtermjs = (options = {}) => (a, x) =>
-  a['ax-appkit-xtermjs'](
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
+ax.extensions.xtermjs = (options = {}) => a['ax-appkit-xtermjs'](
     [
       ax.is.false(options.toolbar) ? '' : x.xtermjs.toolbar(options),
       a.div({
@@ -165,15 +168,14 @@ if (ax.is.object(plugin)) {
 
 ax.extensions.xtermjs.report = {};
 
-ax.extensions.xtermjs.toolbar = (options = {}) => (a, x) =>
-  a['ax-appkit-xtermjs-toolbar'](
+ax.extensions.xtermjs.toolbar = (options = {}) => a['ax-appkit-xtermjs-toolbar'](
     [
       a['ax-appkit-xtermjs-toolbar-right'](
         a['ax-appkit-xtermjs-fullscreen'](
           a.button('🗖', {
             type: 'button',
             $on: {
-              'click: toggle full screen': (el) => (e) => {
+              'click: toggle full screen': (e, el) => {
                 let wrapper = el.$('^ax-appkit-xtermjs');
                 let div = wrapper.$('div');
                 div.$fullscreen = !div.$fullscreen;
@@ -197,9 +199,6 @@ ax.extensions.xtermjs.toolbar = (options = {}) => (a, x) =>
   );
 
 ax.extensions.xtermjs.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-control'](
     a['ax-appkit-xtermjs-control']([
       x.xtermjs({
@@ -207,7 +206,7 @@ ax.extensions.xtermjs.report.control = function (r, options = {}) {
         ...options,
         xtermjsTag: {
           $on: {
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-xtermjs-control');
               if (control.classList.contains('fullscreen')) {
                 if (e.keyCode == 27) {

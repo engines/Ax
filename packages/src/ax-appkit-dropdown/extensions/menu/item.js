@@ -1,4 +1,4 @@
-ax.extensions.menu.item = (item, options = {}) => (a, x) => {
+ax.extensions.menu.item = (item, options = {}) => {
   let component;
 
   if (item.menu) {
@@ -56,13 +56,13 @@ ax.extensions.menu.item = (item, options = {}) => (a, x) => {
   let itemTagOptions = {
     ...options.itemTag,
     $on: {
-      click: (el) => (e) => {
+      click: (e, el) => {
         if (e.target.tagName == 'APPKIT-MENU-SUBMENU-OPEN') {
           openSubmenu(el, e);
           e.stopPropagation();
         }
       },
-      mouseenter: (el) => (e) => {
+      mouseenter: (e, el) => {
         openSubmenu(el, e);
       },
       ...(options.itemTag || {}).$on,

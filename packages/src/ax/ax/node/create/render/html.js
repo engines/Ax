@@ -6,7 +6,10 @@ ax.node.create.render.html = function (element) {
   let html = element.$ax.$html;
 
   // Call function, if required.
-  if (ax.is.function(html)) html = html(element);
+  if (ax.is.function(html)) {
+    debugger
+    html = html(element);
+  }
   if (ax.is.array(html)) html = html.flat(Infinity).join('');
 
   // Add content.

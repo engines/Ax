@@ -31,7 +31,7 @@ ax.AxAppkitFetch = class {
   }
 
   render() {
-    return ax.a['ax-appkit-fetch'](this.placeholder, {
+    return a['ax-appkit-fetch'](this.placeholder, {
       $init: (el) => {
         this.element = el;
         this.init();
@@ -146,7 +146,7 @@ ax.AxAppkitFetch = class {
       let node = this.errorCallback(body, this.element, response);
       this.element.$nodes = [node];
     } else {
-      this.element.$nodes = [ax.a['ax-appkit-fetch-response.error'](bodies)];
+      this.element.$nodes = [a['ax-appkit-fetch-response.error'](bodies)];
     }
   }
 
@@ -165,8 +165,8 @@ ax.AxAppkitFetch = class {
       }
     } else {
       this.element.$nodes = [
-        ax.a['ax-appkit-fetch-response.success'](
-          ax.a.pre(JSON.stringify(body, null, 2))
+        a['ax-appkit-fetch-response.success'](
+          a.pre(JSON.stringify(body, null, 2))
         )
       ];
     }
@@ -178,7 +178,7 @@ ax.AxAppkitFetch = class {
       let node = this.catchCallback(error, this.element);
       this.element.$nodes = [node];
     } else {
-      this.element.$nodes = [ax.a['ax-appkit-fetch-response.error'](
+      this.element.$nodes = [a['ax-appkit-fetch-response.error'](
         a.pre(error.message)
       )];
     }

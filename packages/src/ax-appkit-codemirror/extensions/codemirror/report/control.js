@@ -1,7 +1,4 @@
 ax.extensions.codemirror.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-control'](
     a['ax-appkit-codemirror-control']([
       x.codemirror({
@@ -9,7 +6,7 @@ ax.extensions.codemirror.report.control = function (r, options = {}) {
         ...options,
         codemirrorTag: {
           $on: {
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-codemirror-control');
 
               if (control.classList.contains('fullscreen')) {

@@ -1,4 +1,4 @@
-ax.extensions.router = (options = {}) => (a, x) => {
+ax.extensions.router = (options = {}) => {
   if (options.home) {
     if (window.location.pathname.match(/^$|^\/$/)) {
       window.history.replaceState({}, 'Home', options.home);

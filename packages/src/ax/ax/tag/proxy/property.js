@@ -8,11 +8,8 @@ ax.tag.proxy.property = function (property) {
   // if the property has '[]' attrs, use as html tag attributes
   // e.g. div#myTagId.btn.btn-primary
 
-  if (ax.is.not.string(property)) {
-    console.error('Expecting a string but got', property);
-  }
-
   let attributes = {};
+
   let nodename = (property.match(/^([\w-]+)/) || [])[1];
   let id = (property.match(/#([\w-]+)/) || [])[1];
   let classes = [...property.matchAll(/\.([\w-]+)/g)].map(

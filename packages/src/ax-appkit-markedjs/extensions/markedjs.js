@@ -1,27 +1,24 @@
 ax.extensions.markedjs = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
-  let content = options.markdown;
+  let markdown = options.markdown;
   let html;
 
   let processMarkdown = function (string) {
     string = (string || '').toString();
     if (options.inline) {
-      return x.markedjs.marked.inlineLexer(string, options.markedjs);
+      return x.markedjs.marked.parseInline(string, options.markedjs);
     } else {
-      return x.markedjs.marked.marked(string, options.markedjs);
+      return x.markedjs.marked.parse(string, options.markedjs);
     }
   };
 
-  if (content instanceof Array) {
+  if (markdown instanceof Array) {
     let result = [];
-    content.forEach(function (item) {
+    markdown.flat(Infinity).forEach(function (item) {
       result.push(processMarkdown(item));
     });
     html = result.join('');
   } else {
-    html = processMarkdown(content);
+    html = processMarkdown(markdown);
   }
 
   if (options.sanitize) {

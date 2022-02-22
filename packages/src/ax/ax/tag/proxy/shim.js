@@ -4,11 +4,16 @@
  */
 ax.tag.proxy.shim = {
   get: (target, property) => {
-    return (...attributes) => {
-      if (property == '!') return ax.node.raw(attributes);
+
+    if (ax.is.not.string(property)) {
+      new Error('Expecting a string but got', property);
+    }
+
+    return (...properties) => {
+      if (property == '!') return ax.node.raw(properties);
       return ax.tag.proxy.create(
         ax.tag.proxy.property(property),
-        ...attributes
+        ...properties
       );
     }
   },

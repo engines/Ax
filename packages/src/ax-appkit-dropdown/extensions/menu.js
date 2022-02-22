@@ -1,4 +1,4 @@
-ax.extensions.menu = (options = {}) => (a, x) => {
+ax.extensions.menu = (options = {}) => {
   let items = options.menu || [];
 
   return a['ax-appkit-menu'](

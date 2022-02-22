@@ -1,7 +1,4 @@
 ax.extensions.report.field.help = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let help = options.help;
 
   return help

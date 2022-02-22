@@ -6,5 +6,6 @@ ax.extensions.router.element.open = (options) => (el) => (
   if (path[0] != '/') {
     path = options.scope + (path ? `/${path}` : '');
   }
+  
   el.$locate(path, query, anchor);
 };

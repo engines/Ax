@@ -1,7 +1,4 @@
 ax.extensions.form.field.extras.controls.selectinput = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let selections = x.lib.form.selections(options.selections);
   selections.push({
     disabled: 'hr',
@@ -62,7 +59,7 @@ ax.extensions.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
     $on: {
-      change: (el) => (e) => {
+      change: (e, el) => {
         let select = el.$('select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(

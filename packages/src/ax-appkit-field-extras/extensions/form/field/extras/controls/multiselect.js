@@ -2,9 +2,6 @@ ax.extensions.form.field.extras.controls.multiselect = function (
   f,
   options = {}
 ) {
-  let a = ax.a;
-  let x = ax.x;
-
   options.value = x.lib.form.collection.value(options.value);
 
   options.selections = x.lib.form.selections(options.selections);
@@ -66,9 +63,7 @@ ax.extensions.form.field.extras.controls.multiselect = function (
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (
-        el
-      ) => (e) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

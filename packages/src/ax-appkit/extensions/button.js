@@ -1,7 +1,5 @@
 ax.extensions.button = function (options = {}) {
-  let a = ax.a;
-
-  let handler = options.onclick || (() => () => {});
+  let handler = options.onclick || (() => {});
 
   let label = a['ax-appkit-button-label'](options.label || '', {
     style: {
@@ -27,8 +25,8 @@ ax.extensions.button = function (options = {}) {
     value: options.value,
     ...options.buttonTag,
     $on: {
-      'click: button onclick': (el) => (e) => {
-        confirmation(el) && handler(el)(e);
+      'click: button onclick': (e, el) => {
+        confirmation(el) && handler(e, el);
       },
       ...(options.buttonTag || {}).$on,
     },

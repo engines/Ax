@@ -1,6 +1,4 @@
 ax.extensions.report.factory.text = function (options = {}) {
-  let a = ax.a;
-
   let component;
 
   if (options.value) {

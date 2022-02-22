@@ -1,11 +1,11 @@
 ax.extensions.router.element.nodes = (options) => (el) => {
-  let start = el.$location();
+  let location = el.$location();
 
   let config = {
-    path: start.path,
-    query: start.query,
-    anchor: start.anchor,
-    scope: options.scope,
+    path: location.path,
+    query: location.query,
+    anchor: location.anchor,
+    scope: '',
     default: options.default,
     home: options.home,
     lazy: options.lazy,
@@ -16,11 +16,25 @@ ax.extensions.router.element.nodes = (options) => (el) => {
 
   let routes = options.routes || {};
 
-  let router = x.router.interface(config);
+  let route = x.router.interface(config);
 
-  if (ax.is.function(routes)) {
-    return routes(router);
+  if (options.scope) {
+    let scopeRoutes = {}
+    scopeRoutes[options.scope] = (route) => {
+      if (ax.is.function(routes)) {
+        return routes(route);
+      } else {
+        return route.mount({ routes: routes });
+      }
+    }
+    scopeRoutes['*'] = ''
+    return route.mount({ routes: scopeRoutes })
   } else {
-    return router.mount({ routes: routes });
+    if (ax.is.function(routes)) {
+      return routes(route);
+    } else {
+      return route.mount({ routes: routes });
+    }
   }
+
 };

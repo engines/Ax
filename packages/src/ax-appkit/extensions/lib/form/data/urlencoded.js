@@ -1,5 +1,4 @@
 ax.extensions.lib.form.data.urlencoded = function (data) {
-  let x = ax.x;
   let parts = [];
 
   for (var pair of data.entries()) {

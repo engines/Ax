@@ -10,6 +10,10 @@
   }
 }(this, function(ax, dependencies={}) {
 
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
 ax.extensions.table = (options = {}) => (a,x) => {
   const header = options.header || []
   const data = options.data || []
@@ -97,14 +101,11 @@ ax.extensions.report.field.nest.prefab.shim = {
 };
 
 ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
-  let a = ax.a,
-    x = ax.x;
-
   let sortable = x.form.field.nest.sortable;
 
   return f.controls.nest({
     ...options,
-    form: (ff) => (a, x) => {
+    form: (ff) => {
       return a['ax-appkit-form-nest-many-wrapper'](
         [
           ff.items({
@@ -143,11 +144,11 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
             itemsTag: {
               ...options.itemsTag,
               $on: {
-                sortstart: (el) => (e) => {
+                sortstart: (e, el) => {
                   let item = e.detail.item;
                   el.$dragging = item;
                 },
-                sortupdate: (el) => (e) => {
+                sortupdate: (e, el) => {
                   el.$dragging = undefined;
                   el.$send('ax.appkit.form.nest.item.move');
                 },
@@ -201,13 +202,13 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                             tabindex: 0,
                             ...options.deleteTag,
                             $on: {
-                              click: (el) => (e) =>
+                              click: (e, el) =>
                                 alert(
                                   `Drag ${
                                     options.singular || 'item'
                                   } here to remove it.`
                                 ),
-                              dragover: (el) => (e) => {
+                              dragover: (e, el) => {
                                 let items = el.$(
                                   '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                                 );
@@ -232,7 +233,7 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                       a['ax-appkit-form-nest-drag-on'](
                         ff.button({
                           label: '⬍',
-                          onclick: (el) => (e) => {
+                          onclick: (e, el) => {
                             let dragOn = el.$('^ax-appkit-form-nest-drag-on');
                             let dragOff = el.$(
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-off'
@@ -260,7 +261,7 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                       a['ax-appkit-form-nest-drag-off'](
                         ff.button({
                           label: '⬍',
-                          onclick: (el) => (e) => {
+                          onclick: (e, el) => {
                             let dragOff = el.$('^ax-appkit-form-nest-drag-off');
                             let dragOn = el.$(
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-on'
@@ -308,15 +309,12 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
 };
 
 ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
-  let a = ax.a,
-    x = ax.x;
-
   let sortable = x.form.field.nest.sortable;
 
   return f.controls.nest({
     ...options,
     itemsTagName: 'tbody',
-    form: (ff) => (a, x) => {
+    form: (ff) => {
       let form = options.form || (() => {});
 
       let tableHeader = () => {
@@ -335,7 +333,7 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                       ? ff.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (el) => (e) => {
+                              'click: toggle help': (e, el) => {
                                 el.$showHelp = !el.$showHelp;
                                 el.$render();
                                 el.$(
@@ -532,11 +530,11 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
             $tag: 'tbody',
             ...options.itemsTag,
             $on: {
-              sortstart: (el) => (e) => {
+              sortstart: (e, el) => {
                 let item = e.detail.item;
                 el.$dragging = item;
               },
-              sortupdate: (el) => (e) => {
+              sortupdate: (e, el) => {
                 el.$dragging = undefined;
                 el.$send('ax.appkit.form.nest.item.move');
               },
@@ -597,13 +595,13 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                           tabindex: 0,
                           ...options.deleteTag,
                           $on: {
-                            click: (el) => (e) =>
+                            click: (e, el) =>
                               alert(
                                 `Drag ${
                                   options.singular || 'item'
                                 } here to remove it.`
                               ),
-                            dragover: (el) => (e) => {
+                            dragover: (e, el) => {
                               let items = el.$(
                                 '^ax-appkit-form-nest-table-wrapper tbody'
                               );
@@ -628,7 +626,7 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                     a['ax-appkit-form-nest-drag-on'](
                       ff.button({
                         label: '⬍',
-                        onclick: (el) => (e) => {
+                        onclick: (e, el) => {
                           let dragOn = el.$('^ax-appkit-form-nest-drag-on');
                           let dragOff = el.$(
                             '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-off'
@@ -655,7 +653,7 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                     a['ax-appkit-form-nest-drag-off'](
                       ff.button({
                         label: '⬍',
-                        onclick: (el) => (e) => {
+                        onclick: (e, el) => {
                           let dragOff = el.$('^ax-appkit-form-nest-drag-off');
                           let dragOn = el.$(
                             '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-on'
@@ -716,37 +714,32 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
 };
 
 ax.extensions.report.field.nest.prefab.controls.many = function (r, options) {
-  let a = ax.a;
-
   return r.controls.nest({
     ...options,
-    report: (rr) => (a, x) =>
-      a['ax-appkit-report-nest-many-wrapper'](
-        [
-          rr.items({
-            ...options,
-            report: (rrr) => [
-              a['ax-appkit-report-nest-many-item-header'](
-                options.itemHeaderTag || {}
-              ),
-              a['ax-appkit-report-nest-many-item-body'](
-                options.report(rrr),
-                options.itemBodyTag || {}
-              ),
-            ],
-          }),
-        ],
-        options.wrapperTag || {}
-      ),
+    report: (rr) => a['ax-appkit-report-nest-many-wrapper'](
+      [
+        rr.items({
+          ...options,
+          report: (rrr) => [
+            a['ax-appkit-report-nest-many-item-header'](
+              options.itemHeaderTag || {}
+            ),
+            a['ax-appkit-report-nest-many-item-body'](
+              options.report(rrr),
+              options.itemBodyTag || {}
+            ),
+          ],
+        }),
+      ],
+      options.wrapperTag || {}
+    ),
   });
 };
 
 ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
-  let a = ax.a;
-
   return r.controls.nest({
     ...options,
-    report: (rr) => (a, x) => {
+    report: (rr) => {
       let report = options.report || (() => {});
 
       let tableHeader = function () {
@@ -764,7 +757,7 @@ ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
                       ? r.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (el) => (e) => {
+                              'click: toggle help': (e, el) => {
                                 el.$showHelp = !el.$showHelp;
                                 el.$render();
                                 el.$(

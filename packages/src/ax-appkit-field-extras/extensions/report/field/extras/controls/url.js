@@ -1,7 +1,4 @@
 ax.extensions.report.field.extras.controls.url = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = options.value;
   let component;
 

@@ -1,7 +1,4 @@
 ax.extensions.form.field.fieldset = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let control = a[
     'ax-appkit-form-control.ax-appkit-form-control-without-value'
   ](

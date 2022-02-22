@@ -1,7 +1,4 @@
 ax.extensions.report.field.field = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   if (options.as == 'hidden') {
     options.label = false;
     options.help = false;

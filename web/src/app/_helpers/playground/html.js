@@ -9,6 +9,7 @@ const html = (js, options = {}) => `<!DOCTYPE html>
 
 <script>
 let js = ${JSON.stringify(js)};
+debugger
 </script>
 
 <script type="application/javascript" src="/vendors~main~playground.js"></script>

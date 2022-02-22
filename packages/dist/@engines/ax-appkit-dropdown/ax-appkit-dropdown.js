@@ -10,10 +10,11 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extensions.context = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
 
+ax.extensions.context = function (options = {}) {
   let component = options.content || '';
 
   let popupTagOptions = {
@@ -27,7 +28,7 @@ ax.extensions.context = function (options = {}) {
 
   let contextTagOptions = {
     $on: {
-      click: (el) => (e) => {
+      click: (e, el) => {
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -101,7 +102,7 @@ ax.extensions.context = function (options = {}) {
       };
 
       el.$on({
-        contextmenu: (el) => (e) => {
+        contextmenu: (e, el) => {
           e.preventDefault();
           e.stopPropagation();
           popup.$nodes = [popupContents];
@@ -117,8 +118,7 @@ ax.extensions.context = function (options = {}) {
     ...options.contentTag,
   };
 
-  return (a, x) =>
-    a['ax-appkit-context'](
+  return a['ax-appkit-context'](
       [
         a['ax-appkit-context-content'](component, contentTagOptions),
         a['ax-appkit-context-popup'](popupTagOptions),
@@ -127,7 +127,7 @@ ax.extensions.context = function (options = {}) {
     );
 };
 
-ax.extensions.menu = (options = {}) => (a, x) => {
+ax.extensions.menu = (options = {}) => {
   let items = options.menu || [];
 
   return a['ax-appkit-menu'](
@@ -150,9 +150,6 @@ ax.extensions.menu = (options = {}) => (a, x) => {
 };
 
 ax.extensions.popup = function (component, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let popupTagOptions = {
     ...options.popupTag,
     style: {
@@ -164,7 +161,7 @@ ax.extensions.popup = function (component, options = {}) {
 
   let contextTagOptions = {
     $on: {
-      'click: close submenus': (el) => (e) => {
+      'click: close submenus': (e, el) => {
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -238,7 +235,7 @@ ax.extensions.popup = function (component, options = {}) {
       let popup = context.$('ax-appkit-context-popup');
 
       el.$on({
-        'click: show popup': (el) => (e) => {
+        'click: show popup': (e, el) => {
           e.preventDefault();
           e.stopPropagation();
           if (x.lib.element.visible(popup)) {
@@ -258,8 +255,7 @@ ax.extensions.popup = function (component, options = {}) {
     ...options.contentTag,
   };
 
-  return (a, x) =>
-    a['ax-appkit-context'](
+  return a['ax-appkit-context'](
       [
         a['ax-appkit-context-content'](component, contentTagOptions),
         a['ax-appkit-context-popup'](popupTagOptions),
@@ -351,7 +347,7 @@ ax.css({
   },
 });
 
-ax.extensions.menu.item = (item, options = {}) => (a, x) => {
+ax.extensions.menu.item = (item, options = {}) => {
   let component;
 
   if (item.menu) {
@@ -409,13 +405,13 @@ ax.extensions.menu.item = (item, options = {}) => (a, x) => {
   let itemTagOptions = {
     ...options.itemTag,
     $on: {
-      click: (el) => (e) => {
+      click: (e, el) => {
         if (e.target.tagName == 'APPKIT-MENU-SUBMENU-OPEN') {
           openSubmenu(el, e);
           e.stopPropagation();
         }
       },
-      mouseenter: (el) => (e) => {
+      mouseenter: (e, el) => {
         openSubmenu(el, e);
       },
       ...(options.itemTag || {}).$on,

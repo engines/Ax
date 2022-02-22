@@ -1,6 +1,4 @@
 ax.extensions.report.field.extras.controls.json = function (r, options) {
-  let a = ax.a;
-
   let value = options.value;
   let component;
 

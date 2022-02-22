@@ -1,7 +1,7 @@
 /**
  * Define attribute on element.
  */
-ax.node.create.attributes.attribute = function (element, property) {
+ax.node.create.properties.attribute = function (element, property) {
   let value = element.$ax[property];
   if (ax.is.not.undefined(value)) {
     if (property == 'style') {

@@ -1,9 +1,7 @@
 ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
-  let a = ax.a;
-
   return r.controls.nest({
     ...options,
-    report: (rr) => (a, x) => {
+    report: (rr) => {
       let report = options.report || (() => {});
 
       let tableHeader = function () {
@@ -21,7 +19,7 @@ ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
                       ? r.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (el) => (e) => {
+                              'click: toggle help': (e, el) => {
                                 el.$showHelp = !el.$showHelp;
                                 el.$render();
                                 el.$(

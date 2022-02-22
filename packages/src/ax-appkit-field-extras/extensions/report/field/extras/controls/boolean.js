@@ -1,6 +1,4 @@
 ax.extensions.report.field.extras.controls.boolean = (r, options = {}) => {
-  let a = ax.a;
-
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {

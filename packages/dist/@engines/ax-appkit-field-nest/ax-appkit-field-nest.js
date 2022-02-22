@@ -10,6 +10,10 @@
   }
 }(this, function(ax, dependencies={}) {
 
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
 ax.extensions.form.field.nest = {};
 
 ax.extensions.report.field.nest = {};
@@ -67,9 +71,6 @@ ax.extensions.report.field.nest.shim = {
 };
 
 ax.extensions.form.field.nest.components.nest = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let nestForm = options.form || (() => '');
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
@@ -176,9 +177,6 @@ ax.extensions.form.field.nest.components.nest = function (f, options = {}) {
 };
 
 ax.extensions.report.field.nest.components.nest = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let nestReport = options.report || (() => '');
 
   let nestFactory = this.nest.factory({
@@ -215,8 +213,6 @@ ax.extensions.report.field.nest.components.nest = function (r, options = {}) {
 };
 
 ax.extensions.form.field.nest.components.nest.add = function (f, options) {
-  let a = ax.a;
-
   let singular = f.singular;
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
@@ -225,7 +221,7 @@ ax.extensions.form.field.nest.components.nest.add = function (f, options) {
   return a['ax-appkit-form-nest-add-button'](
     f.button({
       label: label,
-      onclick: (el) => (e) => {
+      onclick: (e, el) => {
         let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },
@@ -236,8 +232,6 @@ ax.extensions.form.field.nest.components.nest.add = function (f, options) {
 };
 
 ax.extensions.form.field.nest.components.nest.factory = function (options) {
-  let x = ax.x;
-
   let ff = x.form.factory({
     items: (options = {}) => this.items(ff, options),
     add: (options = {}) => this.add(ff, options),
@@ -248,9 +242,6 @@ ax.extensions.form.field.nest.components.nest.factory = function (options) {
 };
 
 ax.extensions.form.field.nest.components.nest.items = function (f, options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let formFn = options.form || (() => '');
 
   let itemsTagName =
@@ -411,8 +402,6 @@ ax.extensions.form.field.nest.components.nest.items = function (f, options) {
 };
 
 ax.extensions.report.field.nest.components.nest.factory = function (options) {
-  let x = ax.x;
-
   let ff = x.report.factory({
     scope: options.scope,
     object: options.object,
@@ -425,9 +414,6 @@ ax.extensions.report.field.nest.components.nest.factory = function (options) {
 };
 
 ax.extensions.report.field.nest.components.nest.items = function (f, options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let reportFn = options.report || (() => '');
   let item = function (itemData, index) {
     let ff = this.items.factory({
@@ -474,7 +460,7 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
 
   return f.button({
     label: '⏷',
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -496,8 +482,6 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
 ax.extensions.form.field.nest.components.nest.items.factory = function (
   options = {}
 ) {
-  let x = ax.x;
-
   let f = x.form.factory({
     remove: (options) => this.remove(f, options),
     up: (options) => this.up(f, options),
@@ -527,7 +511,7 @@ ax.extensions.form.field.nest.components.nest.items.remove = function (
   return f.button({
     label: '✖',
     confirm: confirmation,
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -554,7 +538,7 @@ ax.extensions.form.field.nest.components.nest.items.up = function (
 
   return f.button({
     label: '⏶',
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -576,8 +560,6 @@ ax.extensions.form.field.nest.components.nest.items.up = function (
 ax.extensions.report.field.nest.components.nest.items.factory = function (
   options
 ) {
-  let x = ax.x;
-
   let index = options.index;
 
   let f = x.report.factory({

@@ -1,7 +1,7 @@
 ax.extensions.form.field.collection.down = function (f, options) {
   return f.button({
     label: '⏷',
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       var target = options.itemTarget
         ? options.itemTarget(el)
         : el.$('^ax-appkit-control-collection-item');

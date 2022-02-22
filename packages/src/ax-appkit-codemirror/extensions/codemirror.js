@@ -1,7 +1,4 @@
 ax.extensions.codemirror = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-codemirror'](
     [
       ax.is.false(options.toolbar)

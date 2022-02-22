@@ -10,22 +10,30 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extensions.easymde = (options = {}) => (a, x) =>
-a['ax-appkit-easymde'](
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
+ax.extensions.easymde = (options = {}) => a['ax-appkit-easymde'](
   a.textarea(options.value || '', {
     $init: (el) => {
-      el.$observer = new IntersectionObserver(() => {
-        if (!el.$easymde) {
-          el.$easymde = new x.easymde.EasyMDE({
-            element: el,
-            toolbar: x.easymde.toolbar(),
-            placeholder: options.placeholder,
-            autoDownloadFontAwesome: false,
-            ...options.easymde,
-          });
-        }
+      el.$easymde = new x.easymde.EasyMDE({
+        element: el,
+        toolbar: x.easymde.toolbar(),
+        placeholder: options.placeholder,
+        autoDownloadFontAwesome: false,
+        ...options.easymde,
       });
-      el.$observer.observe(el);
+        setTimeout(
+            () => {el.$easymde.codemirror.refresh()}, 0
+        
+          )
+      // el.$observer = new IntersectionObserver((entries) => {
+      //   console.log(entries)
+      //   // if (!el.$easymde) {
+      //   // }
+      // }, {});
+      // el.$observer.observe(el);
     },
     $exit: (el) => {
       el.$observer.disconnect();
@@ -37,7 +45,7 @@ a['ax-appkit-easymde'](
       el.value = el.$easymde.value();
     },
     $on: {
-      'keydown: check for editor exit': (el) => (e) => {
+      'keydown: check for editor exit': (e, el) => {
         if (e.keyCode == 27) {
           // ESC pressed - move focus forward
           ax.x.lib.tabable.next(e.target).focus();
@@ -195,9 +203,6 @@ ax.extensions.easymde.toolbar = () => [
 ];
 
 ax.extensions.easymde.form.control = function (f, options) {
-  let a = ax.a,
-    x = ax.x;
-
   let controlTagOptions = {
     $value: (el) => () => {
       return el.$('textarea').value;
@@ -222,11 +227,11 @@ ax.extensions.easymde.form.control = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'keyup: update textarea': (el) => (e) => {
+      'keyup: update textarea': (e, el) => {
         el.$('textarea').$updateValue();
         el.$send('ax.appkit.form.control.change');
       },
-      'keydown: check for editor exit': (el) => (e) => {
+      'keydown: check for editor exit': (e, el) => {
         if (e.target.nodeName === 'TEXTAREA') {
           if (e.keyCode == 27) {
             // ESC pressed - move focus forward
@@ -254,8 +259,8 @@ ax.extensions.easymde.form.control = function (f, options) {
 
 ax.extensions.easymde.form.shim = {
   controls: {
-    easymde: (f, target) => (options = {}) => (a, x) =>
-      x.easymde.form.control(f, options),
+    easymde: (f, target) => (options = {}) =>
+    x.easymde.form.control(f, options),
   },
 };
 

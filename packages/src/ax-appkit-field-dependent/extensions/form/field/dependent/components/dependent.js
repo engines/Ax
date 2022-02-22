@@ -3,9 +3,6 @@ ax.extensions.form.field.dependent.components.dependent = function (
   target,
   options
 ) {
-  let a = ax.a;
-  let x = ax.x;
-
   let indexedScope = f.indexedScope || f.scope;
   let name = indexedScope ? `${indexedScope}[${options.key}]` : options.key;
 
@@ -100,7 +97,7 @@ ax.extensions.form.field.dependent.components.dependent = function (
       ...(options.dependentTag || {}).style,
     },
     $on: {
-      'ax.appkit.form.control.change': (el) => (e) => {
+      'ax.appkit.form.control.change': (e, el) => {
         el.$checkDependents();
       },
       ...(options.dependentTag || {}).$on,

@@ -1,7 +1,4 @@
 ax.extensions.report.field.fieldset = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let control = a['ax-appkit-report-control'](
     [
       options.legend ? a.legend(options.legend, options.legendTag || {}) : '',

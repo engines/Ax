@@ -1,14 +1,24 @@
 export default {
   ".error": {
-    color: "red",
+    $: {
+      color: "red",
+    },
   },
   ".success": {
-    color: "blue",
+    $: {
+      color: "blue",
+    },
   },
   blockquote: {
-    color: "#666",
-    borderLeft: "2px solid #666",
-    paddingLeft: "10px",
+    $: {
+      color: "#666",
+      borderLeft: "2px solid #666",
+      paddingLeft: "10px",
+    },
   },
-  '.greeting': {color: 'blue'},
+  '.greeting': {
+    $: {
+      color: 'blue'
+    },
+  },
 };

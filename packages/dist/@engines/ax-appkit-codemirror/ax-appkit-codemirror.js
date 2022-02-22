@@ -10,10 +10,11 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extensions.codemirror = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
 
+ax.extensions.codemirror = function (options = {}) {
   return a['ax-appkit-codemirror'](
     [
       ax.is.false(options.toolbar)
@@ -184,8 +185,6 @@ ax.extensions.codemirror.form = {};
 ax.extensions.codemirror.report = {};
 
 ax.extensions.codemirror.toolbar = function (options = {}) {
-  let a = ax.a;
-
   return a['ax-appkit-codemirror-toolbar']([
     a['ax-appkit-codemirror-toolbar-right']([
       ax.extensions.codemirror.toolbar.mode(options),
@@ -194,7 +193,7 @@ ax.extensions.codemirror.toolbar = function (options = {}) {
         a.button('🗖', {
           type: 'button',
           $on: {
-            'click: toggle full screen': (el) => (e) => {
+            'click: toggle full screen': (e, el) => {
               let wrapper = el.$('^ax-appkit-codemirror');
               let codemirror = wrapper.$('textarea').$codemirror;
               if (wrapper.classList.contains('fullscreen')) {
@@ -218,9 +217,6 @@ ax.extensions.codemirror.toolbar = function (options = {}) {
 };
 
 ax.extensions.codemirror.form.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-form-control'](
     a['ax-appkit-codemirror-control']([
       x.codemirror({
@@ -232,11 +228,11 @@ ax.extensions.codemirror.form.control = function (r, options = {}) {
         },
         codemirrorTag: {
           $on: {
-            'keyup: update textarea value': (el) => (e) => {
+            'keyup: update textarea value': (e, el) => {
               el.$send('ax.appkit.form.control.change');
               el.$('textarea').$codemirror.save();
             },
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-codemirror-control');
               let allowEsc =
                 el.$('textarea').$codemirror.options.keyMap != 'vim';
@@ -303,9 +299,6 @@ ax.extensions.codemirror.form.shim = {
 };
 
 ax.extensions.codemirror.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-control'](
     a['ax-appkit-codemirror-control']([
       x.codemirror({
@@ -313,7 +306,7 @@ ax.extensions.codemirror.report.control = function (r, options = {}) {
         ...options,
         codemirrorTag: {
           $on: {
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-codemirror-control');
 
               if (control.classList.contains('fullscreen')) {
@@ -358,9 +351,6 @@ ax.extensions.codemirror.report.shim = {
 };
 
 ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
-  let a = ax.a,
-    x = ax.x;
-
   let keymap = options.keymap;
 
   let installedKeymaps = x.codemirror.CodeMirror.keyMap;
@@ -390,7 +380,7 @@ ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
       }),
       {
         $on: {
-          'change: set editor keyMap': (el) => (e) => {
+          'change: set editor keyMap': (e, el) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('keyMap', el.value);
@@ -416,9 +406,6 @@ ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
 };
 
 ax.extensions.codemirror.toolbar.mode = function (options = {}) {
-  let a = ax.a,
-    x = ax.x;
-
   let mode = options.mode;
   let component;
 
@@ -450,7 +437,7 @@ ax.extensions.codemirror.toolbar.mode = function (options = {}) {
       {
         name: selectName,
         $on: {
-          'change: set editor mode': (el) => (e) => {
+          'change: set editor mode': (e, el) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('mode', el.value);

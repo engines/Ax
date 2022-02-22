@@ -1,11 +1,7 @@
 ax.extensions.time = function (options = {}) {
-  const a = ax.a;
-
-  let timeTag = {
+  return a.time({
     $init: (el) => setInterval(el.$render, 1000),
     $text: () => new Date().toLocaleTimeString(),
     ...options.timeTag,
-  };
-
-  return a.time(timeTag);
+  });
 };

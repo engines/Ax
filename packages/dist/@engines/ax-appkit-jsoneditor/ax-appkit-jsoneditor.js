@@ -10,6 +10,10 @@
   }
 }(this, function(ax, dependencies={}) {
 
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
 ax.extensions.jsoneditor = {};
 
 ax.css({
@@ -27,9 +31,6 @@ ax.extensions.jsoneditor.JSONEditor = window.JSONEditor;
 ax.extensions.jsoneditor.form = {};
 
 ax.extensions.jsoneditor.form.control = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let controlTagOptions = {
     $init: (el) => {
       let jsoneditorOptions = {
@@ -82,7 +83,7 @@ ax.extensions.jsoneditor.form.control = function (f, options = {}) {
       }
     },
     $on: {
-      'keydown: check for editor exit': (el) => (e) => {
+      'keydown: check for editor exit': (e, el) => {
         if (e.keyCode == 27 && e.shiftKey) {
           // shift+ESC pressed - move focus backward
           ax.x.lib.tabable.previous(el).focus();

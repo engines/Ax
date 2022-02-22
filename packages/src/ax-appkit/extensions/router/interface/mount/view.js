@@ -1,8 +1,8 @@
-ax.extensions.router.interface.mount.view = (config, mountElement) => {
+ax.extensions.router.interface.routes.view = (config, mountElement) => {
   let scope = config.scope || '';
   let scopedpath = config.path.slice(scope.length);
   let match = config.match || {};
-  let splat = config.splat || [];
+  let splats = config.splats || [];
   let lazy = config.lazy;
   let defaultContent = config.default;
   let transition = config.transition;
@@ -16,7 +16,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
     let routesKey = routesKeys[i];
 
     for (let key of routesKey.split(',')) {
-      matched = ax.x.router.interface.mount.view.match(key.trim(), scopedpath);
+      matched = ax.x.router.interface.routes.view.match(key.trim(), scopedpath);
       if (matched) {
         matched.key = routesKey;
         break;
@@ -25,7 +25,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
 
     if (matched) {
       component = config.routes[routesKey];
-      splat = [...matched.splat, ...splat];
+      splats = [...matched.splats, ...splats];
       match = {
         ...match,
         ...matched.params,
@@ -41,9 +41,8 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
     component = ax.is.undefined(config.default)
       ? (route) => {
           let message = `'${scopedpath}' not found`;
-          let el = config.mounts[config.mounts.length - 1];
           console.warn(message, route);
-          return (a, x) => a['.error'](message);
+          return a['.error'](message);
         }
       : config.default;
   }
@@ -57,7 +56,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
       mounts: [...config.mounts, mountElement],
       scope: scope,
       match: match,
-      splat: splat,
+      splats: splats,
       slash: slash,
       lazy: lazy,
       default: defaultContent,
@@ -68,7 +67,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
 
   return {
     matched: matched,
-    component: ax.a['ax-appkit-router-view']([component]),
+    component: a['ax-appkit-router-view']([component]),
     scope: scope,
   };
 };

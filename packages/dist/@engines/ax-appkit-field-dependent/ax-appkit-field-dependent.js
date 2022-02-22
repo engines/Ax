@@ -10,6 +10,10 @@
   }
 }(this, function(ax, dependencies={}) {
 
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
 ax.extensions.form.field.dependent = {};
 
 ax.extensions.report.field.dependent = {};
@@ -36,7 +40,7 @@ ax.extensions.form.field.dependent.shim = {
           el.$checkDependents();
         },
         $on: {
-          'ax.appkit.form.async.complete: check dependents': (el) => (e) => {
+          'ax.appkit.form.async.complete: check dependents': (e, el) => {
             el.$checkDependents();
           },
           ...(options.formTag || {}).$on,
@@ -59,9 +63,7 @@ ax.extensions.form.field.dependent.shim = {
       itemsTag: {
         ...options.itemsTag,
         $on: {
-          'ax.appkit.form.nest.item.add: check dependents on new item': (
-            el
-          ) => (e) => {
+          'ax.appkit.form.nest.item.add: check dependents on new item': (e, el) => {
             let newItem = el.$itemElements().reverse()[0];
             let dependents = ax.x.lib.unnested(
               newItem,
@@ -109,9 +111,6 @@ ax.extensions.form.field.dependent.components.dependent = function (
   target,
   options
 ) {
-  let a = ax.a;
-  let x = ax.x;
-
   let indexedScope = f.indexedScope || f.scope;
   let name = indexedScope ? `${indexedScope}[${options.key}]` : options.key;
 
@@ -206,7 +205,7 @@ ax.extensions.form.field.dependent.components.dependent = function (
       ...(options.dependentTag || {}).style,
     },
     $on: {
-      'ax.appkit.form.control.change': (el) => (e) => {
+      'ax.appkit.form.control.change': (e, el) => {
         el.$checkDependents();
       },
       ...(options.dependentTag || {}).$on,
@@ -252,9 +251,6 @@ ax.extensions.form.field.dependent.components.dependent = function (
 };
 
 ax.extensions.report.field.dependent.components.dependent = function (options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let optionsCollection = x.form.field.dependent.components.dependent.collect(
     options
   );
@@ -320,8 +316,6 @@ ax.extensions.form.field.dependent.components.dependent.collect = (
   indexedScope,
   options
 ) => {
-  let x = ax.x;
-
   let collection;
 
   if (ax.is.string(options)) {

@@ -9,7 +9,7 @@ Use `ax.css()` to add CSS to a document.
 
 <!--PLAYGROUND-->
 ~~~javascript
-ax.style({h1: {color: 'blue'}});
+ax.css({h1: {color: 'blue'}});
 ax((a,x) => a.h1('This is blue.'))
 ~~~
 <!--MARKDOWN-->

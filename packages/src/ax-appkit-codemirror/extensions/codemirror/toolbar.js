@@ -1,6 +1,4 @@
 ax.extensions.codemirror.toolbar = function (options = {}) {
-  let a = ax.a;
-
   return a['ax-appkit-codemirror-toolbar']([
     a['ax-appkit-codemirror-toolbar-right']([
       ax.extensions.codemirror.toolbar.mode(options),
@@ -9,7 +7,7 @@ ax.extensions.codemirror.toolbar = function (options = {}) {
         a.button('🗖', {
           type: 'button',
           $on: {
-            'click: toggle full screen': (el) => (e) => {
+            'click: toggle full screen': (e, el) => {
               let wrapper = el.$('^ax-appkit-codemirror');
               let codemirror = wrapper.$('textarea').$codemirror;
               if (wrapper.classList.contains('fullscreen')) {

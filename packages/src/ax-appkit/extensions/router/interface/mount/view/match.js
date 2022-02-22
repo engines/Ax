@@ -1,9 +1,9 @@
-ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
+ax.extensions.router.interface.routes.view.match = (routesKey, scopedpath) => {
   let params = {};
-  let splat = [];
+  let splats = [];
   let slash;
 
-  let regexp = ax.x.router.interface.mount.view.match.regexp(routesKey);
+  let regexp = ax.x.router.interface.routes.view.match.regexp(routesKey);
   let routeRegex = new RegExp(regexp.string);
   let match = scopedpath.match(routeRegex);
 
@@ -14,10 +14,10 @@ ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
     paramKeys.forEach(function (paramKey, i) {
       let matched = match[i + 1];
       if (paramKey === '*') {
-        splat.unshift(matched);
+        splats.unshift(matched);
       } else if (paramKey == '**') {
         remove = remove + matched.length;
-        splat.unshift(matched);
+        splats.unshift(matched);
       } else if (paramKey == '?') {
         remove = remove + matched.length;
         slash = matched;
@@ -31,7 +31,7 @@ ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
 
     return {
       params: params,
-      splat: splat,
+      splats: splats,
       slash: slash,
       scope: scope,
     };

@@ -3,7 +3,7 @@ ax.extensions.form.field.collection.add = function (f, options) {
 
   return f.button({
     label: label,
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsTag = options.target
         ? options.target(el)
         : el.$(

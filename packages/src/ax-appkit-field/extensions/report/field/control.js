@@ -1,8 +1,7 @@
 ax.extensions.report.field.control = function (r, options = {}) {
   let controlFn = r.controls[options.as || 'output'];
   if (!controlFn) {
-    console.error(`Failed to create report field using options:`, options);
-    ax.throw(`Report field factory does not support control '${options.as}'.`);
+    throw new Error(`Report field factory does not support control '${options.as}'.`);
   }
 
   let key = options.key || '';

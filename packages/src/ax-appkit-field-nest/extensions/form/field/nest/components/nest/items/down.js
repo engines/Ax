@@ -6,7 +6,7 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
 
   return f.button({
     label: '⏷',
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;

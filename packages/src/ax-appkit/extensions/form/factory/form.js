@@ -1,7 +1,4 @@
 ax.extensions.form.factory.form = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let form = options.form || (() => '');
 
   let formTag = {

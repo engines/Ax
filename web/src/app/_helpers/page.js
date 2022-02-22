@@ -29,7 +29,7 @@ page.for = (router) => {
           nodes.push(app.mdUNSAFE(sections[i]));
         } else if (mode === "PLAYGROUND") {
           let js = sections[i].match(
-            /(?:.|\n)*~~~javascript\n((?:.|\n)*)\n~~~/
+            /~~~javascript\n((?:.|\n)*)\n~~~/
           )[1];
           nodes.push(app.example(js));
         }
@@ -40,7 +40,7 @@ page.for = (router) => {
 
     return a["app-markdown-page"](nodes, {
       $on: {
-        click: (el) => (e) => {
+        click: (e, el) => {
           if (e.target.classList.contains("app-navigation")) {
             e.preventDefault();
             let path = e.target.attributes.href.value.replace(/\.[^/.]+$/, "");

@@ -1,8 +1,5 @@
-ax.extensions.router.interface.mount = (setup) => {
+ax.extensions.router.interface.routes = (setup) => {
   return (options = {}) => {
-    let a = ax.a;
-    let x = ax.x;
-
     let config = {
       ...setup,
       default: options.default || setup.default,
@@ -16,7 +13,7 @@ ax.extensions.router.interface.mount = (setup) => {
     let init;
     let component;
     let matched;
-    let view = ax.x.router.interface.mount.view;
+    let view = ax.x.router.interface.routes.view;
 
     let componentWrapper = (component) =>
       a['ax-appkit-router-load'](component, {
@@ -26,11 +23,11 @@ ax.extensions.router.interface.mount = (setup) => {
       });
 
     if (config.transition) {
-      let transition = ax.x.router.interface.mount.transition(
+      let transition = ax.x.router.interface.routes.transition(
         config.transition,
         {
           in: (el) => {
-            el.$('^ax-appkit-router-mount').$scrollToAnchor();
+            el.$('^ax-appkit-router-routes').$scrollToAnchor();
           },
         }
       );
@@ -52,7 +49,7 @@ ax.extensions.router.interface.mount = (setup) => {
       };
     }
 
-    let mountTag = {
+    let routesTag = {
       id: options.id,
       $init: init,
       $nodes: component,
@@ -83,7 +80,7 @@ ax.extensions.router.interface.mount = (setup) => {
             locatedView.matched &&
             el.$scope == locatedView.scope
           ) {
-            let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
+            let routes = x.lib.unnested(el, 'ax-appkit-router-routes');
             routes.forEach((r) => {
               r.$load(path, query, anchor);
             });
@@ -103,9 +100,9 @@ ax.extensions.router.interface.mount = (setup) => {
           }
         };
       },
-      ...options.mountTag,
+      ...options.routesTag,
     };
 
-    return a['ax-appkit-router-mount'](mountTag);
+    return a['ax-appkit-router-routes'](routesTag);
   };
 };

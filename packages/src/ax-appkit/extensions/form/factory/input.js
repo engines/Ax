@@ -1,7 +1,4 @@
 ax.extensions.form.factory.input = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let datalist = '';
   let datalistId;
 

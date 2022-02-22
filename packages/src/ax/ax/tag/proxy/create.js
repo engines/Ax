@@ -1,7 +1,7 @@
-ax.tag.proxy.create = (...attributes) => {
+ax.tag.proxy.create = (...properties) => {
   return ax.node.create(
     Object.assign({},
-      ...attributes.map(ax.tag.proxy.nodes)
+      ...properties.map(ax.tag.proxy.properties)
     )
   );
 };

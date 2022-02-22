@@ -2,8 +2,6 @@ ax.extensions.form.field.extras.controls.multiselect.select = function (
   f,
   options = {}
 ) {
-  let a = ax.a;
-
   return f.select(
     // No name on select. Field name goes on hidden inputs.
     {
@@ -12,7 +10,7 @@ ax.extensions.form.field.extras.controls.multiselect.select = function (
       selections: options.selections,
       selectTag: {
         $on: {
-          'change: add item to selection': (el) => (e) => {
+          'change: add item to selection': (e, el) => {
             el.$(
               '^ax-appkit-form-control ax-appkit-form-multiselect-selected'
             ).$add({

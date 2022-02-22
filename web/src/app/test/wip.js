@@ -185,7 +185,7 @@ export default (router) => (a, x) => a['app-test-wip']([
   // a.p([
   //   a({
   //     $tag: 'input',
-  //     $on: {input: (el) => (e) => el.nextSibling.$state = el.value}
+  //     $on: {input: (e, el) => el.nextSibling.$state = el.value}
   //   }),
   //   a({$text: (el) => `You entered ${el.$state || 'nothing'}`}),
   // ]),
@@ -247,7 +247,7 @@ export default (router) => (a, x) => a['app-test-wip']([
   //   $tag: 'elix-auto-size-textarea',
   //   'minimum-rows': 2,
   //   placeholder: 'oooh',
-  //   $on: {input: (el) => (e) => output.$text = e.target.value}
+  //   $on: {input: (e, el) => output.$text = e.target.value}
   // }),
   // a({
   //   $tag: 'p',

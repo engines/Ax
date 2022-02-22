@@ -1,8 +1,7 @@
 ax.extensions.form.field.control = function (f, options = {}) {
   let controlFn = f.controls[options.as || 'input'];
   if (!controlFn) {
-    console.error(`Failed to create form field using options:`, options);
-    ax.throw(`Form field factory does not support control '${options.as}'.`);
+    throw new Error(`Form field factory does not support control '${options.as}'.`);
   }
 
   let key = options.key || '';
@@ -23,10 +22,11 @@ ax.extensions.form.field.control = function (f, options = {}) {
     ...options.control,
     controlTag: {
       $key: key,
-      $output: (el) => () =>
-        ax.is.function(options.digest)
-          ? options.digest(el.$value())
-          : el.$value(),
+      $output: (el) => () => {
+        return ax.is.function(options.digest)
+        ? options.digest(el.$value())
+        : el.$value()
+      },
       ...(options.control || {}).controlTag,
     },
   };

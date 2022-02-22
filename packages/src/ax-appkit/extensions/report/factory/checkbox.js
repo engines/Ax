@@ -1,7 +1,4 @@
 ax.extensions.report.factory.checkbox = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-checkbox'](
     x.check({
       ...options,

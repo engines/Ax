@@ -1,7 +1,4 @@
 ax.extensions.form.field.nest.components.nest = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let nestForm = options.form || (() => '');
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 

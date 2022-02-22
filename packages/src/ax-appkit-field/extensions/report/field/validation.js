@@ -1,6 +1,4 @@
 ax.extensions.report.field.validation = function (options = {}) {
-  let a = ax.a;
-
   let message;
   let validity = { valid: true };
 

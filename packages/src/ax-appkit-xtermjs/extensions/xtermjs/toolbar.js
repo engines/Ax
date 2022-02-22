@@ -1,12 +1,11 @@
-ax.extensions.xtermjs.toolbar = (options = {}) => (a, x) =>
-  a['ax-appkit-xtermjs-toolbar'](
+ax.extensions.xtermjs.toolbar = (options = {}) => a['ax-appkit-xtermjs-toolbar'](
     [
       a['ax-appkit-xtermjs-toolbar-right'](
         a['ax-appkit-xtermjs-fullscreen'](
           a.button('🗖', {
             type: 'button',
             $on: {
-              'click: toggle full screen': (el) => (e) => {
+              'click: toggle full screen': (e, el) => {
                 let wrapper = el.$('^ax-appkit-xtermjs');
                 let div = wrapper.$('div');
                 div.$fullscreen = !div.$fullscreen;

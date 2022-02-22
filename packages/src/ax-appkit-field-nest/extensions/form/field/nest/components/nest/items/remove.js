@@ -17,7 +17,7 @@ ax.extensions.form.field.nest.components.nest.items.remove = function (
   return f.button({
     label: '✖',
     confirm: confirmation,
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;

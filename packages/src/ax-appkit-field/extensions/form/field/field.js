@@ -1,7 +1,4 @@
 ax.extensions.form.field.field = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   if (options.as == 'hidden') {
     options.label = false;
     options.help = false;

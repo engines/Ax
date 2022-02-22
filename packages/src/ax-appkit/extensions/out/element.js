@@ -1,7 +1,4 @@
 ax.extensions.out.element = function (value) {
-  let a = ax.a;
-  let x = ax.x;
-
   if (ax.is.array(value)) {
     return a['ax-appkit-out-collection'](
       a.ol(value.map((element) => a.li(x.out.element(element))))

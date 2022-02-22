@@ -1,6 +1,4 @@
 ax.extensions.form.factory.textarea = function (options = {}) {
-  let a = ax.a;
-
   let value = options.value || '';
 
   let textareaTagOptions = {

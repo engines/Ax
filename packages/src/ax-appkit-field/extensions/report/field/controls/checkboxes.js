@@ -1,6 +1,4 @@
 ax.extensions.report.field.controls.checkboxes = function (r, options) {
-  let a = ax.a;
-
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {

@@ -1,8 +1,7 @@
 ax.extensions.router.element = (options) => {
   let routerTag = {
     id: options.id,
-    $init: ax.extensions.router.element.init,
-    $nodes: ax.extensions.router.element.nodes(options),
+    $init: ax.extensions.router.element.init(options),
     $pop: ax.extensions.router.element.pop,
     $open: ax.extensions.router.element.open(options),
     $locate: ax.extensions.router.element.locate,

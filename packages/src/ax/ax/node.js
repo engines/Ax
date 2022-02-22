@@ -3,12 +3,6 @@
  * and returns a node.
  */
 ax.node = function (node) {
-
-  if (ax.is.array(node)) {
-    console.error('A node may not be an array.\n', node)
-    return ax.node.json(node)
-  }
-
   if (ax.is.node(node) || ax.is.nodelist(node) ) return node;
   if (ax.is.string(node)) return ax.node.text(node);
   if (ax.is.tag(node)) return ax.node.tag(node);

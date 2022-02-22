@@ -1,7 +1,4 @@
 ax.extensions.report.field.dependent.components.dependent = function (options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let optionsCollection = x.form.field.dependent.components.dependent.collect(
     options
   );

@@ -1,7 +1,4 @@
 ax.extensions.form.factory.select.options = function (options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let selections = x.lib.form.selections(options.selections);
 
   if (options.placeholder) {

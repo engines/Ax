@@ -1,7 +1,4 @@
 ax.extensions.cycle = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let period = options.period || 500;
   let collection = options.collection || '⣯⣟⡿⢿⣻⣽⣾⣷';
 

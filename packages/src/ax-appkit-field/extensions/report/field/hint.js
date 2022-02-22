@@ -1,6 +1,4 @@
 ax.extensions.report.field.hint = function (options = {}) {
-  let a = ax.a;
-
   let hint = options.hint;
 
   return hint

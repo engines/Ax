@@ -1,7 +1,4 @@
 ax.extensions.report.field.controls.text = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let controlTagOptions = {
     $init: (el) => {
       setTimeout(el.$resize, 0);

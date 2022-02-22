@@ -1,7 +1,4 @@
 ax.extensions.form.field.nest.components.nest.items = function (f, options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let formFn = options.form || (() => '');
 
   let itemsTagName =

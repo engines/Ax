@@ -1,10 +1,16 @@
 ax.node.create.render.nodes.append = function (element, nodes) {
-  nodes.forEach(function (node) {
-    node = ax.node(node);
-    if (ax.is.nodelist(node)) {
-      ax.node.create.render.nodes.append(element, node);
-    } else {
+
+  if (ax.is.node(nodes)) {
+    element.appendChild(nodes);
+  } else if (ax.is.nodelist(nodes)) {
+    for (let node of Array.from(nodes)) {
       element.appendChild(node);
     }
-  });
+  } else {
+    for (let node of nodes) {
+      node = ax.node(node);
+      this.append(element, node);
+    }
+  }
+
 };

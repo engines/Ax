@@ -1,7 +1,4 @@
 ax.extensions.form.field.extras.controls.language = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let selectOptions = {
     ...options,
     value: options.value,
@@ -35,10 +32,10 @@ ax.extensions.form.field.extras.controls.language = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (el) => (e) => {
+      'click: do nothing when readonly': (e, el) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (el) => (e) => {
+      'change:': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

@@ -11,9 +11,6 @@
 }(this, function(ax, dependencies={}) {
 
 ax.extensions.chartjs = function (options = {}) {
-  var a = ax.a;
-  var x = ax.x;
-
   return a['ax-appkit-chartjs'](
     a.div(
       [

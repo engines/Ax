@@ -2,7 +2,7 @@ export default (router) => (a, x) =>
   a["nav#navbar.navbar.navbar-expand-md.navbar-light.bg-white"](
     [
       a.a(
-        a.img(null, {
+        a.img([], {
           src: "/logo.png",
           width: 100,
           height: 57,
@@ -12,7 +12,7 @@ export default (router) => (a, x) =>
           class: "navbar-brand",
           href: "#",
           $on: {
-            click: (el) => (e) => {
+            click: (e, el) => {
               e.preventDefault();
               router.open("/");
             },
@@ -34,7 +34,7 @@ export default (router) => (a, x) =>
                 class: "nav-link",
                 href: "#",
                 $on: {
-                  click: (el) => (e) => {
+                  click: (e, el) => {
                     e.preventDefault();
                     router.open("/");
                   },
@@ -52,7 +52,7 @@ export default (router) => (a, x) =>
                 class: "nav-link",
                 href: "#",
                 $on: {
-                  click: (el) => (e) => {
+                  click: (e, el) => {
                     e.preventDefault();
                     router.open("/docs");
                   },
@@ -70,7 +70,7 @@ export default (router) => (a, x) =>
                 class: "nav-link",
                 href: "#",
                 $on: {
-                  click: (el) => (e) => {
+                  click: (e, el) => {
                     e.preventDefault();
                     router.open("/test");
                   },

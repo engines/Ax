@@ -11,13 +11,11 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-  x = ax.x,
-  is = ax.is;
+      x = ax.x,
+      is = ax.is;
 
 ax.extensions.button = function (options = {}) {
-  let a = ax.a;
-
-  let handler = options.onclick || (() => () => {});
+  let handler = options.onclick || (() => {});
 
   let label = a['ax-appkit-button-label'](options.label || '', {
     style: {
@@ -43,8 +41,8 @@ ax.extensions.button = function (options = {}) {
     value: options.value,
     ...options.buttonTag,
     $on: {
-      'click: button onclick': (el) => (e) => {
-        confirmation(el) && handler(el)(e);
+      'click: button onclick': (e, el) => {
+        confirmation(el) && handler(e, el);
       },
       ...(options.buttonTag || {}).$on,
     },
@@ -54,9 +52,6 @@ ax.extensions.button = function (options = {}) {
 };
 
 ax.extensions.check = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let inputId =
     x.lib.object.dig(options, ['inputTag', 'id']) || x.lib.uuid.generate();
 
@@ -89,9 +84,6 @@ ax.extensions.check = function (options = {}) {
 };
 
 ax.extensions.cycle = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let period = options.period || 500;
   let collection = options.collection || '⣯⣟⡿⢿⣻⣽⣾⣷';
 
@@ -119,9 +111,6 @@ ax.extensions.cycle = function (options = {}) {
 ax.extensions.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();
 
 ax.extensions.form = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let f = this.form.factory({
     scope: options.scope,
     object: options.object,
@@ -132,9 +121,6 @@ ax.extensions.form = function (options = {}) {
 };
 
 ax.extensions.out = function (value, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let outTag = options.outTag || {}
   let component;
 
@@ -162,9 +148,6 @@ ax.extensions.out = function (value, options = {}) {
 };
 
 ax.extensions.report = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let r = this.report.factory({
     scope: options.scope,
     object: options.object,
@@ -174,7 +157,7 @@ ax.extensions.report = function (options = {}) {
   return r.report(options);
 };
 
-ax.extensions.router = (options = {}) => (a, x) => {
+ax.extensions.router = (options = {}) => {
   if (options.home) {
     if (window.location.pathname.match(/^$|^\/$/)) {
       window.history.replaceState({}, 'Home', options.home);
@@ -185,15 +168,11 @@ ax.extensions.router = (options = {}) => (a, x) => {
 };
 
 ax.extensions.time = function (options = {}) {
-  const a = ax.a;
-
-  let timeTag = {
+  return a.time({
     $init: (el) => setInterval(el.$render, 1000),
     $text: () => new Date().toLocaleTimeString(),
     ...options.timeTag,
-  };
-
-  return a.time(timeTag);
+  });
 };
 
 ax.extensions.transition = {};
@@ -231,7 +210,7 @@ ax.AxAppkitFetch = class {
   }
 
   render() {
-    return ax.a['ax-appkit-fetch'](this.placeholder, {
+    return a['ax-appkit-fetch'](this.placeholder, {
       $init: (el) => {
         this.element = el;
         this.init();
@@ -346,7 +325,7 @@ ax.AxAppkitFetch = class {
       let node = this.errorCallback(body, this.element, response);
       this.element.$nodes = [node];
     } else {
-      this.element.$nodes = [ax.a['ax-appkit-fetch-response.error'](bodies)];
+      this.element.$nodes = [a['ax-appkit-fetch-response.error'](bodies)];
     }
   }
 
@@ -365,8 +344,8 @@ ax.AxAppkitFetch = class {
       }
     } else {
       this.element.$nodes = [
-        ax.a['ax-appkit-fetch-response.success'](
-          ax.a.pre(JSON.stringify(body, null, 2))
+        a['ax-appkit-fetch-response.success'](
+          a.pre(JSON.stringify(body, null, 2))
         )
       ];
     }
@@ -378,7 +357,7 @@ ax.AxAppkitFetch = class {
       let node = this.catchCallback(error, this.element);
       this.element.$nodes = [node];
     } else {
-      this.element.$nodes = [ax.a['ax-appkit-fetch-response.error'](
+      this.element.$nodes = [a['ax-appkit-fetch-response.error'](
         a.pre(error.message)
       )];
     }
@@ -493,9 +472,6 @@ ax.extensions.lib.unnested = function (el, tag) {
 ax.extensions.lib.uuid = {};
 
 ax.extensions.out.element = function (value) {
-  let a = ax.a;
-  let x = ax.x;
-
   if (ax.is.array(value)) {
     return a['ax-appkit-out-collection'](
       a.ol(value.map((element) => a.li(x.out.element(element))))
@@ -567,8 +543,7 @@ ax.extensions.report.shim = {
 ax.extensions.router.element = (options) => {
   let routerTag = {
     id: options.id,
-    $init: ax.extensions.router.element.init,
-    $nodes: ax.extensions.router.element.nodes(options),
+    $init: ax.extensions.router.element.init(options),
     $pop: ax.extensions.router.element.pop,
     $open: ax.extensions.router.element.open(options),
     $locate: ax.extensions.router.element.locate,
@@ -587,24 +562,22 @@ ax.extensions.router.interface = (config) => {
   result.anchor = config.anchor;
   result.scope = config.scope;
   result.match = config.match;
-  result.splat = config.splat;
+  result.splats = config.splats;
   result.slash = config.slash;
   result.params = {
     ...config.match,
     ...config.query,
   };
+  
   result.load = ax.x.router.interface.load(config);
   result.open = ax.x.router.interface.open(config);
 
-  result.mount = ax.x.router.interface.mount(config);
+  result.mount = ax.x.router.interface.routes(config);
 
   return result;
 };
 
 ax.extensions.transition.fade = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let duration = (options.duration || 500) / 2;
   return a['ax-appkit-transition']({
     $init: (el) => {
@@ -648,8 +621,6 @@ ax.extensions.transition.fade = function (options = {}) {
 };
 
 ax.extensions.form.factory.button = function (options = {}) {
-  let x = ax.x;
-
   return x.button(options);
 };
 
@@ -676,9 +647,6 @@ ax.extensions.form.factory.cancel = (f, options = {}) => {
 };
 
 ax.extensions.form.factory.checkbox = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-form-checkbox'](
     x.check({
       name: options.name,
@@ -697,9 +665,6 @@ ax.extensions.form.factory.checkbox = function (options = {}) {
 };
 
 ax.extensions.form.factory.checkboxes = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 
@@ -736,9 +701,6 @@ ax.extensions.form.factory.checkboxes = function (options = {}) {
 };
 
 ax.extensions.form.factory.form = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let form = options.form || (() => '');
 
   let formTag = {
@@ -755,9 +717,6 @@ ax.extensions.form.factory.form = (f, options = {}) => {
 };
 
 ax.extensions.form.factory.input = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let datalist = '';
   let datalistId;
 
@@ -802,9 +761,6 @@ ax.extensions.form.factory.input = function (options = {}) {
 };
 
 ax.extensions.form.factory.radios = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = options.value || '';
 
   let selections = x.lib.form.selections(options.selections);
@@ -844,9 +800,6 @@ ax.extensions.form.factory.radios = function (options = {}) {
 };
 
 ax.extensions.form.factory.select = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let applyPlaceholder = (el) => {
     let selected = el.$$('option')[el.selectedIndex];
     if (selected.classList.contains('placeholder')) {
@@ -865,7 +818,7 @@ ax.extensions.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (el) => (e) => applyPlaceholder(el),
+      'change: update placeholder styling': (e, el) => applyPlaceholder(el),
       ...(options.selectTag || {}).$on,
     },
   };
@@ -895,8 +848,6 @@ ax.extensions.form.factory.submit = (f, options = {}) => {
 };
 
 ax.extensions.form.factory.textarea = function (options = {}) {
-  let a = ax.a;
-
   let value = options.value || '';
 
   let textareaTagOptions = {
@@ -1138,15 +1089,10 @@ ax.extensions.lib.uuid.generate = function () {
 };
 
 ax.extensions.report.factory.button = function (options = {}) {
-  let x = ax.x;
-
   return x.button(options);
 };
 
 ax.extensions.report.factory.checkbox = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-checkbox'](
     x.check({
       ...options,
@@ -1166,9 +1112,6 @@ ax.extensions.report.factory.checkbox = function (options = {}) {
 };
 
 ax.extensions.report.factory.checkboxes = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 
@@ -1204,9 +1147,6 @@ ax.extensions.report.factory.checkboxes = function (options = {}) {
 };
 
 ax.extensions.report.factory.output = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   return a['ax-appkit-report-output'](
     x.out(options.value, {
       parse: options.parse,
@@ -1220,9 +1160,6 @@ ax.extensions.report.factory.output = function (options = {}) {
 };
 
 ax.extensions.report.factory.radios = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = options.value || '';
 
   let selections = x.lib.form.selections(options.selections);
@@ -1262,9 +1199,6 @@ ax.extensions.report.factory.radios = function (options = {}) {
 };
 
 ax.extensions.report.factory.report = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
   let report = options.report || (() => '');
 
   let reportTagOptions = {
@@ -1275,9 +1209,6 @@ ax.extensions.report.factory.report = (r, options = {}) => {
 };
 
 ax.extensions.report.factory.select = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections || {});
 
@@ -1315,9 +1246,6 @@ ax.extensions.report.factory.select = function (options = {}) {
 };
 
 ax.extensions.report.factory.string = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let value = options.value || '';
 
   let component;
@@ -1337,8 +1265,6 @@ ax.extensions.report.factory.string = function (options = {}) {
 };
 
 ax.extensions.report.factory.text = function (options = {}) {
-  let a = ax.a;
-
   let component;
 
   if (options.value) {
@@ -1358,12 +1284,13 @@ ax.extensions.report.factory.text = function (options = {}) {
   );
 };
 
-ax.extensions.router.element.init = (el) => {
+ax.extensions.router.element.init = (options) => (el) => {
   window.addEventListener('popstate', el.$pop);
+  el.$nodes = ax.extensions.router.element.nodes(options)
 };
 
 ax.extensions.router.element.load = (el) => (path, query, anchor) => {
-  let mounted = x.lib.unnested(el, 'ax-appkit-router-mount');
+  let mounted = x.lib.unnested(el, 'ax-appkit-router-routes');
   mounted.forEach((r) => {
     r.$load(path, query, anchor);
   });
@@ -1400,13 +1327,13 @@ ax.extensions.router.element.location = (el) => () => {
 };
 
 ax.extensions.router.element.nodes = (options) => (el) => {
-  let start = el.$location();
+  let location = el.$location();
 
   let config = {
-    path: start.path,
-    query: start.query,
-    anchor: start.anchor,
-    scope: options.scope,
+    path: location.path,
+    query: location.query,
+    anchor: location.anchor,
+    scope: '',
     default: options.default,
     home: options.home,
     lazy: options.lazy,
@@ -1417,13 +1344,27 @@ ax.extensions.router.element.nodes = (options) => (el) => {
 
   let routes = options.routes || {};
 
-  let router = x.router.interface(config);
+  let route = x.router.interface(config);
 
-  if (ax.is.function(routes)) {
-    return routes(router);
+  if (options.scope) {
+    let scopeRoutes = {}
+    scopeRoutes[options.scope] = (route) => {
+      if (ax.is.function(routes)) {
+        return routes(route);
+      } else {
+        return route.mount({ routes: routes });
+      }
+    }
+    scopeRoutes['*'] = ''
+    return route.mount({ routes: scopeRoutes })
   } else {
-    return router.mount({ routes: routes });
+    if (ax.is.function(routes)) {
+      return routes(route);
+    } else {
+      return route.mount({ routes: routes });
+    }
   }
+
 };
 
 ax.extensions.router.element.open = (options) => (el) => (
@@ -1434,6 +1375,7 @@ ax.extensions.router.element.open = (options) => (el) => (
   if (path[0] != '/') {
     path = options.scope + (path ? `/${path}` : '');
   }
+  
   el.$locate(path, query, anchor);
 };
 
@@ -1462,11 +1404,27 @@ ax.extensions.router.interface.load = (config) =>
     config.router.$load(path, query, anchor);
   };
 
-ax.extensions.router.interface.mount = (setup) => {
-  return (options = {}) => {
-    let a = ax.a;
-    let x = ax.x;
+ax.extensions.router.interface.open = (config) => (
+  locator = '',
+  query = {},
+  anchor
+) => {
+  let path = window.location.pathname;
 
+  if (locator[0] == '/') {
+    path = locator;
+  } else if (locator) {
+    if (path.match(/\/$/)) {
+      path = `${path}${locator}`;
+    } else {
+      path = `${path}/${locator}`;
+    }
+  }
+  config.router.$open(path, query, anchor);
+};
+
+ax.extensions.router.interface.routes = (setup) => {
+  return (options = {}) => {
     let config = {
       ...setup,
       default: options.default || setup.default,
@@ -1480,7 +1438,7 @@ ax.extensions.router.interface.mount = (setup) => {
     let init;
     let component;
     let matched;
-    let view = ax.x.router.interface.mount.view;
+    let view = ax.x.router.interface.routes.view;
 
     let componentWrapper = (component) =>
       a['ax-appkit-router-load'](component, {
@@ -1490,11 +1448,11 @@ ax.extensions.router.interface.mount = (setup) => {
       });
 
     if (config.transition) {
-      let transition = ax.x.router.interface.mount.transition(
+      let transition = ax.x.router.interface.routes.transition(
         config.transition,
         {
           in: (el) => {
-            el.$('^ax-appkit-router-mount').$scrollToAnchor();
+            el.$('^ax-appkit-router-routes').$scrollToAnchor();
           },
         }
       );
@@ -1516,7 +1474,7 @@ ax.extensions.router.interface.mount = (setup) => {
       };
     }
 
-    let mountTag = {
+    let routesTag = {
       id: options.id,
       $init: init,
       $nodes: component,
@@ -1547,7 +1505,7 @@ ax.extensions.router.interface.mount = (setup) => {
             locatedView.matched &&
             el.$scope == locatedView.scope
           ) {
-            let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
+            let routes = x.lib.unnested(el, 'ax-appkit-router-routes');
             routes.forEach((r) => {
               r.$load(path, query, anchor);
             });
@@ -1567,36 +1525,14 @@ ax.extensions.router.interface.mount = (setup) => {
           }
         };
       },
-      ...options.mountTag,
+      ...options.routesTag,
     };
 
-    return a['ax-appkit-router-mount'](mountTag);
+    return a['ax-appkit-router-routes'](routesTag);
   };
 };
 
-ax.extensions.router.interface.open = (config) => (
-  locator = '',
-  query = {},
-  anchor
-) => {
-  let path = window.location.pathname;
-
-  if (locator[0] == '/') {
-    path = locator;
-  } else if (locator) {
-    if (path.match(/\/$/)) {
-      path = `${path}${locator}`;
-    } else {
-      path = `${path}/${locator}`;
-    }
-  }
-  config.router.$open(path, query, anchor);
-};
-
 ax.extensions.form.factory.select.options = function (options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let selections = x.lib.form.selections(options.selections);
 
   if (options.placeholder) {
@@ -1701,7 +1637,6 @@ ax.extensions.lib.form.collection.value = function (value) {
 };
 
 ax.extensions.lib.form.data.objectify = function (data) {
-  let x = ax.x;
   let object = {};
 
   for (var pair of data.entries()) {
@@ -1712,12 +1647,10 @@ ax.extensions.lib.form.data.objectify = function (data) {
 };
 
 ax.extensions.lib.form.data.stringify = function (data) {
-  let x = ax.x;
   return JSON.stringify(x.lib.form.data.objectify(data));
 };
 
 ax.extensions.lib.form.data.urlencoded = function (data) {
-  let x = ax.x;
   let parts = [];
 
   for (var pair of data.entries()) {
@@ -1727,7 +1660,7 @@ ax.extensions.lib.form.data.urlencoded = function (data) {
   return parts.join('&');
 };
 
-ax.extensions.router.interface.mount.transition = (
+ax.extensions.router.interface.routes.transition = (
   transition,
   options = {}
 ) => {
@@ -1744,11 +1677,11 @@ ax.extensions.router.interface.mount.transition = (
   }
 };
 
-ax.extensions.router.interface.mount.view = (config, mountElement) => {
+ax.extensions.router.interface.routes.view = (config, mountElement) => {
   let scope = config.scope || '';
   let scopedpath = config.path.slice(scope.length);
   let match = config.match || {};
-  let splat = config.splat || [];
+  let splats = config.splats || [];
   let lazy = config.lazy;
   let defaultContent = config.default;
   let transition = config.transition;
@@ -1762,7 +1695,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
     let routesKey = routesKeys[i];
 
     for (let key of routesKey.split(',')) {
-      matched = ax.x.router.interface.mount.view.match(key.trim(), scopedpath);
+      matched = ax.x.router.interface.routes.view.match(key.trim(), scopedpath);
       if (matched) {
         matched.key = routesKey;
         break;
@@ -1771,7 +1704,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
 
     if (matched) {
       component = config.routes[routesKey];
-      splat = [...matched.splat, ...splat];
+      splats = [...matched.splats, ...splats];
       match = {
         ...match,
         ...matched.params,
@@ -1787,9 +1720,8 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
     component = ax.is.undefined(config.default)
       ? (route) => {
           let message = `'${scopedpath}' not found`;
-          let el = config.mounts[config.mounts.length - 1];
           console.warn(message, route);
-          return (a, x) => a['.error'](message);
+          return a['.error'](message);
         }
       : config.default;
   }
@@ -1803,7 +1735,7 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
       mounts: [...config.mounts, mountElement],
       scope: scope,
       match: match,
-      splat: splat,
+      splats: splats,
       slash: slash,
       lazy: lazy,
       default: defaultContent,
@@ -1814,17 +1746,17 @@ ax.extensions.router.interface.mount.view = (config, mountElement) => {
 
   return {
     matched: matched,
-    component: ax.a['ax-appkit-router-view']([component]),
+    component: a['ax-appkit-router-view']([component]),
     scope: scope,
   };
 };
 
-ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
+ax.extensions.router.interface.routes.view.match = (routesKey, scopedpath) => {
   let params = {};
-  let splat = [];
+  let splats = [];
   let slash;
 
-  let regexp = ax.x.router.interface.mount.view.match.regexp(routesKey);
+  let regexp = ax.x.router.interface.routes.view.match.regexp(routesKey);
   let routeRegex = new RegExp(regexp.string);
   let match = scopedpath.match(routeRegex);
 
@@ -1835,10 +1767,10 @@ ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
     paramKeys.forEach(function (paramKey, i) {
       let matched = match[i + 1];
       if (paramKey === '*') {
-        splat.unshift(matched);
+        splats.unshift(matched);
       } else if (paramKey == '**') {
         remove = remove + matched.length;
-        splat.unshift(matched);
+        splats.unshift(matched);
       } else if (paramKey == '?') {
         remove = remove + matched.length;
         slash = matched;
@@ -1852,7 +1784,7 @@ ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
 
     return {
       params: params,
-      splat: splat,
+      splats: splats,
       slash: slash,
       scope: scope,
     };
@@ -1861,7 +1793,7 @@ ax.extensions.router.interface.mount.view.match = (routesKey, scopedpath) => {
   }
 };
 
-ax.extensions.router.interface.mount.view.match.regexp = (route) => {
+ax.extensions.router.interface.routes.view.match.regexp = (route) => {
   let routeRegexp = route
     .replace(/\*$/, '&&catchall&&')
     .replace(/\*/g, '&&wildcard&&')
@@ -1876,7 +1808,7 @@ ax.extensions.router.interface.mount.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\\/]*)';
+      pattern = '([^\/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';

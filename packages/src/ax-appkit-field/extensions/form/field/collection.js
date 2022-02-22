@@ -1,7 +1,4 @@
 ax.extensions.form.field.collection = function (f, control, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let values = x.lib.form.collection.value(options.value);
 
   let itemFn = (value) =>

@@ -1,7 +1,4 @@
 ax.extensions.transition.fade = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
   let duration = (options.duration || 500) / 2;
   return a['ax-appkit-transition']({
     $init: (el) => {

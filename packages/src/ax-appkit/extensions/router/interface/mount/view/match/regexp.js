@@ -1,4 +1,4 @@
-ax.extensions.router.interface.mount.view.match.regexp = (route) => {
+ax.extensions.router.interface.routes.view.match.regexp = (route) => {
   let routeRegexp = route
     .replace(/\*$/, '&&catchall&&')
     .replace(/\*/g, '&&wildcard&&')
@@ -13,7 +13,7 @@ ax.extensions.router.interface.mount.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\\/]*)';
+      pattern = '([^\/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';

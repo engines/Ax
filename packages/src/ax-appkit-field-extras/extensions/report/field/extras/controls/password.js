@@ -1,7 +1,4 @@
 ax.extensions.report.field.extras.controls.password = function (r, options) {
-  let a = ax.a;
-  let x = ax.x;
-
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {
@@ -45,7 +42,7 @@ ax.extensions.report.field.extras.controls.password = function (r, options) {
               }),
               x.button({
                 label: '👁',
-                onclick: (el) => (e) => {
+                onclick: (e, el) => {
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
