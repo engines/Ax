@@ -1,4 +1,4 @@
-export default (router) => (a, x) => a['app-test-report']([
+export default (router) => a['app-test-report']([
   a.h1('Report'),
   x.report({
     shims: [

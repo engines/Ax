@@ -98,7 +98,10 @@ ax.extensions.form.async.submit = (e, el, options) => {
     var outputTop = outputEl.offsetParent.offsetTop;
     var outputBottom = outputTop + outputEl.offsetHeight;
     if (outputBottom > windowBottom || outputTop < windowTop) {
-      outputEl.scrollIntoView();
+      outputEl.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
     }
     el.$send('ax.appkit.form.async.complete');
   };

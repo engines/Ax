@@ -14,10 +14,14 @@ Specify content with `$text` and `$html` properties.
 
 <!--PLAYGROUND-->
 ~~~javascript
-ax((a) => [
-  a({$text: 'Euro symbol: '}),
-  a({$html: '&euro;'}),
-]);
+(async () => {
+  const {default: ax} = await import("https://cdn.jsdelivr.net/npm/@engines/ax.js");
+  ax((a) => [
+    a({$text: 'Euro symbol: '}),
+    a({$html: '&euro;'}),
+  ]);
+})()
+// import {ax, a, x} from '@engines/ax';
 ~~~
 <!--MARKDOWN-->
 

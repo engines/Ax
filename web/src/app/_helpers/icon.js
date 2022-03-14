@@ -3,7 +3,7 @@ import "@fortawesome/fontawesome-free/js/solid";
 import "@fortawesome/fontawesome-free/js/regular";
 import "@fortawesome/fontawesome-free/js/brands";
 
-const icon = (klass, text, options = {}) => (a, x) => {
+const icon = (klass, text, options = {}) => {
   var nodes = [a.span([], { class: klass })];
 
   if (text) {

@@ -1023,7 +1023,7 @@ ax.extensions.form.field.extras.controls.password = function (f, options) {
     },
 
     $inputs: (el) => () => {
-      return el.$$('input').$$;
+      return el.$$('input');
     },
 
     $value: (el) => () => {

@@ -237,7 +237,7 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                 .$disable();
               let buttons = el
                 .$('^ax-appkit-form-nest-table-wrapper tbody')
-                .$$('button').$$;
+                .$$('button');
               for (let button of buttons) {
                 button.$disable && button.$disable();
               }
@@ -255,7 +255,7 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                 .$enable();
               let buttons = el
                 .$('^ax-appkit-form-nest-table-wrapper tbody')
-                .$$('button').$$;
+                .$$('button');
               for (let button of buttons) {
                 button.$enable && button.$enable();
               }

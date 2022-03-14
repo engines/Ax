@@ -125,15 +125,28 @@ setTimeout(() => {
 Alternatively, use `$state` in collaboration with a content function.
 <!--PLAYGROUND-->
 ~~~javascript
-ax((a, x) => a({
-  id: 'myEl',
-  $state: 'on',
-  $text: el => `I am ${el.$state}.`
-}));
-
-setTimeout(() => {
-	myEl.$state = 'off'
-}, 1000);
+ax(ax.a.div([
+  ax.a.p({
+    $$temp: 'cold',
+    $text: el => `I am ${el.$$temp}.`,
+    $hot: el => () => el.$$temp = 'hot',
+    $init: el => setTimeout(el.$hot, 1000)
+  }),
+  ax.a.p({
+    $temp: 'cold',
+    $nodes: el => ax.a({
+      $text: `I am ${el.$temp}.`,
+      style: {
+        color: el.$temp == 'cold' ? 'blue' : 'red'
+      }
+    }),
+    $hot: el => () => {
+      el.$temp = 'hot'
+      el.$render()
+    },
+    $init: el => setTimeout(el.$hot, 2000)
+  }),
+]))
 ~~~
 <!--MARKDOWN-->
 
@@ -141,14 +154,17 @@ setTimeout(() => {
 Functions defined on `$text`, `$html` and `$nodes` are called, with the element itself as an argument, when the element is rendered and whenever the element state changes.
 <!--PLAYGROUND-->
 ~~~javascript
-ax((a, x) => a({
-  $state: 10,
-  $nodes: el => [
-    a.h1(el.$state),
-    a.button("⯇", {$on: {click: () => {el.$state--}}}),
-    a.button("⯈", {$on: {click: () => {el.$state++}}}),
-  ]
-}));
+ax.css({
+  button: {'&:focus': {$: {color: 'green'}}}
+})
+ax(ax.a([
+  ax.a.h1({
+    $$count: 10,
+    $text: el => el.$$count,
+  }),
+  ax.a.button("⯇", {$on: {click: (e, el) => {el.$('^ h1').$$count--}}}),
+  ax.a.button("⯈", {$on: {click: (e, el) => {el.$('^ h1').$$count++}}}),
+]));
 ~~~
 <!--MARKDOWN-->
 

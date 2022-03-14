@@ -1,9 +1,5 @@
 ax.extensions.form.field.controls.radios = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       let checked = el.$('input:checked');
       return checked ? checked.value : '';

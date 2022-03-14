@@ -40,6 +40,7 @@ ax.extensions.panes = (options = {}) => {
               mousemove: (e) => move(e, panesEl),
               mouseup: (e) => clear(e, panesEl)
             }
+            clear(e, panesEl)
             window.document.addEventListener('mousemove', listeners.mousemove);
             window.document.addEventListener('mouseup', listeners.mouseup);
           },

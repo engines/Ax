@@ -12,7 +12,7 @@ ax.tag.proxy.shim = {
     return (...properties) => {
       if (property == '!') return ax.node.raw(properties);
       return ax.tag.proxy.create(
-        ax.tag.proxy.property(property),
+        {$tag: property},
         ...properties
       );
     }

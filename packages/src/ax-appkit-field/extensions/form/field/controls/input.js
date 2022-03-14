@@ -1,9 +1,5 @@
 ax.extensions.form.field.controls.input = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       return el.$('input').value;
     },

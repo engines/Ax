@@ -1,5 +1,5 @@
 ax.extensions.form.field.label = function (options = {}) {
-  let label = options.label || lib.text.labelize(options.key);
+  let label = options.label || x.lib.text.labelize(options.key);
   let component = a.label(label, options.labelTag || {});
 
   let wrapperTag = {

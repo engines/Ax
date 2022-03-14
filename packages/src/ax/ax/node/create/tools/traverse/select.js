@@ -2,7 +2,6 @@
  * Select an element based on traversal instruction.
  */
 ax.node.create.tools.traverse.select = function (element, selector) {
-  // selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
   if (!element) {
     return '';
   } else if (/^\s*\^/.test(selector)) {

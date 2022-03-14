@@ -42,7 +42,11 @@ ax.extensions.button = function (options = {}) {
     ...options.buttonTag,
     $on: {
       'click: button onclick': (e, el) => {
-        confirmation(el) && handler(e, el);
+        if (confirmation(el)) {
+          handler(e, el);
+        } else {
+          e.preventDefault()
+        }
       },
       ...(options.buttonTag || {}).$on,
     },
@@ -93,7 +97,7 @@ ax.extensions.cycle = function (options = {}) {
     $count: 0,
     $nodes: (el) => collection[el.$count],
     $init: (el) => {
-      setInterval(() => {
+      el.$interval = setInterval(() => {
         if (el.$count === max) {
           el.$count = 0;
         } else {
@@ -101,6 +105,9 @@ ax.extensions.cycle = function (options = {}) {
         }
         el.$render();
       }, period);
+    },
+    $exit: (el) => {
+      clearInterval(el.$interval);
     },
     ...options.cycleTag,
   };
@@ -322,8 +329,8 @@ ax.AxAppkitFetch = class {
     if (this.errorCallback) {
       let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
-      let node = this.errorCallback(body, this.element, response);
-      this.element.$nodes = [node];
+      let nodes = this.errorCallback(body, this.element, response);
+      this.element.$nodes = nodes;
     } else {
       this.element.$nodes = [a['ax-appkit-fetch-response.error'](bodies)];
     }
@@ -336,8 +343,8 @@ ax.AxAppkitFetch = class {
     if (this.successCallback) {
       let response = this.multiple ? responses : responses[0];
       try {
-        let node = this.successCallback(body, this.element, response);
-        this.element.$nodes = [node];
+        let nodes = this.successCallback(body, this.element, response);
+        this.element.$nodes = nodes;
       } catch (err) {
         console.error(err);
         this.element.$nodes = [];
@@ -354,8 +361,8 @@ ax.AxAppkitFetch = class {
   renderCatch(error) {
     console.error(error);
     if (this.catchCallback) {
-      let node = this.catchCallback(error, this.element);
-      this.element.$nodes = [node];
+      let nodes = this.catchCallback(error, this.element);
+      this.element.$nodes = nodes;
     } else {
       this.element.$nodes = [a['ax-appkit-fetch-response.error'](
         a.pre(error.message)
@@ -549,6 +556,7 @@ ax.extensions.router.element = (options) => {
     $locate: ax.extensions.router.element.locate,
     $location: ax.extensions.router.element.location,
     $load: ax.extensions.router.element.load,
+    $reload: ax.extensions.router.element.reload,
     ...options.routerTag,
   };
 
@@ -597,11 +605,11 @@ ax.extensions.transition.fade = function (options = {}) {
         duration: duration,
         display: options.display,
         complete: () => {
-          el.$send('ax-appkit-transition-complete');
+          el.$send('ax.appkit.transition.complete');
           if (options.complete) options.complete(el);
         },
       });
-      el.$send('ax-appkit-transition-in');
+      el.$send('ax.appkit.transition.in');
       if (options.in) options.in(el);
     },
     $to: (el) => (component) => {
@@ -610,7 +618,7 @@ ax.extensions.transition.fade = function (options = {}) {
           duration: duration,
           complete: () => el.$in(component),
         });
-        el.$send('ax-appkit-transition-out');
+        el.$send('ax.appkit.transition.out');
       } else {
         el.$in(component);
       }
@@ -1385,6 +1393,11 @@ ax.extensions.router.element.pop = (el) => () => {
   el.$send('ax.appkit.router.pop');
 };
 
+ax.extensions.router.element.reload = (el) => () => {
+  let location = el.$location()
+  el.$load(location.path, location.query, location.anchor)
+};
+
 ax.extensions.router.interface.load = (config) =>
   function (locator = '', query = {}, anchor) {
     let path = window.location.pathname;
@@ -1487,7 +1500,11 @@ ax.extensions.router.interface.routes = (setup) => {
       $scrollToAnchor: (el) => () => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
-          if (anchored) anchored.scrollIntoView();
+          if (anchored) anchored.scrollIntoView({
+            behavior: 'instant',
+            block: 'center',
+            inline: 'center'
+        });
         }
       },
 

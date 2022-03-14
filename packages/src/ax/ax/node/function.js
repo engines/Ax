@@ -5,10 +5,9 @@
  * into the Factory.
  */
 ax.node.function = function (fn) {
-  let node = fn(ax.a, ax.x)
-  if (ax.is.array(node)) {
-    console.error('A node may not be an array.\n', fn + '\n returned\n', node)
-    return ax.node.json(node)
-  }
-  return ax.node(node);
+  return ax.node.create({
+    $tag: 'code',
+    style: 'white-space: break-spaces',
+    $text: `𝑓 ${fn}`,
+  });
 };

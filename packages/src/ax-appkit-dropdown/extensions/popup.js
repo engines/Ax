@@ -36,9 +36,6 @@ ax.extensions.popup = function (component, options = {}) {
     let wh = window.innerHeight;
     let bGap = wh - rect.top - rect.height;
     let rGap = ww - rect.left - rect.width;
-    // debugger
-    // target.style.left = `${-1000}px`;
-    // if (bGap < 0) target.style.top = `${bGap}px`;
     if (rGap < 0) target.style.left = `${rGap}px`;
   };
 

@@ -1,9 +1,5 @@
 ax.extensions.form.field.controls.checkbox = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       if (el.$('input').checked) {
         return el.$('input').value;

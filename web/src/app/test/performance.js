@@ -1,4 +1,4 @@
-export default (router) => (a, x) => a['app-test-performance']([
+export default (router) => a['app-test-performance']([
   a.h1('Performance'),
   a.h5('Removed elements not deleted',{class: 'float-left'}),
   a.p('1000 small renders per second for 5 minutes',{class: 'float-right'}),

@@ -61,7 +61,7 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                   .$(
                     '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                   )
-                  .$$('button').$$;
+                  .$$('button');
                 for (let button of buttons) {
                   button.$disable && button.$disable();
                 }
@@ -80,7 +80,7 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                   .$(
                     '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                   )
-                  .$$('button').$$;
+                  .$$('button');
                 for (let button of buttons) {
                   button.$enable && button.$enable();
                 }

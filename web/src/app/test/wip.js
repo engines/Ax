@@ -1,4 +1,4 @@
-export default (router) => (a, x) => a['app-test-wip']([
+export default (router) => a['app-test-wip']([
 
   a['!']('&euro;'),
 

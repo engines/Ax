@@ -26,7 +26,7 @@ ax.extensions.menu.item = (item, options = {}) => {
   let openSubmenu = (el, e) => {
     e.preventDefault();
     let target = el.$('ax-appkit-menu-submenu');
-    let submenus = el.$('^ax-appkit-menu').$$('ax-appkit-menu-submenu').$$;
+    let submenus = el.$('^ax-appkit-menu').$$('ax-appkit-menu-submenu');
 
     for (let i in submenus) {
       let submenu = submenus[i];

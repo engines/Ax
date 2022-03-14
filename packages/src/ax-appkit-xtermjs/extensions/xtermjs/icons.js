@@ -1,0 +1,1 @@
+ax.extensions.xtermjs.icons = {}

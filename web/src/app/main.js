@@ -2,7 +2,7 @@ import navbar from "./navbar";
 import test from "./test";
 import docs from "./docs";
 
-export default (a, x) => a["app-router"](
+export default a["app-router"](
   [
     x.router({
       routes: (router) => [
@@ -34,7 +34,7 @@ export default (a, x) => a["app-router"](
   }
 );
 
-// export default (a, x) => a["app-router"](
+// export default a["app-router"](
 //   [
 //     x.router({
 //       routes: {

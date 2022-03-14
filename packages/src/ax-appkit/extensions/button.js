@@ -26,7 +26,11 @@ ax.extensions.button = function (options = {}) {
     ...options.buttonTag,
     $on: {
       'click: button onclick': (e, el) => {
-        confirmation(el) && handler(e, el);
+        if (confirmation(el)) {
+          handler(e, el);
+        } else {
+          e.preventDefault()
+        }
       },
       ...(options.buttonTag || {}).$on,
     },

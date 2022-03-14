@@ -350,27 +350,6 @@ ax.extensions.bootstrap.form.shim = {
           class: 'btn btn-danger mr-1',
           ...options.deleteTag,
         },
-        // upButton: {
-        //   ...options.upButton,
-        //   buttonTag: {
-        //     class: 'btn',
-        //     ...(options.upButton || {}).buttonTag,
-        //   },
-        // },
-        // downButton: {
-        //   ...options.downButton,
-        //   buttonTag: {
-        //     class: 'btn',
-        //     ...(options.downButton || {}).buttonTag,
-        //   },
-        // },
-        // removeButton: {
-        //   ...options.removeButton,
-        //   buttonTag: {
-        //     class: 'btn',
-        //     ...(options.removeButton || {}).buttonTag,
-        //   },
-        // },
       });
     },
     selectinput: (f, target) => (options = {}) =>

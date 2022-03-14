@@ -10,6 +10,7 @@ ax.css({
         padding: 'unset',
         fontFamily: 'monospace',
         zIndex: 1,
+        border: '1px solid #e6e6e6',
       },
       'div.CodeMirror-scroll': {
         $: {

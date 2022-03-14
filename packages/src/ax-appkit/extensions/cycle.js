@@ -8,7 +8,7 @@ ax.extensions.cycle = function (options = {}) {
     $count: 0,
     $nodes: (el) => collection[el.$count],
     $init: (el) => {
-      setInterval(() => {
+      el.$interval = setInterval(() => {
         if (el.$count === max) {
           el.$count = 0;
         } else {
@@ -16,6 +16,9 @@ ax.extensions.cycle = function (options = {}) {
         }
         el.$render();
       }, period);
+    },
+    $exit: (el) => {
+      clearInterval(el.$interval);
     },
     ...options.cycleTag,
   };

@@ -1,4 +1,4 @@
-export default (router) => (a, x) =>
+export default (router) =>
   a["nav#navbar.navbar.navbar-expand-md.navbar-light.bg-white"](
     [
       a.a(

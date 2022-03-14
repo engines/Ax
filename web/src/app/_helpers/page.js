@@ -1,9 +1,9 @@
-const page = (router) => (a, x) => {
+const page = (router) => {
   return a["div.container"]([page.for(router)]);
 }
 
 page.for = (router) => {
-  return (a, x) => {
+  // return () => {
     let name = router.path
     let markdown;
 
@@ -50,7 +50,7 @@ page.for = (router) => {
         },
       },
     });
-  }
+  // }
 };
 
 export default page;

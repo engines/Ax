@@ -330,7 +330,7 @@ ax.extensions.form.field.hint = function (options = {}) {
 };
 
 ax.extensions.form.field.label = function (options = {}) {
-  let label = options.label || lib.text.labelize(options.key);
+  let label = options.label || x.lib.text.labelize(options.key);
   let component = a.label(label, options.labelTag || {});
 
   let wrapperTag = {
@@ -780,10 +780,6 @@ ax.extensions.form.field.collection.up = function (f, options) {
 
 ax.extensions.form.field.controls.checkbox = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       if (el.$('input').checked) {
         return el.$('input').value;
@@ -937,10 +933,6 @@ ax.extensions.form.field.controls.hidden = (f, options = {}) => {
 
 ax.extensions.form.field.controls.input = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       return el.$('input').value;
     },
@@ -1005,10 +997,6 @@ ax.extensions.form.field.controls.input = function (f, options) {
 
 ax.extensions.form.field.controls.radios = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       let checked = el.$('input:checked');
       return checked ? checked.value : '';
@@ -1086,10 +1074,6 @@ ax.extensions.form.field.controls.radios = function (f, options) {
 
 ax.extensions.form.field.controls.select = function (f, options) {
   let controlTagOptions = {
-    $init: (el) => {
-      el.$valid();
-    },
-
     $value: (el) => () => {
       return el.$('select').value;
     },
@@ -1156,8 +1140,10 @@ ax.extensions.form.field.controls.select = function (f, options) {
 ax.extensions.form.field.controls.textarea = (f, options = {}) => {
   let controlTagOptions = {
     $init: (el) => {
-      el.$valid();
-      setTimeout(el.$resize, 0);
+      setTimeout(() => {
+        el.$resize
+        // el.$valid()
+      }, 0);
     },
 
     $value: (el) => () => {

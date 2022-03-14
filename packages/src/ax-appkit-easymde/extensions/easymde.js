@@ -10,7 +10,7 @@ ax.extensions.easymde = (options = {}) => a['ax-appkit-easymde'](
       });
         setTimeout(
             () => {el.$easymde.codemirror.refresh()}, 0
-        
+
           )
       // el.$observer = new IntersectionObserver((entries) => {
       //   console.log(entries)
@@ -20,8 +20,8 @@ ax.extensions.easymde = (options = {}) => a['ax-appkit-easymde'](
       // el.$observer.observe(el);
     },
     $exit: (el) => {
-      el.$observer.disconnect();
-      el.$observer = null;
+      // el.$observer.disconnect();
+      // el.$observer = null;
       el.$easymde = null;
     },
     ...options.textareaTag,

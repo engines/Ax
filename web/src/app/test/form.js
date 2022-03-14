@@ -1,4 +1,4 @@
-export default (router) => (a, x) => a['app-test-form']([
+export default (router) => a['app-test-form']([
   router,
   a.h1('Form'),
   x.form({

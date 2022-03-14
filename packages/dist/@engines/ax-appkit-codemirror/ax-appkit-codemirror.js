@@ -24,6 +24,7 @@ ax.extensions.codemirror = function (options = {}) {
             ...options,
           }),
       a.textarea(options.value || '', {
+        style: {display: 'none'},
         $init: (el) => {
           let intersection = new IntersectionObserver(() => {
             if (!el.$codemirror) {
@@ -76,6 +77,7 @@ ax.css({
         padding: 'unset',
         fontFamily: 'monospace',
         zIndex: 1,
+        border: '1px solid #e6e6e6',
       },
       'div.CodeMirror-scroll': {
         $: {
@@ -190,19 +192,20 @@ ax.extensions.codemirror.toolbar = function (options = {}) {
       ax.extensions.codemirror.toolbar.mode(options),
       ax.extensions.codemirror.toolbar.keymap(options),
       a['ax-appkit-codemirror-fullscreen'](
-        a.button('🗖', {
+        a.button({
+          $html: '&#128470;',
           type: 'button',
           $on: {
             'click: toggle full screen': (e, el) => {
               let wrapper = el.$('^ax-appkit-codemirror');
               let codemirror = wrapper.$('textarea').$codemirror;
               if (wrapper.classList.contains('fullscreen')) {
-                el.$text = '🗖';
+                el.$html = '&#128470;';
                 el.$('^body').style.overflowY = 'unset';
                 wrapper.classList.remove('fullscreen');
                 codemirror.focus();
               } else {
-                el.$text = '🗗';
+                el.$html = '&#128471;';
                 el.$('^body').style.overflowY = 'hidden';
                 wrapper.classList.add('fullscreen');
                 codemirror.focus();

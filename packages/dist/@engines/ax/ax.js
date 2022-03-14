@@ -87,7 +87,7 @@ ax.insert = function (element, options = {}) {
   } else if (ax.is.undefined(target)) {
     target = window.document.body;
   }
-  let method = options.method || 'appendChild';
+  let method = options.method || 'append';
   target[method](element);
 };
 
@@ -138,12 +138,12 @@ ax.node = function (node) {
 /**
  * Creates a <script> tag in <head>.
  */
-ax.script = function (attributes = {}) {
+ax.script = function (...attributes) {
   ax.insert(
-    ax.node.create({
-      $tag: 'script',
+    ax.a(
       ...attributes,
-    }),
+      {$tag: 'script'},
+    ),
     {
       target: 'head',
     }
@@ -191,7 +191,7 @@ ax.css.rulesets = function (sheet, keys) {
   return Object.entries(sheet)
     .map(([key, value]) => {
       return key
-        .split(',')
+        .split(/,\s*/)
         .map((key) => {
           return this.ruleset([...keys, key], value);
         })
@@ -347,11 +347,8 @@ ax.is.undefined = function (value) {
  * Create element from Ax component properties.
  */
 ax.node.create = function (properties) {
-  // if (properties.$tag == 'app-navbar-brand-icon') debugger
-
   try {
     let element = ax.node.create.element(properties);
-    element.$ax = properties;
     this.create.shadow(element);
     this.create.properties(element);
     this.create.tools(element);
@@ -382,12 +379,11 @@ ax.node.create = function (properties) {
  * into the Factory.
  */
 ax.node.function = function (fn) {
-  let node = fn(ax.a, ax.x)
-  if (ax.is.array(node)) {
-    console.error('A node may not be an array.\n', fn + '\n returned\n', node)
-    return ax.node.json(node)
-  }
-  return ax.node(node);
+  return ax.node.create({
+    $tag: 'code',
+    style: 'white-space: break-spaces',
+    $text: `𝑓 ${fn}`,
+  });
 };
 
 /**
@@ -407,7 +403,6 @@ ax.node.json = function (object) {
 ax.node.raw = function (...html) {
   let jig = window.document.createElement('div');
   jig.innerHTML = html.flat(Infinity).join('');
-  // debugger
   return jig.childNodes;
 };
 
@@ -447,6 +442,7 @@ ax.tag.proxy = {};
 * Add methods to element.
 */
 ax.node.create.accessors = function (element) {
+  // this.accessors.state(element)
   this.accessors.nodes(element)
   this.accessors.html(element)
   this.accessors.text(element)
@@ -459,13 +455,6 @@ ax.node.create.accessors = function (element) {
  * Apply content to element.
  */
 ax.node.create.apply = function (element) {
-  if (element.$ax.hasOwnProperty('$textFn')) {
-    element.$ax.$text = element.$ax.$textFn(element);
-  } else if (element.$ax.hasOwnProperty('$nodesFn')) {
-    element.$ax.$nodes = element.$ax.$nodesFn(element);
-  } else if (element.$ax.hasOwnProperty('$htmlFn')) {
-    element.$ax.$html = element.$ax.$htmlFn(element);
-  }
   if (element.$ax.hasOwnProperty('$text')) {
     this.render.text(element);
   } else if (element.$ax.hasOwnProperty('$nodes')) {
@@ -476,27 +465,49 @@ ax.node.create.apply = function (element) {
 };
 
 ax.node.create.element = function (properties) {
+  let element
   if (ax.is.array(properties.$tag)) {
-    return window.document.createElementNS(...properties.$tag);
+    let tag = ax.node.create.element.tag(properties.$tag[1] || '')
+    properties = {
+      ...properties,
+      ...tag,
+      $tag: [properties.$tag[0], tag.$tag]
+    }
+    element = window.document.createElementNS(...properties.$tag);
   } else {
-    return window.document.createElement(properties.$tag || 'span');
+    properties = {
+      ...properties,
+      ...ax.node.create.element.tag(properties.$tag || '')
+    }
+    element = window.document.createElement(properties.$tag);
   }
+  element.$ax = properties
+  return element
 };
 
 /**
  * Add initial events to element.
  */
 ax.node.create.events = function (element) {
-  element.$events = {};
-
-  for (let handle in element.$ax.$on) {
-    element.$events[handle] = element.$ax.$on[handle];
-    element.addEventListener(
-      handle.split(':')[0],
-      (event) => element.$events[handle](event, element)
-    );
-  };
+  if (element.$ax.$on) {
+    ax.node.create.events.ons(element, element.$ax.$on)
+  }
 };
+
+ax.node.create.events.ons = function(element, ons) {
+  if (!element.$events) element.$events = {};
+
+  for (let on in ons) {
+    element.$events[on] = ons[on];
+    for (let event of on.split(':')[0].split(',')) {
+      element.addEventListener(
+        event.trim(),
+        (event) => element.$events[on](event, element),
+        false
+      );
+    }
+  };
+}
 
 /**
  * Append init script to element.
@@ -514,23 +525,25 @@ ax.node.create.init = function (element) {
 };
 
 /**
- * Set properties on element.
- */
+* Set properties on element.
+*/
 ax.node.create.properties = function (element) {
   for (let property in element.$ax) {
     if (element.$ax.hasOwnProperty(property)) {
       if (property[0] == '$') {
         if (!property.match(this.reserved)) {
-          this.properties.state(element, property);
+          if (property[1] == '$') {
+            this.properties.state(element, property, { reactive: true });
+          } else {
+            this.properties.state(element, property);
+          }
         }
-      } else if (property[0] == '_') {
-        this.properties.state(element, property, { reactive: true });
       } else {
         this.properties.attribute(element, property);
       }
-    }
+    };
   };
-};
+}
 
 /**
  * Add render function to element.
@@ -551,7 +564,6 @@ ax.node.create.reserved = /^(\$tag|\$init|\$exit|\$text|\$nodes|\$html|\$send|\$
  * Attach shadow DOM to element and insert styles.
  */
 ax.node.create.shadow = function (element) {
-  // if (properties.$shadow)
   if (element.$ax.$shadow) {
     element.attachShadow({ mode: 'open' });
     if (ax.is.not.true(element.$ax.$shadow)) {
@@ -560,6 +572,39 @@ ax.node.create.shadow = function (element) {
       );
     }
   };
+};
+
+// /**
+//  * Extract properties from tag property.
+//  */
+ax.node.create.element.tag = function (tag) {
+  // if the tag starts with a word, use the word as nodename
+  // if the tag has a '#' word, use as id
+  // if the tag has '.' words, use as class
+  // if the tag has '[]' attrs, use as html tag properties
+  // e.g. div#myTagId.btn.btn-primary
+
+  let properties = {};
+
+  let nodename = (tag.match(/^([\w-]+)/) || [])[1];
+  let id = (tag.match(/#([\w-]+)/) || [])[1];
+  let classes = [...tag.matchAll(/\.([\w-]+)/g)].map(
+    match => match[1]
+  );
+  let attrs = [...tag.matchAll(/\[(.*?)=(.*?)\]/g)].map(
+    match => [match[1], match[2]]
+  );
+
+  properties.$tag = nodename || 'span';
+  if (id) properties.id = id;
+  if (classes.length) {
+    properties.class = classes.join(' ');
+  }
+  for (let attr of attrs) {
+    properties[attr[0]] = JSON.parse(attr[1]);
+  }
+
+  return properties;
 };
 
 /**
@@ -591,42 +636,8 @@ ax.tag.proxy.function = (...arguments) => ax.tag.proxy.create(...arguments);
 ax.tag.proxy.properties = function (properties) {
   if (ax.is.object(properties)) return properties;
   if (ax.is.tag(properties)) return { $nodes: [properties()] }
-  if (ax.is.function(properties)) return { $nodes: [properties] }
   if (ax.is.array(properties) || ax.is.nodelist(properties)) return { $nodes: properties };
   return { $nodes: [properties] };
-};
-
-/**
- * Extract attributes from property.
- */
-ax.tag.proxy.property = function (property) {
-  // if the property starts with a word, use the word as nodename
-  // if the property has a '#' word, use as id
-  // if the property has '.' words, use as class
-  // if the property has '[]' attrs, use as html tag attributes
-  // e.g. div#myTagId.btn.btn-primary
-
-  let attributes = {};
-
-  let nodename = (property.match(/^([\w-]+)/) || [])[1];
-  let id = (property.match(/#([\w-]+)/) || [])[1];
-  let classes = [...property.matchAll(/\.([\w-]+)/g)].map(
-    match => match[1]
-  );
-  let attrs = [...property.matchAll(/\[(.*?)=(.*?)\]/g)].map(
-    match => [match[1], match[2]]
-  );
-
-  if (nodename) attributes.$tag = nodename;
-  if (id) attributes.id = id;
-  if (classes.length) {
-    attributes.class = classes.join(' ');
-  }
-  for (let attr of attrs) {
-    attributes[attr[0]] = JSON.parse(attr[1]);
-  }
-
-  return attributes;
 };
 
 /**
@@ -643,7 +654,7 @@ ax.tag.proxy.shim = {
     return (...properties) => {
       if (property == '!') return ax.node.raw(properties);
       return ax.tag.proxy.create(
-        ax.tag.proxy.property(property),
+        {$tag: property},
         ...properties
       );
     }
@@ -706,12 +717,8 @@ ax.node.create.accessors.off = function (element) {
  * Add an event listener.
  */
 ax.node.create.accessors.on = function (element) {
-  element.$on = function (handlers) {
-    for (let handle in handlers) {
-      element.$off(handle);
-      element.$events[handle] = handlers[handle];
-      element.addEventListener(handle.split(':')[0], (event) => element.$events[handle](event, element));
-    }
+  element.$on = function (ons) {
+    ax.node.create.events.ons(element, ons)
   };
 };
 
@@ -813,10 +820,7 @@ ax.node.create.render.html = function (element) {
   let html = element.$ax.$html;
 
   // Call function, if required.
-  if (ax.is.function(html)) {
-    debugger
-    html = html(element);
-  }
+  if (ax.is.function(html)) html = html(element);
   if (ax.is.array(html)) html = html.flat(Infinity).join('');
 
   // Add content.
@@ -847,10 +851,7 @@ ax.node.create.render.text = function (element) {
   let text = element.$ax.$text;
 
   // Call function, if required.
-  if (ax.is.function(text)) {
-    debugger
-    text = text(element);
-  }
+  if (ax.is.function(text)) text = text(element);
   if (ax.is.array(text)) text = text.flat(Infinity).join('');
 
   // Add content.
@@ -862,8 +863,6 @@ ax.node.create.render.text = function (element) {
  * Query Tool, for collecting and operating on groups of elements.
  */
 ax.node.create.tools.query = function (selector) {
-  // selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
-
   let collection = Array.from(this.querySelectorAll(selector));
 
   return ax.node.create.tools.query.proxy(collection);
@@ -993,7 +992,6 @@ ax.node.create.tools.query.proxy = function (collection, pending = []) {
  * Select an element based on traversal instruction.
  */
 ax.node.create.tools.traverse.select = function (element, selector) {
-  // selector = selector.replace(/\|([\w\-]+)/g, '[data-ax-pseudotag="$1"]');
   if (!element) {
     return '';
   } else if (/^\s*\^/.test(selector)) {
@@ -1039,8 +1037,9 @@ ax.node.create.tools.query.proxy.shim.apply = function (collection, pending) {
  */
 ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
   return function (target, property, receiver) {
+    if (property == Symbol.iterator) return ax.node.create.tools.query.proxy.shim.iterator(collection);
     if (/^\d+$/.test(property)) return collection[property];
-    if (/^\$\$$/.test(property)) return collection;
+    // if (/^\$\$$/.test(property)) return collection;
     if (/^toArray$/.test(property)) return collection;
     if (/^forEach$/.test(property)) return (fn) => collection.forEach(fn);
     if (/^toString$/.test(property)) return () => collection.toString();
@@ -1059,6 +1058,22 @@ ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
     return ax.node.create.tools.query.proxy(collection, pending);
   };
 };
+
+ax.node.create.tools.query.proxy.shim.iterator = (collection) => {
+  return function() {
+    return {
+      current: 0,
+      last: collection.length - 1,
+      next() {
+        if (this.current <= this.last) {
+          return { done: false, value: collection[this.current++] };
+        } else {
+          return { done: true };
+        }
+      }
+    };
+  }
+}
 
 /**
  * Set a value on selected elements.

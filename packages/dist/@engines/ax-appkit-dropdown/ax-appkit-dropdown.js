@@ -187,9 +187,6 @@ ax.extensions.popup = function (component, options = {}) {
     let wh = window.innerHeight;
     let bGap = wh - rect.top - rect.height;
     let rGap = ww - rect.left - rect.width;
-    // debugger
-    // target.style.left = `${-1000}px`;
-    // if (bGap < 0) target.style.top = `${bGap}px`;
     if (rGap < 0) target.style.left = `${rGap}px`;
   };
 
@@ -375,7 +372,7 @@ ax.extensions.menu.item = (item, options = {}) => {
   let openSubmenu = (el, e) => {
     e.preventDefault();
     let target = el.$('ax-appkit-menu-submenu');
-    let submenus = el.$('^ax-appkit-menu').$$('ax-appkit-menu-submenu').$$;
+    let submenus = el.$('^ax-appkit-menu').$$('ax-appkit-menu-submenu');
 
     for (let i in submenus) {
       let submenu = submenus[i];

@@ -7,6 +7,7 @@ ax.extensions.router.element = (options) => {
     $locate: ax.extensions.router.element.locate,
     $location: ax.extensions.router.element.location,
     $load: ax.extensions.router.element.load,
+    $reload: ax.extensions.router.element.reload,
     ...options.routerTag,
   };
 

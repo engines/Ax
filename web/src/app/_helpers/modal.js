@@ -1,4 +1,4 @@
-const modal = (options = {}) => (a, x) =>
+const modal = (options = {}) =>
   a["app-modal"](
     a["div.modal"](a["div.modal-dialog"](a["div.modal-content"]), {
       tabindex: -1,

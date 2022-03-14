@@ -45,7 +45,6 @@ import axAppkitEasymde from '@engines/ax-appkit-easymde';
 import axAppkitTwitterBootstrap4 from '@engines/ax-appkit-twitter-bootstrap4';
 import axAppkitXtermjs from '@engines/ax-appkit-xtermjs';
 
-
 // Load ax extensions
 ax.extend(
   axAppkit,
