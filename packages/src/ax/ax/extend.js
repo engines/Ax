@@ -9,8 +9,8 @@
  * import Chart from 'chart.js';
  * ax.extend( axAppkit, [axChartjs, {Chart: Chart}] ).
  */
-ax.extend = function () {
-  for (let extension of arguments) {
+ax.extend = function (...extensions) {
+  for (let extension of extensions) {
     if (ax.is.array(extension)) {
       extension[0].extend(this, extension[1] || {});
     } else {

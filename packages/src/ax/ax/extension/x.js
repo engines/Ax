@@ -1,4 +1,4 @@
 /**
  * Alias for shortcut to Ax Extensions.
  */
-ax.x = ax.extension;
+ax.x = ax.extensions;

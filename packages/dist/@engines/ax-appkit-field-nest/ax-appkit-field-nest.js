@@ -10,15 +10,19 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.form.field.nest = {};
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
 
-ax.extension.report.field.nest = {};
+ax.extensions.form.field.nest = {};
 
-ax.extension.form.field.nest.components = {};
+ax.extensions.report.field.nest = {};
 
-ax.extension.form.field.nest.lib = {};
+ax.extensions.form.field.nest.components = {};
 
-ax.extension.form.field.nest.shim = {
+ax.extensions.form.field.nest.lib = {};
+
+ax.extensions.form.field.nest.shim = {
   controls: {
     nest: (f, target) => (options = {}) =>
       ax.x.form.field.nest.components.nest(f, options),
@@ -57,20 +61,17 @@ ax.extension.form.field.nest.shim = {
   },
 };
 
-ax.extension.report.field.nest.components = {};
+ax.extensions.report.field.nest.components = {};
 
-ax.extension.report.field.nest.shim = {
+ax.extensions.report.field.nest.shim = {
   controls: {
     nest: (f, target) => (options = {}) =>
       ax.x.report.field.nest.components.nest(f, options),
   },
 };
 
-ax.extension.form.field.nest.components.nest = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
-  let nestForm = options.form || (() => null);
+ax.extensions.form.field.nest.components.nest = function (f, options = {}) {
+  let nestForm = options.form || (() => '');
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
   let ff = this.nest.factory({
@@ -175,11 +176,8 @@ ax.extension.form.field.nest.components.nest = function (f, options = {}) {
   );
 };
 
-ax.extension.report.field.nest.components.nest = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
-  let nestReport = options.report || (() => null);
+ax.extensions.report.field.nest.components.nest = function (r, options = {}) {
+  let nestReport = options.report || (() => '');
 
   let nestFactory = this.nest.factory({
     scope: options.name, // name is the scope for child items
@@ -198,7 +196,7 @@ ax.extension.report.field.nest.components.nest = function (r, options = {}) {
       if (items) {
         return el.$('ax-appkit-report-nest-items').$count();
       } else {
-        return null;
+        return '';
       }
     },
     $focus: (el) => () => {
@@ -214,9 +212,7 @@ ax.extension.report.field.nest.components.nest = function (r, options = {}) {
   );
 };
 
-ax.extension.form.field.nest.components.nest.add = function (f, options) {
-  let a = ax.a;
-
+ax.extensions.form.field.nest.components.nest.add = function (f, options) {
   let singular = f.singular;
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
@@ -225,19 +221,17 @@ ax.extension.form.field.nest.components.nest.add = function (f, options) {
   return a['ax-appkit-form-nest-add-button'](
     f.button({
       label: label,
-      onclick: (el) => (e) => {
+      onclick: (e, el) => {
         let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },
       ...options,
     }),
-    options.addButtonTag
+    options.addButtonTag || {}
   );
 };
 
-ax.extension.form.field.nest.components.nest.factory = function (options) {
-  let x = ax.x;
-
+ax.extensions.form.field.nest.components.nest.factory = function (options) {
   let ff = x.form.factory({
     items: (options = {}) => this.items(ff, options),
     add: (options = {}) => this.add(ff, options),
@@ -247,11 +241,8 @@ ax.extension.form.field.nest.components.nest.factory = function (options) {
   return ff;
 };
 
-ax.extension.form.field.nest.components.nest.items = function (f, options) {
-  let a = ax.a;
-  let x = ax.x;
-
-  let formFn = options.form || (() => null);
+ax.extensions.form.field.nest.components.nest.items = function (f, options) {
+  let formFn = options.form || (() => '');
 
   let itemsTagName =
     (options.itemsTag || {}).$tag || 'ax-appkit-form-nest-items';
@@ -410,9 +401,7 @@ ax.extension.form.field.nest.components.nest.items = function (f, options) {
   });
 };
 
-ax.extension.report.field.nest.components.nest.factory = function (options) {
-  let x = ax.x;
-
+ax.extensions.report.field.nest.components.nest.factory = function (options) {
   let ff = x.report.factory({
     scope: options.scope,
     object: options.object,
@@ -424,11 +413,8 @@ ax.extension.report.field.nest.components.nest.factory = function (options) {
   return ff;
 };
 
-ax.extension.report.field.nest.components.nest.items = function (f, options) {
-  let a = ax.a;
-  let x = ax.x;
-
-  let reportFn = options.report || (() => null);
+ax.extensions.report.field.nest.components.nest.items = function (f, options) {
+  let reportFn = options.report || (() => '');
   let item = function (itemData, index) {
     let ff = this.items.factory({
       scope: f.scope ? `${f.scope}[${index}]` : `${index}`,
@@ -437,7 +423,7 @@ ax.extension.report.field.nest.components.nest.items = function (f, options) {
       reportOptions: f.reportOptions,
     });
 
-    return a['ax-appkit-report-nest-item'](reportFn(ff), options.itemTag);
+    return a['ax-appkit-report-nest-item'](reportFn(ff), options.itemTag || {});
   }.bind(this);
 
   let itemsData;
@@ -466,7 +452,7 @@ ax.extension.report.field.nest.components.nest.items = function (f, options) {
   );
 };
 
-ax.extension.form.field.nest.components.nest.items.down = function (
+ax.extensions.form.field.nest.components.nest.items.down = function (
   f,
   options = {}
 ) {
@@ -474,8 +460,8 @@ ax.extension.form.field.nest.components.nest.items.down = function (
 
   return f.button({
     label: '⏷',
-    onclick: (el) => (e) => {
-      let itemsElement = el.$(`^${itemTagName}`);
+    onclick: (e, el) => {
+      let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {
@@ -493,11 +479,9 @@ ax.extension.form.field.nest.components.nest.items.down = function (
   });
 };
 
-ax.extension.form.field.nest.components.nest.items.factory = function (
+ax.extensions.form.field.nest.components.nest.items.factory = function (
   options = {}
 ) {
-  let x = ax.x;
-
   let f = x.form.factory({
     remove: (options) => this.remove(f, options),
     up: (options) => this.up(f, options),
@@ -508,7 +492,7 @@ ax.extension.form.field.nest.components.nest.items.factory = function (
   return f;
 };
 
-ax.extension.form.field.nest.components.nest.items.remove = function (
+ax.extensions.form.field.nest.components.nest.items.remove = function (
   f,
   options = {}
 ) {
@@ -527,8 +511,8 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
   return f.button({
     label: '✖',
     confirm: confirmation,
-    onclick: (el) => (e) => {
-      let itemsElement = el.$(`^${itemTagName}`);
+    onclick: (e, el) => {
+      let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
       for (item of itemElements) {
@@ -546,7 +530,7 @@ ax.extension.form.field.nest.components.nest.items.remove = function (
   });
 };
 
-ax.extension.form.field.nest.components.nest.items.up = function (
+ax.extensions.form.field.nest.components.nest.items.up = function (
   f,
   options = {}
 ) {
@@ -554,7 +538,7 @@ ax.extension.form.field.nest.components.nest.items.up = function (
 
   return f.button({
     label: '⏶',
-    onclick: (el) => (e) => {
+    onclick: (e, el) => {
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -573,11 +557,9 @@ ax.extension.form.field.nest.components.nest.items.up = function (
   });
 };
 
-ax.extension.report.field.nest.components.nest.items.factory = function (
+ax.extensions.report.field.nest.components.nest.items.factory = function (
   options
 ) {
-  let x = ax.x;
-
   let index = options.index;
 
   let f = x.report.factory({

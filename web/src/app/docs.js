@@ -1,4 +1,4 @@
-export default (router) => (a,x) => router.mount({
+export default (router) => router.mount({
   routes: {
     '*': app.page,
   },

@@ -3,16 +3,16 @@ import "@fortawesome/fontawesome-free/js/solid";
 import "@fortawesome/fontawesome-free/js/regular";
 import "@fortawesome/fontawesome-free/js/brands";
 
-const icon = (klass, text, options = {}) => (a, x) => {
-  var component = [a.span(null, { class: klass })];
+const icon = (klass, text, options = {}) => {
+  var nodes = [a.span([], { class: klass })];
 
   if (text) {
-    if (!options.compact) component.push(" ");
-    component.push(text);
+    if (!options.compact) nodes.push(" ");
+    nodes.push(text);
   }
 
   if (options.reverse) {
-    component.reverse();
+    nodes.reverse();
   }
 
   let iconTag = {
@@ -20,7 +20,7 @@ const icon = (klass, text, options = {}) => (a, x) => {
     ...options.iconTag,
   };
 
-  return a["app-icon"](component, iconTag);
+  return a["app-icon"](nodes, iconTag);
 };
 
 export default icon;

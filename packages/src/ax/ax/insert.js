@@ -8,6 +8,6 @@ ax.insert = function (element, options = {}) {
   } else if (ax.is.undefined(target)) {
     target = window.document.body;
   }
-  let method = options.method || 'appendChild';
+  let method = options.method || 'append';
   target[method](element);
 };

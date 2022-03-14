@@ -11,13 +11,11 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-  x = ax.x,
-  is = ax.is;
+      x = ax.x,
+      is = ax.is;
 
-ax.extension.button = function (options = {}) {
-  let a = ax.a;
-
-  let handler = options.onclick || (() => () => {});
+ax.extensions.button = function (options = {}) {
+  let handler = options.onclick || (() => {});
 
   let label = a['ax-appkit-button-label'](options.label || '', {
     style: {
@@ -43,8 +41,12 @@ ax.extension.button = function (options = {}) {
     value: options.value,
     ...options.buttonTag,
     $on: {
-      'click: button onclick': (el) => (e) => {
-        confirmation(el) && handler(el)(e);
+      'click: button onclick': (e, el) => {
+        if (confirmation(el)) {
+          handler(e, el);
+        } else {
+          e.preventDefault()
+        }
       },
       ...(options.buttonTag || {}).$on,
     },
@@ -53,10 +55,7 @@ ax.extension.button = function (options = {}) {
   return a.button(label, buttonTag);
 };
 
-ax.extension.check = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.check = function (options = {}) {
   let inputId =
     x.lib.object.dig(options, ['inputTag', 'id']) || x.lib.uuid.generate();
 
@@ -74,23 +73,21 @@ ax.extension.check = function (options = {}) {
   };
 
   let labelTagOptions = {
+    $nodes: [options.label || ''],
     for: inputId,
     ...options.labelTag,
   };
 
   return a['ax-appkit-check'](
     [
-      a.input(null, inputTagOptions),
-      a.label(options.label || '', labelTagOptions),
+      a.input(inputTagOptions),
+      a.label(labelTagOptions),
     ],
-    options.checkTag
+    options.checkTag || {}
   );
 };
 
-ax.extension.cycle = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.cycle = function (options = {}) {
   let period = options.period || 500;
   let collection = options.collection || '⣯⣟⡿⢿⣻⣽⣾⣷';
 
@@ -100,7 +97,7 @@ ax.extension.cycle = function (options = {}) {
     $count: 0,
     $nodes: (el) => collection[el.$count],
     $init: (el) => {
-      setInterval(() => {
+      el.$interval = setInterval(() => {
         if (el.$count === max) {
           el.$count = 0;
         } else {
@@ -109,18 +106,18 @@ ax.extension.cycle = function (options = {}) {
         el.$render();
       }, period);
     },
+    $exit: (el) => {
+      clearInterval(el.$interval);
+    },
     ...options.cycleTag,
   };
 
-  return a['ax-appkit-cycle'](null, cycleTag);
+  return a['ax-appkit-cycle'](cycleTag);
 };
 
-ax.extension.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();
+ax.extensions.fetch = (options = {}) => new ax.AxAppkitFetch(options).render();
 
-ax.extension.form = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form = function (options = {}) {
   let f = this.form.factory({
     scope: options.scope,
     object: options.object,
@@ -130,10 +127,8 @@ ax.extension.form = function (options = {}) {
   return f.form(options);
 };
 
-ax.extension.out = function (value, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.out = function (value, options = {}) {
+  let outTag = options.outTag || {}
   let component;
 
   if (ax.is.undefined(value)) {
@@ -156,13 +151,10 @@ ax.extension.out = function (value, options = {}) {
     }
   }
 
-  return a['ax-appkit-out'](component, options.outTag);
+  return a['ax-appkit-out'](component, outTag);
 };
 
-ax.extension.report = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report = function (options = {}) {
   let r = this.report.factory({
     scope: options.scope,
     object: options.object,
@@ -172,7 +164,7 @@ ax.extension.report = function (options = {}) {
   return r.report(options);
 };
 
-ax.extension.router = (options = {}) => (a, x) => {
+ax.extensions.router = (options = {}) => {
   if (options.home) {
     if (window.location.pathname.match(/^$|^\/$/)) {
       window.history.replaceState({}, 'Home', options.home);
@@ -182,109 +174,26 @@ ax.extension.router = (options = {}) => (a, x) => {
   return ax.x.router.element(options);
 };
 
-ax.extension.table = function (options = {}) {
-  let a = ax.a;
-
-  let component = [];
-
-  let trTag = (i, row) => {
-    if (ax.is.function(options.trTag)) {
-      return options.trTag(i, row);
-    } else {
-      return options.trTag;
-    }
-  };
-
-  let thTag = (i, j, content) => {
-    if (ax.is.function(options.thTag)) {
-      return options.thTag(i, j, content);
-    } else {
-      return options.thTag;
-    }
-  };
-
-  let tdTag = (i, j, content) => {
-    if (ax.is.function(options.tdTag)) {
-      return options.tdTag(i, j, content);
-    } else {
-      return options.tdTag;
-    }
-  };
-
-  let headers;
-  if (options.headers == false) {
-    headers = {
-      rows: [],
-      cols: [],
-    };
-  } else if (options.headers == true || !options.headers) {
-    headers = {
-      rows: [0],
-      cols: [],
-    };
-  } else {
-    headers = {
-      rows: options.headers.rows || [],
-      cols: options.headers.cols || [],
-    };
-  }
-
-  let tableCellFor = (i, j, content) => {
-    if (headers.rows.includes(i)) {
-      let attributes = {
-        scope: col,
-        ...thTag(i, j, content),
-      };
-      return a.th(content, attributes);
-    } else if (headers.cols.includes(j)) {
-      let attributes = {
-        scope: row,
-        ...thTag(i, j, content),
-      };
-      return a.th(content, attributes);
-    } else {
-      return a.td(content, tdTag(i, j, content));
-    }
-  };
-
-  (options.rows || []).forEach(function (row, i) {
-    component.push(
-      a.tr(
-        row.map(function (content, j) {
-          return tableCellFor(i, j, content);
-        }),
-        trTag(i, row)
-      )
-    );
-  });
-
-  return a.table(component, options.tableTag);
-};
-
-ax.extension.time = function (options = {}) {
-  const a = ax.a;
-
-  let timeTag = {
+ax.extensions.time = function (options = {}) {
+  return a.time({
     $init: (el) => setInterval(el.$render, 1000),
     $text: () => new Date().toLocaleTimeString(),
     ...options.timeTag,
-  };
-
-  return a.time(null, timeTag);
+  });
 };
 
-ax.extension.transition = {};
+ax.extensions.transition = {};
 
 ax.AxAppkitFetch = class {
   constructor(options = {}) {
-    this.multiple = this.determineMultiple(options);
+    this.fetchCount = this.determineFetchCount(options);
+    this.multiple = this.isMultiple(options);
     this.url = options.url;
     this.method = options.method;
     this.query = options.query;
     this.headers = options.headers;
     this.body = options.body;
-    this.placeholder = options.placeholder || null;
-    // this.id = options.fetchTagId || null;
+    this.placeholder = options.placeholder || '';
     this.fetchTag = options.fetchTag || {};
     this.preprocessWhen = options.when || {};
     this.successCallback = options.success;
@@ -293,11 +202,17 @@ ax.AxAppkitFetch = class {
     this.completeCallback = options.complete;
   }
 
-  determineMultiple(options) {
+  determineFetchCount(options) {
     return Math.max(
       ...['url', 'method', 'query', 'method', 'headers', 'body'].map((key) =>
-        is.array(options[key]) ? options[key].length : 0
+        ax.is.array(options[key]) ? options[key].length : 0
       )
+    );
+  }
+
+  isMultiple(options) {
+    return ['url', 'method', 'query', 'method', 'headers', 'body'].some((key) =>
+      ax.is.array(options[key])
     );
   }
 
@@ -307,14 +222,13 @@ ax.AxAppkitFetch = class {
         this.element = el;
         this.init();
       },
-      // id: this.fetchTagId,
       ...this.fetchTag,
     });
   }
 
   init() {
     // No fetches when url is empty array.
-    if (is.array(this.url) && this.url.length == 0) {
+    if (this.multiple && this.fetchCount == 0) {
       this.renderSuccessResult([]);
       this.callComplete();
       return;
@@ -329,7 +243,7 @@ ax.AxAppkitFetch = class {
 
   performFetches() {
     return Promise.all(
-      [...Array(this.multiple || 1)].map((_, i) => {
+      [...Array(this.fetchCount || 1)].map((_, i) => {
         let url = this.propertyFor('url', i);
         let query = this.propertyFor('query', i);
         if (query) url = `${url}?${x.lib.query.stringify(query)}`;
@@ -348,7 +262,7 @@ ax.AxAppkitFetch = class {
   }
 
   propertyFor(key, i) {
-    return is.array(this[key]) ? this[key][i] : this[key];
+    return ax.is.array(this[key]) ? this[key][i] : this[key];
   }
 
   buildResults(responses) {
@@ -394,12 +308,9 @@ ax.AxAppkitFetch = class {
       let status = result.status;
       let contentType = result.contentType;
       if (this.preprocessWhen[status])
-        body =
-          this.preprocessWhen[status](body, this.element, response) || null;
+        body = this.preprocessWhen[status](body, this.element, response);
       if (this.preprocessWhen[contentType])
-        body =
-          this.preprocessWhen[contentType](body, this.element, response) ||
-          null;
+        body = this.preprocessWhen[contentType](body, this.element, response);
       result.body = body;
       return result;
     });
@@ -418,50 +329,44 @@ ax.AxAppkitFetch = class {
     if (this.errorCallback) {
       let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
-      let returnedElement = this.errorCallback(body, this.element, response);
-      if (returnedElement) this.element.$nodes = returnedElement;
+      let nodes = this.errorCallback(body, this.element, response);
+      this.element.$nodes = nodes;
     } else {
-      this.element.$nodes = () => a['ax-appkit-fetch-response.error'](bodies);
+      this.element.$nodes = [a['ax-appkit-fetch-response.error'](bodies)];
     }
   }
 
   renderSuccessResult(results) {
     let bodies = results.map((result) => result.body);
     let responses = results.map((result) => result.response);
+    let body = this.multiple ? bodies : bodies[0];
     if (this.successCallback) {
-      let body = this.multiple ? bodies : bodies[0];
       let response = this.multiple ? responses : responses[0];
       try {
-        let returnedElement = this.successCallback(
-          body,
-          this.element,
-          response
-        );
-        if (returnedElement) {
-          this.element.$nodes = () => returnedElement;
-        } else {
-          this.element.$nodes = [];
-        }
+        let nodes = this.successCallback(body, this.element, response);
+        this.element.$nodes = nodes;
       } catch (err) {
         console.error(err);
         this.element.$nodes = [];
       }
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.success'](
-        a.pre(JSON.stringify(this.multiple ? bodies : bodies[0], null, 2))
-      );
+      this.element.$nodes = [
+        a['ax-appkit-fetch-response.success'](
+          a.pre(JSON.stringify(body, null, 2))
+        )
+      ];
     }
   }
 
   renderCatch(error) {
     console.error(error);
     if (this.catchCallback) {
-      let returnedElement = this.catchCallback(error, this.element);
-      if (returnedElement) this.element.$nodes = () => returnedElement;
+      let nodes = this.catchCallback(error, this.element);
+      this.element.$nodes = nodes;
     } else {
-      this.element.$nodes = a['ax-appkit-fetch-response.error'](
+      this.element.$nodes = [a['ax-appkit-fetch-response.error'](
         a.pre(error.message)
-      );
+      )];
     }
   }
 
@@ -470,7 +375,7 @@ ax.AxAppkitFetch = class {
   }
 };
 
-ax.extension.form.factory = function (options) {
+ax.extensions.form.factory = function (options) {
   let shims = [this.shim, ...(options.formOptions.shims || [])];
 
   return new (function () {
@@ -499,7 +404,7 @@ ax.extension.form.factory = function (options) {
   })();
 };
 
-ax.extension.form.shim = {
+ax.extensions.form.shim = {
   form: (f) => (options) => ax.x.form.factory.form(f, options),
   input: (f) => (options) => ax.x.form.factory.input(options),
   select: (f) => (options) => ax.x.form.factory.select(options),
@@ -512,13 +417,13 @@ ax.extension.form.shim = {
   cancel: (f) => (options) => ax.x.form.factory.cancel(f, options),
 };
 
-ax.extension.lib.animate = {};
+ax.extensions.lib.animate = {};
 
-ax.extension.lib.array = {};
+ax.extensions.lib.array = {};
 
-ax.extension.lib.coerce = {};
+ax.extensions.lib.coerce = {};
 
-ax.extension.lib.compact = function (value) {
+ax.extensions.lib.compact = function (value) {
   let compact = ax.x.lib.compact;
 
   if (ax.is.array(value)) {
@@ -526,23 +431,23 @@ ax.extension.lib.compact = function (value) {
   } else if (ax.is.object(value)) {
     return compact.object(value);
   } else if (['', undefined, null].includes(value)) {
-    return null;
+    return '';
   } else {
     return value;
   }
 };
 
-ax.extension.lib.element = {};
+ax.extensions.lib.element = {};
 
-ax.extension.lib.form = {};
+ax.extensions.lib.form = {};
 
-ax.extension.lib.name = {};
+ax.extensions.lib.name = {};
 
-ax.extension.lib.object = {};
+ax.extensions.lib.object = {};
 
-ax.extension.lib.query = {};
+ax.extensions.lib.query = {};
 
-ax.extension.lib.tabable = function (element) {
+ax.extensions.lib.tabable = function (element) {
   if (element.tabIndex >= 0 && ax.x.lib.element.visible(element)) {
     return true;
   } else {
@@ -550,9 +455,9 @@ ax.extension.lib.tabable = function (element) {
   }
 };
 
-ax.extension.lib.text = {};
+ax.extensions.lib.text = {};
 
-ax.extension.lib.unnested = function (el, tag) {
+ax.extensions.lib.unnested = function (el, tag) {
   let controls = el.$$(tag).$$;
   let result = [];
 
@@ -571,12 +476,9 @@ ax.extension.lib.unnested = function (el, tag) {
   return result;
 };
 
-ax.extension.lib.uuid = {};
+ax.extensions.lib.uuid = {};
 
-ax.extension.out.element = function (value) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.out.element = function (value) {
   if (ax.is.array(value)) {
     return a['ax-appkit-out-collection'](
       a.ol(value.map((element) => a.li(x.out.element(element))))
@@ -584,7 +486,7 @@ ax.extension.out.element = function (value) {
   } else if (ax.is.null(value)) {
     return a['ax-appkit-out-null'](null);
   } else if (ax.is.undefined(value)) {
-    return a['ax-appkit-out-null'](a.i('UNDEFINED'));
+    return a['ax-appkit-out-undefined'](a.i('UNDEFINED'));
   } else if (ax.is.function(value)) {
     return a['ax-appkit-out-function'](`𝑓 ${value}`);
   } else if (ax.is.object(value)) {
@@ -604,7 +506,7 @@ ax.extension.out.element = function (value) {
   }
 };
 
-ax.extension.report.factory = function (options) {
+ax.extensions.report.factory = function (options) {
   let shims = [this.shim, ...(options.reportOptions.shims || [])];
 
   return new (function () {
@@ -633,7 +535,7 @@ ax.extension.report.factory = function (options) {
   })();
 };
 
-ax.extension.report.shim = {
+ax.extensions.report.shim = {
   report: (r) => (options) => ax.x.report.factory.report(r, options),
   button: (r) => (options) => ax.x.report.factory.button(options),
   checkbox: (r) => (options) => ax.x.report.factory.checkbox(options),
@@ -645,51 +547,49 @@ ax.extension.report.shim = {
   text: (r) => (options) => ax.x.report.factory.text(options),
 };
 
-ax.extension.router.element = (options) => {
+ax.extensions.router.element = (options) => {
   let routerTag = {
     id: options.id,
-    $init: ax.extension.router.element.init,
-    $nodes: ax.extension.router.element.nodes(options),
-    $pop: ax.extension.router.element.pop,
-    $open: ax.extension.router.element.open(options),
-    $locate: ax.extension.router.element.locate,
-    $location: ax.extension.router.element.location,
-    $load: ax.extension.router.element.load,
+    $init: ax.extensions.router.element.init(options),
+    $pop: ax.extensions.router.element.pop,
+    $open: ax.extensions.router.element.open(options),
+    $locate: ax.extensions.router.element.locate,
+    $location: ax.extensions.router.element.location,
+    $load: ax.extensions.router.element.load,
+    $reload: ax.extensions.router.element.reload,
     ...options.routerTag,
   };
 
-  return a['ax-appkit-router']([], routerTag);
+  return a['ax-appkit-router'](routerTag);
 };
 
-ax.extension.router.interface = (config) => {
+ax.extensions.router.interface = (config) => {
   let result = {};
   result.path = config.path;
   result.query = config.query;
   result.anchor = config.anchor;
   result.scope = config.scope;
   result.match = config.match;
-  result.splat = config.splat;
+  result.splats = config.splats;
   result.slash = config.slash;
   result.params = {
     ...config.match,
     ...config.query,
   };
+  
   result.load = ax.x.router.interface.load(config);
   result.open = ax.x.router.interface.open(config);
 
-  result.mount = ax.x.router.interface.mount(config);
+  result.mount = ax.x.router.interface.routes(config);
 
   return result;
 };
 
-ax.extension.transition.fade = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.transition.fade = function (options = {}) {
   let duration = (options.duration || 500) / 2;
-
-  return a['ax-appkit-transition'](null, {
+  return a['ax-appkit-transition']({
     $init: (el) => {
+
       el.style.display = 'none';
       if (options.initial) {
         el.$in(options.initial);
@@ -705,11 +605,11 @@ ax.extension.transition.fade = function (options = {}) {
         duration: duration,
         display: options.display,
         complete: () => {
-          el.$send('ax-appkit-transition-complete');
+          el.$send('ax.appkit.transition.complete');
           if (options.complete) options.complete(el);
         },
       });
-      el.$send('ax-appkit-transition-in');
+      el.$send('ax.appkit.transition.in');
       if (options.in) options.in(el);
     },
     $to: (el) => (component) => {
@@ -718,7 +618,7 @@ ax.extension.transition.fade = function (options = {}) {
           duration: duration,
           complete: () => el.$in(component),
         });
-        el.$send('ax-appkit-transition-out');
+        el.$send('ax.appkit.transition.out');
       } else {
         el.$in(component);
       }
@@ -728,13 +628,11 @@ ax.extension.transition.fade = function (options = {}) {
   });
 };
 
-ax.extension.form.factory.button = function (options = {}) {
-  let x = ax.x;
-
+ax.extensions.form.factory.button = function (options = {}) {
   return x.button(options);
 };
 
-ax.extension.form.factory.cancel = (f, options = {}) => {
+ax.extensions.form.factory.cancel = (f, options = {}) => {
   let label = options.label || '✖️ Cancel';
 
   let onclick =
@@ -756,10 +654,7 @@ ax.extension.form.factory.cancel = (f, options = {}) => {
   return f.button(buttonOptions);
 };
 
-ax.extension.form.factory.checkbox = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.factory.checkbox = function (options = {}) {
   return a['ax-appkit-form-checkbox'](
     x.check({
       name: options.name,
@@ -773,14 +668,11 @@ ax.extension.form.factory.checkbox = function (options = {}) {
       labelTag: options.labelTag,
       checkTag: options.checkTag,
     }),
-    options.checkboxTag
+    options.checkboxTag || {}
   );
 };
 
-ax.extension.form.factory.checkboxes = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.factory.checkboxes = function (options = {}) {
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 
@@ -812,17 +704,14 @@ ax.extension.form.factory.checkboxes = function (options = {}) {
         checkTag: options.checkTag,
       });
     }),
-    options.checkboxesTag
+    options.checkboxesTag || {}
   );
 };
 
-ax.extension.form.factory.form = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
+ax.extensions.form.factory.form = (f, options = {}) => {
+  let form = options.form || (() => '');
 
-  let form = options.form || (() => null);
-
-  let formTagOptions = {
+  let formTag = {
     id: options.id,
     method: options.method || 'POST',
     action: options.url || options.action,
@@ -832,21 +721,18 @@ ax.extension.form.factory.form = (f, options = {}) => {
     ...options.formTag,
   };
 
-  return a.form(form(f), formTagOptions);
+  return a.form(form(f), formTag);
 };
 
-ax.extension.form.factory.input = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
-  let datalist = null;
+ax.extensions.form.factory.input = function (options = {}) {
+  let datalist = '';
   let datalistId;
 
   if (options.datalist) {
     datalistId = x.lib.uuid.generate();
     datalist = a.datalist(
       options.datalist.map((item) =>
-        a.option(null, {
+        a.option({
           value: item,
         })
       ),
@@ -877,15 +763,12 @@ ax.extension.form.factory.input = function (options = {}) {
   };
 
   return a['ax-appkit-form-input-wrapper'](
-    [a.input([], inputTagOptions), datalist],
-    options.wrapperTag
+    [a.input(inputTagOptions), datalist],
+    options.wrapperTag || {}
   );
 };
 
-ax.extension.form.factory.radios = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.factory.radios = function (options = {}) {
   let value = options.value || '';
 
   let selections = x.lib.form.selections(options.selections);
@@ -920,14 +803,11 @@ ax.extension.form.factory.radios = function (options = {}) {
         checkTag: options.checkTag,
       });
     }),
-    options.radiosTag
+    options.radiosTag || {}
   );
 };
 
-ax.extension.form.factory.select = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.factory.select = function (options = {}) {
   let applyPlaceholder = (el) => {
     let selected = el.$$('option')[el.selectedIndex];
     if (selected.classList.contains('placeholder')) {
@@ -946,18 +826,18 @@ ax.extension.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (el) => (e) => applyPlaceholder(el),
+      'change: update placeholder styling': (e, el) => applyPlaceholder(el),
       ...(options.selectTag || {}).$on,
     },
   };
 
   return a['ax-appkit-form-select-wrapper'](
     a.select(this.select.options(options), selectTagOptions),
-    options.wrapperTag
+    options.wrapperTag || {}
   );
 };
 
-ax.extension.form.factory.submit = (f, options = {}) => {
+ax.extensions.form.factory.submit = (f, options = {}) => {
   let label = options.label === false ? '' : options.label || '✔ Submit';
 
   let buttonOptions = {
@@ -975,9 +855,7 @@ ax.extension.form.factory.submit = (f, options = {}) => {
   return f.button(buttonOptions);
 };
 
-ax.extension.form.factory.textarea = function (options = {}) {
-  let a = ax.a;
-
+ax.extensions.form.factory.textarea = function (options = {}) {
   let value = options.value || '';
 
   let textareaTagOptions = {
@@ -990,31 +868,31 @@ ax.extension.form.factory.textarea = function (options = {}) {
 
   return a['ax-appkit-form-textarea-wrapper'](
     a.textarea(value, textareaTagOptions),
-    options.wrapperTag
+    options.wrapperTag || {}
   );
 };
 
-ax.extension.lib.animate.fade = {};
+ax.extensions.lib.animate.fade = {};
 
-ax.extension.lib.coerce.boolean = function (value) {
+ax.extensions.lib.coerce.boolean = function (value) {
   value = value || false;
   let string = value.toString().toLowerCase();
   return value && string !== 'false' && string !== 'off' && string !== '0';
 };
 
-ax.extension.lib.coerce.number = function (value) {
+ax.extensions.lib.coerce.number = function (value) {
   return Number(value) || 0;
 };
 
-ax.extension.lib.coerce.string = function (value) {
+ax.extensions.lib.coerce.string = function (value) {
   return ax.is.undefined(value) ? '' : String(value);
 };
 
-ax.extension.lib.compact.array = function (array) {
+ax.extensions.lib.compact.array = function (array) {
   return array.map((value) => this(value)).filter((value) => value != null);
 };
 
-ax.extension.lib.compact.object = function (object) {
+ax.extensions.lib.compact.object = function (object) {
   for (const key in object) {
     object[key] = this(object[key]);
     if (
@@ -1028,7 +906,7 @@ ax.extension.lib.compact.object = function (object) {
   return object;
 };
 
-ax.extension.lib.element.visible = function (element) {
+ax.extensions.lib.element.visible = function (element) {
   return !!(
     element.offsetWidth ||
     element.offsetHeight ||
@@ -1036,11 +914,11 @@ ax.extension.lib.element.visible = function (element) {
   );
 };
 
-ax.extension.lib.form.collection = {};
+ax.extensions.lib.form.collection = {};
 
-ax.extension.lib.form.data = {};
+ax.extensions.lib.form.data = {};
 
-ax.extension.lib.form.selections = function (selections) {
+ax.extensions.lib.form.selections = function (selections) {
   if (ax.is.array(selections)) {
     selections = selections.map(function (selection) {
       if (ax.is.array(selection)) {
@@ -1075,12 +953,12 @@ ax.extension.lib.form.selections = function (selections) {
   return selections;
 };
 
-ax.extension.lib.name.dismantle = (string) =>
+ax.extensions.lib.name.dismantle = (string) =>
   (string.match(/\w+|\[\w*\]|\[\.\.\]/g) || []).map((part) =>
     part.replace(/\[|\]/g, '')
   );
 
-ax.extension.lib.object.assign = function (object, keys, value) {
+ax.extensions.lib.object.assign = function (object, keys, value) {
   if (keys.length) {
     let key = keys.shift();
     object[key] = this.assign(object[key] || {}, keys, value);
@@ -1090,37 +968,37 @@ ax.extension.lib.object.assign = function (object, keys, value) {
   }
 };
 
-ax.extension.lib.object.dig = function (
+ax.extensions.lib.object.dig = function (
   object,
   keys = [],
-  defaultValue = null
+  defaultValue = undefined
 ) {
   let result = object;
 
   for (let key in keys) {
-    if (result == null) {
+    if (result == undefined) {
       return defaultValue;
     } else {
-      result = result[keys[key]] || null;
+      result = result[keys[key]] || undefined;
     }
   }
 
   return result || defaultValue;
 };
 
-ax.extension.lib.object.omit = function (obj, keys) {
+ax.extensions.lib.object.omit = function (obj, keys) {
   return Object.keys(obj)
     .filter((key) => keys.indexOf(key) < 0)
     .reduce((result, key) => ((result[key] = obj[key]), result));
 };
 
-ax.extension.lib.object.pick = function (obj, keys) {
+ax.extensions.lib.object.pick = function (obj, keys) {
   return keys
     .filter((key) => key in obj)
     .reduce((result, key) => ((result[key] = obj[key]), result));
 };
 
-ax.extension.lib.query.parse = function (queryString) {
+ax.extensions.lib.query.parse = function (queryString) {
   var result = {};
 
   if (queryString) {
@@ -1134,7 +1012,7 @@ ax.extension.lib.query.parse = function (queryString) {
   return result;
 };
 
-ax.extension.lib.query.stringify = function (object, options = {}) {
+ax.extensions.lib.query.stringify = function (object, options = {}) {
   let queryString = [];
   let property;
 
@@ -1154,7 +1032,7 @@ ax.extension.lib.query.stringify = function (object, options = {}) {
   return queryString.join('&');
 };
 
-ax.extension.lib.tabable.next = function (element) {
+ax.extensions.lib.tabable.next = function (element) {
   let elements = Array.from(window.document.querySelectorAll('*'));
 
   // start search at last child node
@@ -1177,7 +1055,7 @@ ax.extension.lib.tabable.next = function (element) {
   return target;
 };
 
-ax.extension.lib.tabable.previous = function (element) {
+ax.extensions.lib.tabable.previous = function (element) {
   let elements = Array.from(window.document.querySelectorAll('*'));
 
   let index = elements.indexOf(element);
@@ -1197,19 +1075,19 @@ ax.extension.lib.tabable.previous = function (element) {
   return target;
 };
 
-ax.extension.lib.text.capitalize = function (string = '') {
+ax.extensions.lib.text.capitalize = function (string = '') {
   return string.toString().charAt(0).toUpperCase() + string.slice(1);
 };
 
-ax.extension.lib.text.humanize = function (string = '') {
+ax.extensions.lib.text.humanize = function (string = '') {
   return string.toString().replace(/_/g, ' ');
 };
 
-ax.extension.lib.text.labelize = function (string = '') {
+ax.extensions.lib.text.labelize = function (string = '') {
   return this.capitalize(this.humanize(string));
 };
 
-ax.extension.lib.uuid.generate = function () {
+ax.extensions.lib.uuid.generate = function () {
   return '00000000-0000-4000-0000-000000000000'.replace(/0/g, (c) =>
     (
       c ^
@@ -1218,16 +1096,11 @@ ax.extension.lib.uuid.generate = function () {
   );
 };
 
-ax.extension.report.factory.button = function (options = {}) {
-  let x = ax.x;
-
+ax.extensions.report.factory.button = function (options = {}) {
   return x.button(options);
 };
 
-ax.extension.report.factory.checkbox = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.factory.checkbox = function (options = {}) {
   return a['ax-appkit-report-checkbox'](
     x.check({
       ...options,
@@ -1246,10 +1119,7 @@ ax.extension.report.factory.checkbox = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.checkboxes = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.factory.checkboxes = function (options = {}) {
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections);
 
@@ -1284,10 +1154,7 @@ ax.extension.report.factory.checkboxes = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.output = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.factory.output = function (options = {}) {
   return a['ax-appkit-report-output'](
     x.out(options.value, {
       parse: options.parse,
@@ -1300,10 +1167,7 @@ ax.extension.report.factory.output = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.radios = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.factory.radios = function (options = {}) {
   let value = options.value || '';
 
   let selections = x.lib.form.selections(options.selections);
@@ -1342,11 +1206,8 @@ ax.extension.report.factory.radios = function (options = {}) {
   );
 };
 
-ax.extension.report.factory.report = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
-  let report = options.report || (() => null);
+ax.extensions.report.factory.report = (r, options = {}) => {
+  let report = options.report || (() => '');
 
   let reportTagOptions = {
     ...options.reportTag,
@@ -1355,10 +1216,7 @@ ax.extension.report.factory.report = (r, options = {}) => {
   return a['ax-appkit-report'](report(r), reportTagOptions);
 };
 
-ax.extension.report.factory.select = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.factory.select = function (options = {}) {
   let value = x.lib.form.collection.value(options.value);
   let selections = x.lib.form.selections(options.selections || {});
 
@@ -1395,10 +1253,7 @@ ax.extension.report.factory.select = function (options = {}) {
   });
 };
 
-ax.extension.report.factory.string = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.factory.string = function (options = {}) {
   let value = options.value || '';
 
   let component;
@@ -1417,9 +1272,7 @@ ax.extension.report.factory.string = function (options = {}) {
   });
 };
 
-ax.extension.report.factory.text = function (options = {}) {
-  let a = ax.a;
-
+ax.extensions.report.factory.text = function (options = {}) {
   let component;
 
   if (options.value) {
@@ -1435,22 +1288,23 @@ ax.extension.report.factory.text = function (options = {}) {
       readonly: true,
       ...options.textareaTag,
     }),
-    options.textTag
+    options.textTag || {}
   );
 };
 
-ax.extension.router.element.init = (el) => {
+ax.extensions.router.element.init = (options) => (el) => {
   window.addEventListener('popstate', el.$pop);
+  el.$nodes = ax.extensions.router.element.nodes(options)
 };
 
-ax.extension.router.element.load = (el) => (path, query, anchor) => {
-  let mounted = x.lib.unnested(el, 'ax-appkit-router-mount');
+ax.extensions.router.element.load = (el) => (path, query, anchor) => {
+  let mounted = x.lib.unnested(el, 'ax-appkit-router-routes');
   mounted.forEach((r) => {
     r.$load(path, query, anchor);
   });
 };
 
-ax.extension.router.element.locate = (el) => (path, query, anchor) => {
+ax.extensions.router.element.locate = (el) => (path, query, anchor) => {
   path = path || '/';
 
   query = x.lib.query.stringify(query);
@@ -1470,7 +1324,7 @@ ax.extension.router.element.locate = (el) => (path, query, anchor) => {
   dispatchEvent(event);
 };
 
-ax.extension.router.element.location = (el) => () => {
+ax.extensions.router.element.location = (el) => () => {
   let location = window.location;
 
   return {
@@ -1480,14 +1334,14 @@ ax.extension.router.element.location = (el) => () => {
   };
 };
 
-ax.extension.router.element.nodes = (options) => (el) => {
-  let start = el.$location();
+ax.extensions.router.element.nodes = (options) => (el) => {
+  let location = el.$location();
 
   let config = {
-    path: start.path,
-    query: start.query,
-    anchor: start.anchor,
-    scope: options.scope,
+    path: location.path,
+    query: location.query,
+    anchor: location.anchor,
+    scope: '',
     default: options.default,
     home: options.home,
     lazy: options.lazy,
@@ -1498,16 +1352,30 @@ ax.extension.router.element.nodes = (options) => (el) => {
 
   let routes = options.routes || {};
 
-  let router = x.router.interface(config);
+  let route = x.router.interface(config);
 
-  if (ax.is.function(routes)) {
-    return routes(router);
+  if (options.scope) {
+    let scopeRoutes = {}
+    scopeRoutes[options.scope] = (route) => {
+      if (ax.is.function(routes)) {
+        return routes(route);
+      } else {
+        return route.mount({ routes: routes });
+      }
+    }
+    scopeRoutes['*'] = ''
+    return route.mount({ routes: scopeRoutes })
   } else {
-    return router.mount({ routes: routes });
+    if (ax.is.function(routes)) {
+      return routes(route);
+    } else {
+      return route.mount({ routes: routes });
+    }
   }
+
 };
 
-ax.extension.router.element.open = (options) => (el) => (
+ax.extensions.router.element.open = (options) => (el) => (
   path,
   query,
   anchor
@@ -1515,17 +1383,23 @@ ax.extension.router.element.open = (options) => (el) => (
   if (path[0] != '/') {
     path = options.scope + (path ? `/${path}` : '');
   }
+  
   el.$locate(path, query, anchor);
 };
 
-ax.extension.router.element.pop = (el) => () => {
+ax.extensions.router.element.pop = (el) => () => {
   let location = el.$location();
   el.$load(location.path, location.query, location.anchor);
   el.$send('ax.appkit.router.pop');
 };
 
-ax.extension.router.interface.load = (config) =>
-  function (locator = '', query = {}, anchor = null) {
+ax.extensions.router.element.reload = (el) => () => {
+  let location = el.$location()
+  el.$load(location.path, location.query, location.anchor)
+};
+
+ax.extensions.router.interface.load = (config) =>
+  function (locator = '', query = {}, anchor) {
     let path = window.location.pathname;
 
     if (locator) {
@@ -1543,11 +1417,27 @@ ax.extension.router.interface.load = (config) =>
     config.router.$load(path, query, anchor);
   };
 
-ax.extension.router.interface.mount = (setup) => {
-  return (options = {}) => {
-    let a = ax.a;
-    let x = ax.x;
+ax.extensions.router.interface.open = (config) => (
+  locator = '',
+  query = {},
+  anchor
+) => {
+  let path = window.location.pathname;
 
+  if (locator[0] == '/') {
+    path = locator;
+  } else if (locator) {
+    if (path.match(/\/$/)) {
+      path = `${path}${locator}`;
+    } else {
+      path = `${path}/${locator}`;
+    }
+  }
+  config.router.$open(path, query, anchor);
+};
+
+ax.extensions.router.interface.routes = (setup) => {
+  return (options = {}) => {
     let config = {
       ...setup,
       default: options.default || setup.default,
@@ -1561,7 +1451,7 @@ ax.extension.router.interface.mount = (setup) => {
     let init;
     let component;
     let matched;
-    let view = ax.x.router.interface.mount.view;
+    let view = ax.x.router.interface.routes.view;
 
     let componentWrapper = (component) =>
       a['ax-appkit-router-load'](component, {
@@ -1571,11 +1461,11 @@ ax.extension.router.interface.mount = (setup) => {
       });
 
     if (config.transition) {
-      let transition = ax.x.router.interface.mount.transition(
+      let transition = ax.x.router.interface.routes.transition(
         config.transition,
         {
           in: (el) => {
-            el.$('^ax-appkit-router-mount').$scrollToAnchor();
+            el.$('^ax-appkit-router-routes').$scrollToAnchor();
           },
         }
       );
@@ -1597,7 +1487,7 @@ ax.extension.router.interface.mount = (setup) => {
       };
     }
 
-    let mountTag = {
+    let routesTag = {
       id: options.id,
       $init: init,
       $nodes: component,
@@ -1610,7 +1500,11 @@ ax.extension.router.interface.mount = (setup) => {
       $scrollToAnchor: (el) => () => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
-          if (anchored) anchored.scrollIntoView();
+          if (anchored) anchored.scrollIntoView({
+            behavior: 'instant',
+            block: 'center',
+            inline: 'center'
+        });
         }
       },
 
@@ -1628,7 +1522,7 @@ ax.extension.router.interface.mount = (setup) => {
             locatedView.matched &&
             el.$scope == locatedView.scope
           ) {
-            let routes = x.lib.unnested(el, 'ax-appkit-router-mount');
+            let routes = x.lib.unnested(el, 'ax-appkit-router-routes');
             routes.forEach((r) => {
               r.$load(path, query, anchor);
             });
@@ -1648,36 +1542,14 @@ ax.extension.router.interface.mount = (setup) => {
           }
         };
       },
-      ...options.mountTag,
+      ...options.routesTag,
     };
 
-    return a['ax-appkit-router-mount'](null, mountTag);
+    return a['ax-appkit-router-routes'](routesTag);
   };
 };
 
-ax.extension.router.interface.open = (config) => (
-  locator = '',
-  query = {},
-  anchor = null
-) => {
-  let path = window.location.pathname;
-
-  if (locator[0] == '/') {
-    path = locator;
-  } else if (locator) {
-    if (path.match(/\/$/)) {
-      path = `${path}${locator}`;
-    } else {
-      path = `${path}/${locator}`;
-    }
-  }
-  config.router.$open(path, query, anchor);
-};
-
-ax.extension.form.factory.select.options = function (options) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.factory.select.options = function (options) {
   let selections = x.lib.form.selections(options.selections);
 
   if (options.placeholder) {
@@ -1729,7 +1601,7 @@ ax.extension.form.factory.select.options = function (options) {
   });
 };
 
-ax.extension.lib.animate.fade.in = function (el, options = {}) {
+ax.extensions.lib.animate.fade.in = function (el, options = {}) {
   let duration = options.duration || 250;
   el.style.transition = `opacity 0ms`;
   el.style.opacity = 0;
@@ -1746,7 +1618,7 @@ ax.extension.lib.animate.fade.in = function (el, options = {}) {
   }, 10);
 };
 
-ax.extension.lib.animate.fade.out = function (el, options = {}) {
+ax.extensions.lib.animate.fade.out = function (el, options = {}) {
   let duration = options.duration || 250;
   el.style.transition = `opacity 0ms`;
   el.style.opacity = 1;
@@ -1763,7 +1635,7 @@ ax.extension.lib.animate.fade.out = function (el, options = {}) {
   }, 10);
 };
 
-ax.extension.lib.animate.fade.toggle = function (el, options = {}) {
+ax.extensions.lib.animate.fade.toggle = function (el, options = {}) {
   if (el.style.display === 'none') {
     this.in(el, options);
   } else {
@@ -1771,7 +1643,7 @@ ax.extension.lib.animate.fade.toggle = function (el, options = {}) {
   }
 };
 
-ax.extension.lib.form.collection.value = function (value) {
+ax.extensions.lib.form.collection.value = function (value) {
   if (ax.is.array(value)) {
     return value;
   } else if (value) {
@@ -1781,8 +1653,7 @@ ax.extension.lib.form.collection.value = function (value) {
   }
 };
 
-ax.extension.lib.form.data.objectify = function (data) {
-  let x = ax.x;
+ax.extensions.lib.form.data.objectify = function (data) {
   let object = {};
 
   for (var pair of data.entries()) {
@@ -1792,13 +1663,11 @@ ax.extension.lib.form.data.objectify = function (data) {
   return object;
 };
 
-ax.extension.lib.form.data.stringify = function (data) {
-  let x = ax.x;
+ax.extensions.lib.form.data.stringify = function (data) {
   return JSON.stringify(x.lib.form.data.objectify(data));
 };
 
-ax.extension.lib.form.data.urlencoded = function (data) {
-  let x = ax.x;
+ax.extensions.lib.form.data.urlencoded = function (data) {
   let parts = [];
 
   for (var pair of data.entries()) {
@@ -1808,7 +1677,10 @@ ax.extension.lib.form.data.urlencoded = function (data) {
   return parts.join('&');
 };
 
-ax.extension.router.interface.mount.transition = (transition, options = {}) => {
+ax.extensions.router.interface.routes.transition = (
+  transition,
+  options = {}
+) => {
   if (ax.is.string(transition)) {
     return ax.x.transition[transition](options);
   } else if (ax.is.array(transition)) {
@@ -1822,11 +1694,11 @@ ax.extension.router.interface.mount.transition = (transition, options = {}) => {
   }
 };
 
-ax.extension.router.interface.mount.view = (config, mountElement) => {
+ax.extensions.router.interface.routes.view = (config, mountElement) => {
   let scope = config.scope || '';
   let scopedpath = config.path.slice(scope.length);
   let match = config.match || {};
-  let splat = config.splat || [];
+  let splats = config.splats || [];
   let lazy = config.lazy;
   let defaultContent = config.default;
   let transition = config.transition;
@@ -1840,7 +1712,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
     let routesKey = routesKeys[i];
 
     for (let key of routesKey.split(',')) {
-      matched = ax.x.router.interface.mount.view.match(key.trim(), scopedpath);
+      matched = ax.x.router.interface.routes.view.match(key.trim(), scopedpath);
       if (matched) {
         matched.key = routesKey;
         break;
@@ -1849,7 +1721,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
 
     if (matched) {
       component = config.routes[routesKey];
-      splat = [...matched.splat, ...splat];
+      splats = [...matched.splats, ...splats];
       match = {
         ...match,
         ...matched.params,
@@ -1865,9 +1737,8 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
     component = ax.is.undefined(config.default)
       ? (route) => {
           let message = `'${scopedpath}' not found`;
-          let el = config.mounts[config.mounts.length - 1];
           console.warn(message, route);
-          return (a, x) => a['.error'](message);
+          return a['.error'](message);
         }
       : config.default;
   }
@@ -1881,7 +1752,7 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
       mounts: [...config.mounts, mountElement],
       scope: scope,
       match: match,
-      splat: splat,
+      splats: splats,
       slash: slash,
       lazy: lazy,
       default: defaultContent,
@@ -1892,17 +1763,17 @@ ax.extension.router.interface.mount.view = (config, mountElement) => {
 
   return {
     matched: matched,
-    component: ax.a['ax-appkit-router-view'](component),
+    component: a['ax-appkit-router-view']([component]),
     scope: scope,
   };
 };
 
-ax.extension.router.interface.mount.view.match = (routesKey, scopedpath) => {
+ax.extensions.router.interface.routes.view.match = (routesKey, scopedpath) => {
   let params = {};
-  let splat = [];
+  let splats = [];
   let slash;
 
-  let regexp = ax.x.router.interface.mount.view.match.regexp(routesKey);
+  let regexp = ax.x.router.interface.routes.view.match.regexp(routesKey);
   let routeRegex = new RegExp(regexp.string);
   let match = scopedpath.match(routeRegex);
 
@@ -1913,10 +1784,10 @@ ax.extension.router.interface.mount.view.match = (routesKey, scopedpath) => {
     paramKeys.forEach(function (paramKey, i) {
       let matched = match[i + 1];
       if (paramKey === '*') {
-        splat.unshift(matched);
+        splats.unshift(matched);
       } else if (paramKey == '**') {
         remove = remove + matched.length;
-        splat.unshift(matched);
+        splats.unshift(matched);
       } else if (paramKey == '?') {
         remove = remove + matched.length;
         slash = matched;
@@ -1930,16 +1801,16 @@ ax.extension.router.interface.mount.view.match = (routesKey, scopedpath) => {
 
     return {
       params: params,
-      splat: splat,
+      splats: splats,
       slash: slash,
       scope: scope,
     };
   } else {
-    return null;
+    return '';
   }
 };
 
-ax.extension.router.interface.mount.view.match.regexp = (route) => {
+ax.extensions.router.interface.routes.view.match.regexp = (route) => {
   let routeRegexp = route
     .replace(/\*$/, '&&catchall&&')
     .replace(/\*/g, '&&wildcard&&')
@@ -1954,7 +1825,7 @@ ax.extension.router.interface.mount.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\\/]*)';
+      pattern = '([^\/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';

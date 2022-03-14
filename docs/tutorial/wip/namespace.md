@@ -9,17 +9,28 @@ Set `$tag` as an array `[URI, Nodename]` to create an element with a specified n
 
 <!--PLAYGROUND-->
 ~~~javascript
-ax((a) => a({
-  $tag: ['http://www.w3.org/2000/svg', 'svg'],
-  width: 100, height: 100,
+let ns = 'http://www.w3.org/2000/svg'
+ax(ax.a({
+  $tag: [ns, 'svg'],
   viewBox: '0 0 100 100',
-  $nodes: [
-    a({
-      $tag: ['http://www.w3.org/2000/svg', 'circle'],
-      cx: 50, cy: 50, r: 40,
-      stroke: '#00F', 'stroke-width': 3, fill: 'none',
-    })
-  ],
+  $nodes: ax.a({
+    $tag: [ns, 'circle'],
+    cx: 50,
+    cy: 50,
+    r: 40,
+    fill: 'blue',
+  }),
+}));
+
+
+ax(ax.a({
+  $tag: [ns, 'svg'],
+  $nodes: ax.a[[ns, 'circle']]({
+    cx: 50,
+    cy: 50,
+    r: 40,
+    fill: 'blue',
+  }),
 }));
 ~~~
 <!--MARKDOWN-->

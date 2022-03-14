@@ -10,19 +10,21 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.codemirror = function (options = {}) {
-  let a = ax.a;
-  let x = ax.x;
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
 
+ax.extensions.codemirror = function (options = {}) {
   return a['ax-appkit-codemirror'](
     [
       ax.is.false(options.toolbar)
-        ? null
+        ? ''
         : x.codemirror.toolbar({
             keymap: false,
             ...options,
           }),
       a.textarea(options.value || '', {
+        style: {display: 'none'},
         $init: (el) => {
           let intersection = new IntersectionObserver(() => {
             if (!el.$codemirror) {
@@ -59,119 +61,151 @@ ax.extension.codemirror = function (options = {}) {
         ...options.textareaTag,
       }),
     ],
-    options.codemirrorTag
+    options.codemirrorTag || {}
   );
 };
 
 ax.css({
   'ax-appkit-codemirror': {
-    display: 'block',
+    $: {
+      display: 'block',
+    },
     'div.CodeMirror': {
-      minHeight: '2em',
-      borderRadius: 'unset',
-      padding: 'unset',
-      fontFamily: 'monospace',
-      zIndex: 1,
+      $: {
+        minHeight: '2em',
+        borderRadius: 'unset',
+        padding: 'unset',
+        fontFamily: 'monospace',
+        zIndex: 1,
+        border: '1px solid #e6e6e6',
+      },
       'div.CodeMirror-scroll': {
-        minHeight: 'unset',
+        $: {
+          minHeight: 'unset',
+        },
       },
     },
     'div.CodeMirror.disabled': {
-      backgroundColor: '#e9ecef',
+      $: {
+        backgroundColor: '#e9ecef',
+      },
     },
     '&.fullscreen': {
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      right: '0',
-      bottom: '0',
-      border: 'none',
-      borderRadius: '0px',
-      zIndex: '999',
+      $: {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        border: 'none',
+        borderRadius: '0px',
+        zIndex: '999',
+      },
       'ax-appkit-codemirror-toolbar': {
-        overflow: 'hidden',
+        $: {
+          overflow: 'hidden',
+        },
         'ax-appkit-codemirror-label': {
-          display: 'block',
-          maxHeight: '1.8rem',
+          $: {
+            display: 'block',
+            maxHeight: '1.8rem',
+          },
         },
       },
     },
   },
   'ax-appkit-codemirror-toolbar': {
-    display: 'block',
-    overflow: 'auto',
-    color: '#333',
-    backgroundColor: 'white',
-    border: '1px solid #e6e6e6',
-    borderBottom: 'none',
+    $: {
+      display: 'block',
+      overflow: 'auto',
+      color: '#333',
+      backgroundColor: 'white',
+      border: '1px solid #e6e6e6',
+      borderBottom: 'none',
+    },
     button: {
-      padding: '0px 5px',
-      margin: '1px',
-      fontSize: '1.2em',
-      border: 'none',
-      backgroundColor: 'transparent',
-      cursor: 'pointer',
+      $: {
+        padding: '0px 5px',
+        margin: '1px',
+        fontSize: '1.2em',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+      },
     },
     select: {
-      border: 'none',
-      backgroundColor: 'transparent',
-      height: '1.5rem',
+      $: {
+        border: 'none',
+        backgroundColor: 'transparent',
+        height: '1.5rem',
+      },
     },
     'ax-appkit-codemirror-label': {
-      display: 'block',
-      padding: '4px 4px',
+      $: {
+        display: 'block',
+        padding: '4px 4px',
+      },
     },
     'ax-appkit-codemirror-toolbar-right': {
-      float: 'right',
+      $: {
+        float: 'right',
+      },
       label: {
-        margin: '0px',
-        padding: '0px 5px',
+        $: {
+          margin: '0px',
+          padding: '0px 5px',
+        },
       },
       '& > *': {
-        verticalAlign: 'text-bottom',
+        $: {
+          verticalAlign: 'text-bottom',
+        },
       },
     },
     'ax-appkit-codemirror-mode': {
-      display: 'inline-block',
-      border: '1px solid #e6e6e6',
-      margin: '0px 2px',
+      $: {
+        display: 'inline-block',
+        border: '1px solid #e6e6e6',
+        margin: '0px 2px',
+      },
     },
     'ax-appkit-codemirror-keymap': {
-      display: 'inline-block',
-      border: '1px solid #e6e6e6',
-      margin: '0px 2px',
+      $: {
+        display: 'inline-block',
+        border: '1px solid #e6e6e6',
+        margin: '0px 2px',
+      },
     },
   },
 });
 
-ax.extension.codemirror.CodeMirror =
+ax.extensions.codemirror.CodeMirror =
   dependencies.CodeMirror || window.CodeMirror;
 
-ax.extension.codemirror.form = {};
+ax.extensions.codemirror.form = {};
 
-ax.extension.codemirror.report = {};
+ax.extensions.codemirror.report = {};
 
-ax.extension.codemirror.toolbar = function (options = {}) {
-  let a = ax.a;
-
+ax.extensions.codemirror.toolbar = function (options = {}) {
   return a['ax-appkit-codemirror-toolbar']([
     a['ax-appkit-codemirror-toolbar-right']([
-      ax.extension.codemirror.toolbar.mode(options),
-      ax.extension.codemirror.toolbar.keymap(options),
+      ax.extensions.codemirror.toolbar.mode(options),
+      ax.extensions.codemirror.toolbar.keymap(options),
       a['ax-appkit-codemirror-fullscreen'](
-        a.button('🗖', {
+        a.button({
+          $html: '&#128470;',
           type: 'button',
           $on: {
-            'click: toggle full screen': (el) => (e) => {
+            'click: toggle full screen': (e, el) => {
               let wrapper = el.$('^ax-appkit-codemirror');
               let codemirror = wrapper.$('textarea').$codemirror;
               if (wrapper.classList.contains('fullscreen')) {
-                el.$text = '🗖';
+                el.$html = '&#128470;';
                 el.$('^body').style.overflowY = 'unset';
                 wrapper.classList.remove('fullscreen');
                 codemirror.focus();
               } else {
-                el.$text = '🗗';
+                el.$html = '&#128471;';
                 el.$('^body').style.overflowY = 'hidden';
                 wrapper.classList.add('fullscreen');
                 codemirror.focus();
@@ -181,14 +215,11 @@ ax.extension.codemirror.toolbar = function (options = {}) {
         })
       ),
     ]),
-    a['ax-appkit-codemirror-label'](options.label || null),
+    a['ax-appkit-codemirror-label'](options.label || ''),
   ]);
 };
 
-ax.extension.codemirror.form.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.codemirror.form.control = function (r, options = {}) {
   return a['ax-appkit-form-control'](
     a['ax-appkit-codemirror-control']([
       x.codemirror({
@@ -200,11 +231,11 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
         },
         codemirrorTag: {
           $on: {
-            'keyup: update textarea value': (el) => (e) => {
+            'keyup: update textarea value': (e, el) => {
               el.$send('ax.appkit.form.control.change');
               el.$('textarea').$codemirror.save();
             },
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-codemirror-control');
               let allowEsc =
                 el.$('textarea').$codemirror.options.keyMap != 'vim';
@@ -262,7 +293,7 @@ ax.extension.codemirror.form.control = function (r, options = {}) {
   );
 };
 
-ax.extension.codemirror.form.shim = {
+ax.extensions.codemirror.form.shim = {
   controls: {
     codemirror: (f, target) => (options = {}) => {
       return ax.x.codemirror.form.control(f, options);
@@ -270,10 +301,7 @@ ax.extension.codemirror.form.shim = {
   },
 };
 
-ax.extension.codemirror.report.control = function (r, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.codemirror.report.control = function (r, options = {}) {
   return a['ax-appkit-report-control'](
     a['ax-appkit-codemirror-control']([
       x.codemirror({
@@ -281,7 +309,7 @@ ax.extension.codemirror.report.control = function (r, options = {}) {
         ...options,
         codemirrorTag: {
           $on: {
-            'keydown: check for exit': (el) => (e) => {
+            'keydown: check for exit': (e, el) => {
               let control = el.$('^ax-appkit-codemirror-control');
 
               if (control.classList.contains('fullscreen')) {
@@ -318,17 +346,14 @@ ax.extension.codemirror.report.control = function (r, options = {}) {
   );
 };
 
-ax.extension.codemirror.report.shim = {
+ax.extensions.codemirror.report.shim = {
   controls: {
     codemirror: (f, target) => (options = {}) =>
       ax.x.codemirror.report.control(f, options),
   },
 };
 
-ax.extension.codemirror.toolbar.keymap = function (options = {}) {
-  let a = ax.a,
-    x = ax.x;
-
+ax.extensions.codemirror.toolbar.keymap = function (options = {}) {
   let keymap = options.keymap;
 
   let installedKeymaps = x.codemirror.CodeMirror.keyMap;
@@ -358,7 +383,7 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
       }),
       {
         $on: {
-          'change: set editor keyMap': (el) => (e) => {
+          'change: set editor keyMap': (e, el) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('keyMap', el.value);
@@ -369,7 +394,7 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
   };
 
   if (!keymap) {
-    component = null;
+    component = '';
   } else if (ax.is.string(keymap)) {
     component = a.label(keymapLabel(keymap));
   } else if (ax.is.object(keymap)) {
@@ -379,14 +404,11 @@ ax.extension.codemirror.toolbar.keymap = function (options = {}) {
   }
 
   return component
-    ? a['ax-appkit-codemirror-keymap'](component, options.keymapTag)
-    : null;
+    ? a['ax-appkit-codemirror-keymap'](component, options.keymapTag || {})
+    : '';
 };
 
-ax.extension.codemirror.toolbar.mode = function (options = {}) {
-  let a = ax.a,
-    x = ax.x;
-
+ax.extensions.codemirror.toolbar.mode = function (options = {}) {
   let mode = options.mode;
   let component;
 
@@ -418,7 +440,7 @@ ax.extension.codemirror.toolbar.mode = function (options = {}) {
       {
         name: selectName,
         $on: {
-          'change: set editor mode': (el) => (e) => {
+          'change: set editor mode': (e, el) => {
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('mode', el.value);
@@ -427,12 +449,12 @@ ax.extension.codemirror.toolbar.mode = function (options = {}) {
       }
     );
   } else {
-    component = null;
+    component = '';
   }
 
   return component
-    ? a['ax-appkit-codemirror-mode'](component, options.modeTag)
-    : null;
+    ? a['ax-appkit-codemirror-mode'](component, options.modeTag || {})
+    : '';
 };
 
 }));

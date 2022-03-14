@@ -1,1 +1,0 @@
-ax.extension.markedjs.report = {};

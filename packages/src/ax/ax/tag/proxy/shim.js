@@ -3,11 +3,18 @@
  * Creates arbitrary HTML elements.
  */
 ax.tag.proxy.shim = {
-  get: (target, property) => (component, attributes) => {
-    if (property == '!') return ax.node.raw(component);
-    return ax.node.create({
-      ...ax.tag.proxy.component(component),
-      ...ax.tag.proxy.attributes(property, attributes || {}),
-    });
+  get: (target, property) => {
+
+    if (ax.is.not.string(property)) {
+      new Error('Expecting a string but got', property);
+    }
+
+    return (...properties) => {
+      if (property == '!') return ax.node.raw(properties);
+      return ax.tag.proxy.create(
+        {$tag: property},
+        ...properties
+      );
+    }
   },
-};
+}

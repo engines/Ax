@@ -10,24 +10,27 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.jsoneditor = {};
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
+ax.extensions.jsoneditor = {};
 
 ax.css({
   'ax-appkit-form-codemirror': {
     '.jsoneditor-tree': {
-      background: 'white',
+      $: {
+        background: 'white',
+      },
     },
   },
 });
 
-ax.extension.jsoneditor.JSONEditor = window.JSONEditor;
+ax.extensions.jsoneditor.JSONEditor = window.JSONEditor;
 
-ax.extension.jsoneditor.form = {};
+ax.extensions.jsoneditor.form = {};
 
-ax.extension.jsoneditor.form.control = function (f, options = {}) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.jsoneditor.form.control = function (f, options = {}) {
   let controlTagOptions = {
     $init: (el) => {
       let jsoneditorOptions = {
@@ -80,7 +83,7 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
       }
     },
     $on: {
-      'keydown: check for editor exit': (el) => (e) => {
+      'keydown: check for editor exit': (e, el) => {
         if (e.keyCode == 27 && e.shiftKey) {
           // shift+ESC pressed - move focus backward
           ax.x.lib.tabable.previous(el).focus();
@@ -98,13 +101,13 @@ ax.extension.jsoneditor.form.control = function (f, options = {}) {
     [
       a['ax-appkit-form-jsoneditor'](
         [
-          a.input(null, {
+          a.input({
             name: options.name,
             type: 'hidden',
           }),
           a.div,
         ],
-        options.jsoneditorTag
+        options.jsoneditorTag || {}
       ),
     ],
     controlTagOptions

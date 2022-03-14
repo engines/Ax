@@ -5,5 +5,9 @@
  * into the Factory.
  */
 ax.node.function = function (fn) {
-  return ax.node(fn(ax.a, ax.x));
+  return ax.node.create({
+    $tag: 'code',
+    style: 'white-space: break-spaces',
+    $text: `𝑓 ${fn}`,
+  });
 };

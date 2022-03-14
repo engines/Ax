@@ -2,37 +2,27 @@
  * Create element from Ax component properties.
  */
 ax.node.create = function (properties) {
-  if (ax.is.not.object(properties)) return null;
-
-  properties = {
-    $tag: 'span',
-    ...properties,
-  };
-
-  let element;
-
-  if (ax.is.array(properties.$tag)) {
-    element = window.document.createElementNS(...properties.$tag);
-  } else {
-    element = window.document.createElement(properties.$tag);
-  }
-
-  if (properties.$shadow) element.attachShadow({ mode: 'open' });
-
-  element.$ax = properties;
-
   try {
-    return ax.node.create.properties(element);
+    let element = ax.node.create.element(properties);
+    this.create.shadow(element);
+    this.create.properties(element);
+    this.create.tools(element);
+    this.create.accessors(element);
+    this.create.events(element);
+    this.create.render(element);
+    this.create.apply(element);
+    this.create.init(element);
+    return element;
   } catch (err) {
     if (properties.$catch) {
       return ax.node(properties.$catch(err));
     } else {
       console.error(
-        `Ax failed to render element with properties: `,
+        `Ax failed to create element with properties: `,
         properties,
         err
       );
-      return null;
+      return '';
     }
   }
 };

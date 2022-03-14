@@ -2,7 +2,7 @@ import navbar from "./navbar";
 import test from "./test";
 import docs from "./docs";
 
-export default (a, x) => a["app-router"](
+export default a["app-router"](
   [
     x.router({
       routes: (router) => [
@@ -27,14 +27,14 @@ export default (a, x) => a["app-router"](
   ],
   {
     $on: {
-      "ax.appkit.router.load": (el) => (e) => {
+      "ax.appkit.router.load": (e, el) => {
         el.$("#navbar").$activate();
       },
     },
   }
 );
 
-// export default (a, x) => a["app-router"](
+// export default a["app-router"](
 //   [
 //     x.router({
 //       routes: {
@@ -51,7 +51,7 @@ export default (a, x) => a["app-router"](
 //   ],
 //   {
 //     $on: {
-//       "ax.appkit.router.load": (el) => (e) => {
+//       "ax.appkit.router.load": (e, el) => {
 //         console.log('Router load event', e)
 //       },
 //     },

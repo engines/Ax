@@ -8,7 +8,7 @@ highlightjs.registerLanguage("xml", xml);
 highlightjs.registerLanguage("javascript", javascript);
 highlightjs.registerLanguage("shell", shell);
 
-const mdUNSAFE = (markdown, options) => (a, x) =>
+const mdUNSAFE = (markdown, options) =>
   x.markedjs({
     ...options,
     markdown: markdown,

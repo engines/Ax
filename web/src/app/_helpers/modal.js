@@ -1,4 +1,4 @@
-const modal = (options = {}) => (a, x) =>
+const modal = (options = {}) =>
   a["app-modal"](
     a["div.modal"](a["div.modal-dialog"](a["div.modal-content"]), {
       tabindex: -1,
@@ -12,11 +12,11 @@ const modal = (options = {}) => (a, x) =>
 
         el.$(".modal-content").$nodes = [
           a["div.modal-header"]([
-            a[".modal-title"](options.title || null),
+            a[".modal-title"](options.title || ''),
             a["button.close"](a("&times;"), { data: { dismiss: "modal" } }),
           ]),
-          a["div.modal-body"](options.body || null),
-          options.footer ? a["div.modal-footer"](options.footer || null) : null,
+          a["div.modal-body"](options.body || ''),
+          options.footer ? a["div.modal-footer"](options.footer) : '',
         ];
 
         $(el.$(".modal")).modal({ backdrop: "static" });

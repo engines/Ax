@@ -10,11 +10,15 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.lib.locale = {};
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
 
-ax.extension.form.field.extras = {};
+ax.extensions.lib.locale = {};
 
-ax.extension.lib.locale.countries = {
+ax.extensions.form.field.extras = {};
+
+ax.extensions.lib.locale.countries = {
   AF: 'Afghanistan',
   AL: 'Albania',
   DZ: 'Algeria',
@@ -252,7 +256,7 @@ ax.extension.lib.locale.countries = {
   ZW: 'Zimbabwe',
 };
 
-ax.extension.lib.locale.languages = {
+ax.extensions.lib.locale.languages = {
   ach: 'Acholi',
   aa: 'Afar',
   af: 'Afrikaans',
@@ -567,7 +571,7 @@ ax.extension.lib.locale.languages = {
   zu: 'Zulu',
 };
 
-ax.extension.lib.locale.timezones = {
+ax.extensions.lib.locale.timezones = {
   'Pacific/Pago_Pago': '(GMT-11:00) American Samoa',
   'Pacific/Midway': '(GMT-11:00) Midway Island',
   'Pacific/Honolulu': '(GMT-10:00) Hawaii',
@@ -700,11 +704,11 @@ ax.extension.lib.locale.timezones = {
   'Pacific/Fakaofo': '(GMT+13:00) Tokelau Is.',
 };
 
-ax.extension.report.field.extras = {};
+ax.extensions.report.field.extras = {};
 
-ax.extension.form.field.extras.controls = {};
+ax.extensions.form.field.extras.controls = {};
 
-ax.extension.form.field.extras.shim = {
+ax.extensions.form.field.extras.shim = {
   controls: {
     language: (f, target) => (options = {}) =>
       ax.x.form.field.extras.controls.language(f, options),
@@ -721,9 +725,9 @@ ax.extension.form.field.extras.shim = {
   },
 };
 
-ax.extension.report.field.extras.controls = {};
+ax.extensions.report.field.extras.controls = {};
 
-ax.extension.report.field.extras.shim = {
+ax.extensions.report.field.extras.shim = {
   controls: {
     boolean: (r, target) => (options = {}) =>
       ax.x.report.field.extras.controls.boolean(r, options),
@@ -754,10 +758,7 @@ ax.extension.report.field.extras.shim = {
   },
 };
 
-ax.extension.form.field.extras.controls.country = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.field.extras.controls.country = (f, options = {}) => {
   let selectOptions = {
     ...options,
     value: options.value,
@@ -790,10 +791,10 @@ ax.extension.form.field.extras.controls.country = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (el) => (e) => {
+      'click: do nothing when readonly': (e, el) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (el) => (e) => {
+      'change:': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -801,15 +802,12 @@ ax.extension.form.field.extras.controls.country = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-country'](f.select(selectOptions), options.countryTag),
+    a['ax-appkit-form-country'](f.select(selectOptions), options.countryTag || {}),
     controlTagOptions
   );
 };
 
-ax.extension.form.field.extras.controls.language = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.field.extras.controls.language = (f, options = {}) => {
   let selectOptions = {
     ...options,
     value: options.value,
@@ -843,10 +841,10 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (el) => (e) => {
+      'click: do nothing when readonly': (e, el) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (el) => (e) => {
+      'change:': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -854,18 +852,15 @@ ax.extension.form.field.extras.controls.language = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-language'](f.select(selectOptions), options.languageTag),
+    a['ax-appkit-form-language'](f.select(selectOptions), options.languageTag || {}),
     controlTagOptions
   );
 };
 
-ax.extension.form.field.extras.controls.multiselect = function (
+ax.extensions.form.field.extras.controls.multiselect = function (
   f,
   options = {}
 ) {
-  let a = ax.a;
-  let x = ax.x;
-
   options.value = x.lib.form.collection.value(options.value);
 
   options.selections = x.lib.form.selections(options.selections);
@@ -909,7 +904,7 @@ ax.extension.form.field.extras.controls.multiselect = function (
     $preselect: (el) => () => {
       let items = [];
       let select = el.$('select');
-      let selections = Array.apply(null, select.options);
+      let selections = Array.apply(select.options);
 
       options.value.map((itemValue) => {
         selections.forEach((selection, i) => {
@@ -927,9 +922,7 @@ ax.extension.form.field.extras.controls.multiselect = function (
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (
-        el
-      ) => (e) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -944,15 +937,13 @@ ax.extension.form.field.extras.controls.multiselect = function (
         x.form.field.extras.controls.multiselect.select(f, options),
         x.form.field.extras.controls.multiselect.selected(f, options),
       ],
-      options.multiselectTag
+      options.multiselectTag || {}
     ),
     controlTagOptions
   );
 };
 
-ax.extension.form.field.extras.controls.password = function (f, options) {
-  let a = ax.a;
-
+ax.extensions.form.field.extras.controls.password = function (f, options) {
   if (options.confirmation == true) {
     options.confirmation = {};
   }
@@ -1032,7 +1023,7 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
     },
 
     $inputs: (el) => () => {
-      return el.$$('input').$$;
+      return el.$$('input');
     },
 
     $value: (el) => () => {
@@ -1063,17 +1054,17 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: secure text': (el) => (e) => {
+      'input: secure text': (e, el) => {
         for (let input of el.$inputs()) {
           secure(input);
         }
       },
-      'input: check validity': (el) => (e) => {
+      'input: check validity': (e, el) => {
         for (let input of el.$inputs()) {
           input.$valid();
         }
       },
-      'input: send control change event': (el) => (e) => {
+      'input: send control change event': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1082,17 +1073,14 @@ ax.extension.form.field.extras.controls.password = function (f, options) {
 
   return a['ax-appkit-form-control'](
     a['ax-appkit-form-password'](
-      [f.input(inputOptions), options.confirmation ? confirmation() : null],
-      options.passwordTag
+      [f.input(inputOptions), options.confirmation ? confirmation() : ''],
+      options.passwordTag || {}
     ),
     controlTagOptions
   );
 };
 
-ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.field.extras.controls.selectinput = (f, options = {}) => {
   let selections = x.lib.form.selections(options.selections);
   selections.push({
     disabled: 'hr',
@@ -1153,7 +1141,7 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
     $on: {
-      change: (el) => (e) => {
+      change: (e, el) => {
         let select = el.$('select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(
@@ -1221,16 +1209,13 @@ ax.extension.form.field.extras.controls.selectinput = (f, options = {}) => {
           })
         ),
       ],
-      options.selectinputTag
+      options.selectinputTag || {}
     ),
     controlTagOptions
   );
 };
 
-ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.form.field.extras.controls.timezone = (f, options = {}) => {
   let selectOptions = {
     ...options,
     value: options.value || Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -1263,10 +1248,10 @@ ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (el) => (e) => {
+      'click: do nothing when readonly': (e, el) => {
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (el) => (e) => {
+      'change:': (e, el) => {
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1274,14 +1259,12 @@ ax.extension.form.field.extras.controls.timezone = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-timezone'](f.select(selectOptions), options.timezoneTag),
+    a['ax-appkit-form-timezone'](f.select(selectOptions), options.timezoneTag || {}),
     controlTagOptions
   );
 };
 
-ax.extension.report.field.extras.controls.boolean = (r, options = {}) => {
-  let a = ax.a;
-
+ax.extensions.report.field.extras.controls.boolean = (r, options = {}) => {
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {
@@ -1311,14 +1294,12 @@ ax.extension.report.field.extras.controls.boolean = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.color = (r, options = {}) => {
-  let a = ax.a;
-
+ax.extensions.report.field.extras.controls.color = (r, options = {}) => {
   let value = options.value;
   let component;
 
   if (value) {
-    component = a.div(null, {
+    component = a.div({
       style: {
         backgroundColor: options.value,
         height: '100%',
@@ -1354,10 +1335,7 @@ ax.extension.report.field.extras.controls.color = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.country = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.country = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1405,10 +1383,7 @@ ax.extension.report.field.extras.controls.country = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.datetime = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.datetime = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1450,10 +1425,7 @@ ax.extension.report.field.extras.controls.datetime = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.email = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.email = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1495,9 +1467,7 @@ ax.extension.report.field.extras.controls.email = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.json = function (r, options) {
-  let a = ax.a;
-
+ax.extensions.report.field.extras.controls.json = function (r, options) {
   let value = options.value;
   let component;
 
@@ -1536,7 +1506,7 @@ ax.extension.report.field.extras.controls.json = function (r, options) {
           tabindex: 0,
           ...options.preTag,
         }),
-        options.jsonTag
+        options.jsonTag || {}
       ),
       r.validation(options),
     ],
@@ -1544,10 +1514,7 @@ ax.extension.report.field.extras.controls.json = function (r, options) {
   );
 };
 
-ax.extension.report.field.extras.controls.language = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.language = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1588,10 +1555,7 @@ ax.extension.report.field.extras.controls.language = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.number = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.number = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1631,10 +1595,7 @@ ax.extension.report.field.extras.controls.number = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.password = function (r, options) {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.password = function (r, options) {
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {
@@ -1659,7 +1620,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
       a['ax-appkit-report-password'](
         options.value
           ? [
-              a['ax-appkit-report-password-text'](null, {
+              a['ax-appkit-report-password-text']({
                 $nodes: (el) => {
                   let flag = el.$showPassword;
                   if (flag > 0) {
@@ -1678,7 +1639,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
               }),
               x.button({
                 label: '👁',
-                onclick: (el) => (e) => {
+                onclick: (e, el) => {
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
@@ -1702,10 +1663,7 @@ ax.extension.report.field.extras.controls.password = function (r, options) {
   );
 };
 
-ax.extension.report.field.extras.controls.preformatted = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.preformatted = (r, options = {}) => {
   let controlTagOptions = {
     'data-name': options.name,
     $value: (el) => () => {
@@ -1735,7 +1693,7 @@ ax.extension.report.field.extras.controls.preformatted = (r, options = {}) => {
           tabindex: 0,
           ...options.preTag,
         }),
-        options.preformattedTag
+        options.preformattedTag || {}
       ),
       r.validation(options),
     ],
@@ -1743,10 +1701,7 @@ ax.extension.report.field.extras.controls.preformatted = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.tel = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.tel = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1784,10 +1739,7 @@ ax.extension.report.field.extras.controls.tel = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.timezone = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.timezone = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1828,10 +1780,7 @@ ax.extension.report.field.extras.controls.timezone = (r, options = {}) => {
   );
 };
 
-ax.extension.report.field.extras.controls.url = (r, options = {}) => {
-  let a = ax.a;
-  let x = ax.x;
-
+ax.extensions.report.field.extras.controls.url = (r, options = {}) => {
   let value = options.value;
   let component;
 
@@ -1876,28 +1825,34 @@ ax.extension.report.field.extras.controls.url = (r, options = {}) => {
 
 ax.css({
   'ax-appkit-form-multiselect-selected-item': {
-    display: 'block',
-    overflow: 'auto',
+    $: {
+      display: 'block',
+      overflow: 'auto',
+    },
   },
   'ax-appkit-form-multiselect-selected-item-label': {
-    verticalAlign: 'middle',
+    $: {
+      verticalAlign: 'middle',
+    },
   },
   'ax-appkit-form-multiselect-selected-item-remove': {
-    float: 'right',
+    $: {
+      float: 'right',
+    },
     button: {
-      borderColor: 'transparent',
-      backgroundColor: 'transparent',
-      margin: '1px',
+      $: {
+        borderColor: 'transparent',
+        backgroundColor: 'transparent',
+        margin: '1px',
+      },
     },
   },
 });
 
-ax.extension.form.field.extras.controls.multiselect.select = function (
+ax.extensions.form.field.extras.controls.multiselect.select = function (
   f,
   options = {}
 ) {
-  let a = ax.a;
-
   return f.select(
     // No name on select. Field name goes on hidden inputs.
     {
@@ -1906,7 +1861,7 @@ ax.extension.form.field.extras.controls.multiselect.select = function (
       selections: options.selections,
       selectTag: {
         $on: {
-          'change: add item to selection': (el) => (e) => {
+          'change: add item to selection': (e, el) => {
             el.$(
               '^ax-appkit-form-control ax-appkit-form-multiselect-selected'
             ).$add({
@@ -1933,13 +1888,11 @@ ax.extension.form.field.extras.controls.multiselect.select = function (
   );
 };
 
-ax.extension.form.field.extras.controls.multiselect.selected = function (
+ax.extensions.form.field.extras.controls.multiselect.selected = function (
   f,
   options = {}
 ) {
-  let a = ax.a;
-
-  return a['ax-appkit-form-multiselect-selected'](null, {
+  return a['ax-appkit-form-multiselect-selected']({
     $selected: [],
 
     $remove: (el) => (item) => {
@@ -1985,7 +1938,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
                 a.button('✖', { type: 'button' }),
                 {
                   $on: {
-                    'click: remove item from selection': (el) => (e) => {
+                    'click: remove item from selection': (e, el) => {
                       if (!el.disabled) {
                         el.$('^ax-appkit-form-control')
                           .$('select')
@@ -2016,7 +1969,7 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
                 },
               }),
             ],
-            options.itemTag
+            options.itemTag || {}
           );
         });
       }
@@ -2028,11 +1981,13 @@ ax.extension.form.field.extras.controls.multiselect.selected = function (
 ax.css({
   'ax-appkit-report-password': {
     button: {
-      fontSize: '1em',
-      border: 'none',
-      backgroundColor: 'transparent',
-      cursor: 'pointer',
-      float: 'right',
+      $: {
+        fontSize: '1em',
+        border: 'none',
+        backgroundColor: 'transparent',
+        cursor: 'pointer',
+        float: 'right',
+      },
     },
   },
 });

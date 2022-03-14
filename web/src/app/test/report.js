@@ -1,5 +1,4 @@
-export default (router) => (a, x) => [
-  router,
+export default (router) => a['app-test-report']([
   a.h1('Report'),
   x.report({
     shims: [
@@ -88,4 +87,4 @@ export default (router) => (a, x) => [
       r.field({key: 'output4', as: 'output', value: r.object}),
     ],
   }),
-]
+])

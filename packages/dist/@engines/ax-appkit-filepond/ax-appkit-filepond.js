@@ -10,8 +10,12 @@
   }
 }(this, function(ax, dependencies={}) {
 
-ax.extension.filepond = (options = {}) => {
-  return ax.a['ax-appkit-filepond'](ax.a.input(null, options.inputTag), {
+const a = ax.a,
+      x = ax.x,
+      is = ax.is;
+
+ax.extensions.filepond = (options = {}) => {
+  return a['ax-appkit-filepond'](a.input(options.inputTag || {}), {
     $init: (el) => {
       el.$filepond = ax.x.filepond.FilePond.create(
         el.$('input'),
@@ -24,10 +28,12 @@ ax.extension.filepond = (options = {}) => {
 
 ax.css({
   'ax-appkit-filepond': {
-    display: 'block',
+    $: {
+      display: 'block',
+    },
   },
 });
 
-ax.extension.filepond.FilePond = dependencies.FilePond || window.FilePond;
+ax.extensions.filepond.FilePond = dependencies.FilePond || window.FilePond;
 
 }));
