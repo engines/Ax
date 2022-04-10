@@ -33,11 +33,11 @@ ax.extensions.form.field.extras.controls.language = (f, options = {}) => {
 
     $on: {
       'click: do nothing when readonly': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (selectOptions.readonly) e.preventDefault();
       },
       'change:': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

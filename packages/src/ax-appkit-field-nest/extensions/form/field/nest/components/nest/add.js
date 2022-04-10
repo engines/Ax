@@ -8,7 +8,7 @@ ax.extensions.form.field.nest.components.nest.add = function (f, options) {
     f.button({
       label: label,
       onclick: (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },

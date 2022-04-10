@@ -9,7 +9,7 @@ ax.extensions.codemirror.toolbar = function (options = {}) {
           type: 'button',
           $on: {
             'click: toggle full screen': (e) => {
-              let el = e.currentTarget
+              let el = e.currentTarget;
               let wrapper = el.$('^ax-appkit-codemirror');
               let codemirror = wrapper.$('textarea').$codemirror;
               if (wrapper.classList.contains('fullscreen')) {

@@ -98,7 +98,7 @@ ax.extensions.form.field.dependent.components.dependent = function (
     },
     $on: {
       'ax.appkit.form.control.change': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         el.$checkDependents();
       },
       ...(options.dependentTag || {}).$on,

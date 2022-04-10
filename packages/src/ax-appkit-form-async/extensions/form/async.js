@@ -60,7 +60,7 @@ ax.extensions.form.async = (target, options = {}) =>
     ...options.asyncformTag,
     $on: {
       'submit: async submit': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         e.preventDefault();
         setTimeout(() => ax.extensions.form.async.submit(e, el, options), 0);
       },

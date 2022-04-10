@@ -30,7 +30,7 @@ ax.extensions.easymde = (options = {}) =>
       },
       $on: {
         'keydown: check for editor exit': (e) => {
-          let el = e.currentTarget
+          let el = e.currentTarget;
           if (e.keyCode == 27) {
             // ESC pressed - move focus forward
             ax.x.lib.tabable.next(e.target).focus();

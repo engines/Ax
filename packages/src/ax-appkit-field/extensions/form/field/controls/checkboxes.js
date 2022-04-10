@@ -44,7 +44,7 @@ ax.extensions.form.field.controls.checkboxes = function (f, options) {
         if (options.readonly) e.preventDefault();
       },
       'change: send control change event': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

@@ -12,7 +12,7 @@ ax.extensions.router.interface.load = (config) =>
           path = `${path}/${locator}`;
         }
       }
-      path = new URL(path, window.location.origin).pathname
+      path = new URL(path, window.location.origin).pathname;
     }
 
     config.router.$load(path, query, anchor);

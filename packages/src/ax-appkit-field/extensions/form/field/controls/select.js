@@ -48,15 +48,15 @@ ax.extensions.form.field.controls.select = function (f, options) {
 
     $on: {
       'click: do nothing when readonly': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (options.readonly) e.preventDefault();
       },
       'change: check validity': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         el.$valid();
       },
       'change: send control change event': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

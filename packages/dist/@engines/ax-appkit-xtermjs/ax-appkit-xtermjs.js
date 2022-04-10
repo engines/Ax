@@ -182,7 +182,7 @@ ax.extensions.xtermjs.toolbar = (options = {}) =>
             // style: {padding: '2px'},
             $on: {
               'click: toggle full screen': (e) => {
-                let el = e.currentTarget
+                let el = e.currentTarget;
                 let wrapper = el.$('^ax-appkit-xtermjs');
                 let div = wrapper.$('div');
                 div.$fullscreen = !div.$fullscreen;
@@ -256,7 +256,7 @@ ax.extensions.xtermjs.report.control = function (r, options = {}) {
         xtermjsTag: {
           $on: {
             'keydown: check for exit': (e) => {
-              let el = e.currentTarget
+              let el = e.currentTarget;
               let control = el.$('^ax-appkit-xtermjs-control');
               if (control.classList.contains('fullscreen')) {
                 if (e.keyCode == 27) {

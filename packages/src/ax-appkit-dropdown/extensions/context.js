@@ -13,7 +13,7 @@ ax.extensions.context = function (options = {}) {
   let contextTagOptions = {
     $on: {
       click: (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -88,7 +88,7 @@ ax.extensions.context = function (options = {}) {
 
       el.$on({
         contextmenu: (e) => {
-          let el = e.currentTarget
+          let el = e.currentTarget;
           e.preventDefault();
           e.stopPropagation();
           popup.$nodes = [popupContents];

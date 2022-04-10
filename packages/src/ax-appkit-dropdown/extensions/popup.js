@@ -11,7 +11,7 @@ ax.extensions.popup = function (component, options = {}) {
   let contextTagOptions = {
     $on: {
       'click: close submenus': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -83,7 +83,7 @@ ax.extensions.popup = function (component, options = {}) {
 
       el.$on({
         'click: show popup': (e) => {
-          let el = e.currentTarget
+          let el = e.currentTarget;
           e.preventDefault();
           e.stopPropagation();
           if (x.lib.element.visible(popup)) {

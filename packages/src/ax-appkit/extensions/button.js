@@ -26,7 +26,7 @@ ax.extensions.button = function (options = {}) {
     ...options.buttonTag,
     $on: {
       'click: button onclick': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (confirmation(el)) {
           handler(e, el);
         } else {

@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit",
+  "version": "0.0.29",
   "description": "Axf Core is an Ax extension that provides a router, http utility, form builder and report builder.",
   "main": "ax-appkit.js",
   "repository": {

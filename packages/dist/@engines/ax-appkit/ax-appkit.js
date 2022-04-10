@@ -42,7 +42,7 @@ ax.extensions.button = function (options = {}) {
     ...options.buttonTag,
     $on: {
       'click: button onclick': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (confirmation(el)) {
           handler(e, el);
         } else {
@@ -823,7 +823,8 @@ ax.extensions.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (e) => applyPlaceholder(e.currentTarget),
+      'change: update placeholder styling': (e) =>
+        applyPlaceholder(e.currentTarget),
       ...(options.selectTag || {}).$on,
     },
   };
@@ -1410,7 +1411,7 @@ ax.extensions.router.interface.load = (config) =>
           path = `${path}/${locator}`;
         }
       }
-      path = new URL(path, window.location.origin).pathname
+      path = new URL(path, window.location.origin).pathname;
     }
 
     config.router.$load(path, query, anchor);

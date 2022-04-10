@@ -41,7 +41,7 @@ ax.extensions.form.field.dependent.shim = {
         },
         $on: {
           'ax.appkit.form.async.complete: check dependents': (e) => {
-            let el = e.currentTarget
+            let el = e.currentTarget;
             el.$checkDependents();
           },
           ...(options.formTag || {}).$on,
@@ -65,7 +65,7 @@ ax.extensions.form.field.dependent.shim = {
         ...options.itemsTag,
         $on: {
           'ax.appkit.form.nest.item.add: check dependents on new item': (e) => {
-            let el = e.currentTarget
+            let el = e.currentTarget;
             let newItem = el.$itemElements().reverse()[0];
             let dependents = ax.x.lib.unnested(
               newItem,
@@ -208,7 +208,7 @@ ax.extensions.form.field.dependent.components.dependent = function (
     },
     $on: {
       'ax.appkit.form.control.change': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         el.$checkDependents();
       },
       ...(options.dependentTag || {}).$on,

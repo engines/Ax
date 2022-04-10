@@ -11,7 +11,7 @@ ax.extensions.form.field.extras.controls.multiselect.select = function (
       selectTag: {
         $on: {
           'change: add item to selection': (e) => {
-            let el = e.currentTarget
+            let el = e.currentTarget;
             el.$(
               '^ax-appkit-form-control ax-appkit-form-multiselect-selected'
             ).$add({

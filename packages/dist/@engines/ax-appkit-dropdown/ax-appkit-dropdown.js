@@ -29,7 +29,7 @@ ax.extensions.context = function (options = {}) {
   let contextTagOptions = {
     $on: {
       click: (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -104,7 +104,7 @@ ax.extensions.context = function (options = {}) {
 
       el.$on({
         contextmenu: (e) => {
-          let el = e.currentTarget
+          let el = e.currentTarget;
           e.preventDefault();
           e.stopPropagation();
           popup.$nodes = [popupContents];
@@ -164,7 +164,7 @@ ax.extensions.popup = function (component, options = {}) {
   let contextTagOptions = {
     $on: {
       'click: close submenus': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -236,7 +236,7 @@ ax.extensions.popup = function (component, options = {}) {
 
       el.$on({
         'click: show popup': (e) => {
-          let el = e.currentTarget
+          let el = e.currentTarget;
           e.preventDefault();
           e.stopPropagation();
           if (x.lib.element.visible(popup)) {
@@ -407,14 +407,14 @@ ax.extensions.menu.item = (item, options = {}) => {
     ...options.itemTag,
     $on: {
       click: (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (e.target.tagName == 'APPKIT-MENU-SUBMENU-OPEN') {
           openSubmenu(el, e);
           e.stopPropagation();
         }
       },
       mouseenter: (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         openSubmenu(el, e);
       },
       ...(options.itemTag || {}).$on,

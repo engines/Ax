@@ -22,14 +22,14 @@ ax.extensions.panes = (options = {}) => {
   let listeners;
 
   let clear = (e) => {
-    let el = e.currentTarget
+    let el = e.currentTarget;
     el.classList.remove('dragable');
     window.document.removeEventListener('mousemove', listeners.mousemove);
     window.document.removeEventListener('mouseup', listeners.mouseup);
   };
 
   let move = (e) => {
-    let el = e.currentTarget
+    let el = e.currentTarget;
     if (e.target != document) {
       let percent;
       if (options.vertical) {
@@ -50,7 +50,7 @@ ax.extensions.panes = (options = {}) => {
       a['ax-appkit-panes-drag']({
         $on: {
           mousedown: (e) => {
-            let el = e.currentTarget
+            let el = e.currentTarget;
             e.preventDefault();
             let panesEl = el.$('^ax-appkit-panes');
             panesEl.classList.add('dragable');

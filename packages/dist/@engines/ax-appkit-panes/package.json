@@ -1,5 +1,6 @@
 {
   "name": "@engines/ax-appkit-panes",
+  "version": "0.0.29",
   "description": "An Ax extension for splitting viewport into vertical or horizontal panes.",
   "main": "ax-appkit-panes.js",
   "repository": {

@@ -222,7 +222,7 @@ ax.extensions.form.field.nest.components.nest.add = function (f, options) {
     f.button({
       label: label,
       onclick: (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },
@@ -462,7 +462,7 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
   return f.button({
     label: '⏷',
     onclick: (e) => {
-      let el = e.currentTarget
+      let el = e.currentTarget;
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -514,7 +514,7 @@ ax.extensions.form.field.nest.components.nest.items.remove = function (
     label: '✖',
     confirm: confirmation,
     onclick: (e) => {
-      let el = e.currentTarget
+      let el = e.currentTarget;
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -542,7 +542,7 @@ ax.extensions.form.field.nest.components.nest.items.up = function (
   return f.button({
     label: '⏶',
     onclick: (e) => {
-      let el = e.currentTarget
+      let el = e.currentTarget;
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;

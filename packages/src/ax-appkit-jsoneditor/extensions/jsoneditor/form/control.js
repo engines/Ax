@@ -52,7 +52,7 @@ ax.extensions.jsoneditor.form.control = function (f, options = {}) {
     },
     $on: {
       'keydown: check for editor exit': (e) => {
-        let el = e.currentTarget
+        let el = e.currentTarget;
         if (e.keyCode == 27 && e.shiftKey) {
           // shift+ESC pressed - move focus backward
           ax.x.lib.tabable.previous(el).focus();
