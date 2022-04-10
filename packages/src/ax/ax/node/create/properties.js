@@ -1,6 +1,6 @@
 /**
-* Set properties on element.
-*/
+ * Set properties on element.
+ */
 ax.node.create.properties = function (element) {
   for (let property in element.$ax) {
     if (element.$ax.hasOwnProperty(property)) {
@@ -15,6 +15,6 @@ ax.node.create.properties = function (element) {
       } else {
         this.properties.attribute(element, property);
       }
-    };
-  };
-}
+    }
+  }
+};

@@ -21,7 +21,7 @@ ax.extensions.bootstrap.report.shim = {
 
     if (horizontal) {
       fieldTagClass = fieldTagClass + ' form-row';
-      headerTagClass = 'd-inline-block align-top mt-2 col-sm-4';
+      headerTagClass = 'd-inline-block align-top col-sm-4';
       bodyTagClass = 'd-inline-block col-sm-8';
     } else {
       headerTagClass = '';

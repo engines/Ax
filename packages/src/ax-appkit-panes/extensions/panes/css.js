@@ -16,7 +16,7 @@ ax.css({
         bottom: 0,
         right: 'calc( 50% + 2px )',
         overflow: 'auto',
-      }
+      },
     },
 
     'ax-appkit-panes-adjacent': {

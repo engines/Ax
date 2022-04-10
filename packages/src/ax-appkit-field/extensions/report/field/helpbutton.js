@@ -7,7 +7,8 @@ ax.extensions.report.field.helpbutton = function (options = {}) {
       );
     },
     $on: {
-      'click: toggle help': (e, el) => {
+      'click: toggle help': (e) => {
+        let el = e.currentTarget
         el.$showHelp = !el.$showHelp;
         el.$render();
         el.$(

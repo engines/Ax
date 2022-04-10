@@ -1,1 +1,1 @@
-ax.extensions.xtermjs.icons = {}
+ax.extensions.xtermjs.icons = {};

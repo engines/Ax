@@ -3,15 +3,17 @@ ax.extensions.panes = (options = {}) => {
   let adjacent = options.adjacent || '';
   let orientation = options.vertical ? 'vertical' : 'horizontal';
 
-  let listeners
+  let listeners;
 
-  let clear = (e, el) => {
+  let clear = (e) => {
+    let el = e.currentTarget
     el.classList.remove('dragable');
     window.document.removeEventListener('mousemove', listeners.mousemove);
     window.document.removeEventListener('mouseup', listeners.mouseup);
-  }
+  };
 
-  let move = (e, el) => {
+  let move = (e) => {
+    let el = e.currentTarget
     if (e.target != document) {
       let percent;
       if (options.vertical) {
@@ -24,23 +26,23 @@ ax.extensions.panes = (options = {}) => {
       el.$percent = percent;
       el.$resize();
     }
-  }
-
+  };
 
   return a['ax-appkit-panes'](
     [
       a['ax-appkit-panes-proximate'](proximate),
       a['ax-appkit-panes-drag']({
         $on: {
-          mousedown: (e, el) => {
+          mousedown: (e) => {
+            let el = e.currentTarget
             e.preventDefault();
-            let panesEl = el.$('^ax-appkit-panes')
+            let panesEl = el.$('^ax-appkit-panes');
             panesEl.classList.add('dragable');
             listeners = {
               mousemove: (e) => move(e, panesEl),
-              mouseup: (e) => clear(e, panesEl)
-            }
-            clear(e, panesEl)
+              mouseup: (e) => clear(e, panesEl),
+            };
+            clear(e, panesEl);
             window.document.addEventListener('mousemove', listeners.mousemove);
             window.document.addEventListener('mouseup', listeners.mouseup);
           },

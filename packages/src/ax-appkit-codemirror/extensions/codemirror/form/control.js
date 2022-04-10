@@ -10,11 +10,13 @@ ax.extensions.codemirror.form.control = function (r, options = {}) {
         },
         codemirrorTag: {
           $on: {
-            'keyup: update textarea value': (e, el) => {
+            'keyup: update textarea value': (e) => {
+              let el = e.currentTarget
               el.$send('ax.appkit.form.control.change');
               el.$('textarea').$codemirror.save();
             },
-            'keydown: check for exit': (e, el) => {
+            'keydown: check for exit': (e) => {
+              let el = e.currentTarget
               let control = el.$('^ax-appkit-codemirror-control');
               let allowEsc =
                 el.$('textarea').$codemirror.options.keyMap != 'vim';

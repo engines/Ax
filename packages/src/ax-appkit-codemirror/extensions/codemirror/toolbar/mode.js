@@ -30,7 +30,8 @@ ax.extensions.codemirror.toolbar.mode = function (options = {}) {
       {
         name: selectName,
         $on: {
-          'change: set editor mode': (e, el) => {
+          'change: set editor mode': (e) => {
+            let el = e.currentTarget
             el.$(
               '^ax-appkit-codemirror-control ax-appkit-codemirror textarea'
             ).$codemirror.setOption('mode', el.value);

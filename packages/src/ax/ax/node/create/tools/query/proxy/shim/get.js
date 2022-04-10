@@ -3,7 +3,8 @@
  */
 ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
   return function (target, property, receiver) {
-    if (property == Symbol.iterator) return ax.node.create.tools.query.proxy.shim.iterator(collection);
+    if (property == Symbol.iterator)
+      return ax.node.create.tools.query.proxy.shim.iterator(collection);
     if (/^\d+$/.test(property)) return collection[property];
     // if (/^\$\$$/.test(property)) return collection;
     if (/^toArray$/.test(property)) return collection;

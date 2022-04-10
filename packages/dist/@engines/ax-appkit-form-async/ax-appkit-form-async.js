@@ -11,8 +11,8 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
 ax.extensions.form.async = (target, options = {}) =>
   a['ax-appkit-asyncform']({
@@ -24,7 +24,10 @@ ax.extensions.form.async = (target, options = {}) =>
           formTag: {
             method: options.method,
             $controls: (el) => () =>
-              ax.x.lib.unnested(el, 'ax-appkit-form-control:not(.ax-appkit-form-control-without-value)'),
+              ax.x.lib.unnested(
+                el,
+                'ax-appkit-form-control:not(.ax-appkit-form-control-without-value)'
+              ),
             $output: (el) => () =>
               options.digest ? options.digest(el.$value()) : el.$value(),
             $value: (el) => () => {
@@ -72,7 +75,8 @@ ax.extensions.form.async = (target, options = {}) =>
     ],
     ...options.asyncformTag,
     $on: {
-      'submit: async submit': (e, el) => {
+      'submit: async submit': (e) => {
+        let el = e.currentTarget
         e.preventDefault();
         setTimeout(() => ax.extensions.form.async.submit(e, el, options), 0);
       },
@@ -93,15 +97,17 @@ ax.extensions.form.async.submit = (e, el, options) => {
 
   let completeFn = () => {
     formEl.$enable && formEl.$enable();
-    var windowTop = window.scrollY;
-    var windowBottom = windowTop + window.innerHeight;
-    var outputTop = outputEl.offsetParent.offsetTop;
-    var outputBottom = outputTop + outputEl.offsetHeight;
-    if (outputBottom > windowBottom || outputTop < windowTop) {
-      outputEl.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
+    if (outputEl.isConnected) {
+      var windowTop = window.scrollY;
+      var windowBottom = windowTop + window.innerHeight;
+      var outputTop = outputEl.offsetParent.offsetTop;
+      var outputBottom = outputTop + outputEl.offsetHeight;
+      if (outputBottom > windowBottom || outputTop < windowTop) {
+        outputEl.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
         });
+      }
     }
     el.$send('ax.appkit.form.async.complete');
   };

@@ -1,5 +1,5 @@
 ax.extensions.out = function (value, options = {}) {
-  let outTag = options.outTag || {}
+  let outTag = options.outTag || {};
   let component;
 
   if (ax.is.undefined(value)) {

@@ -59,13 +59,15 @@ ax.extensions.form.field.controls.radios = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (e) => {
         if (options.readonly) e.preventDefault();
       },
-      'input: check validity': (e, el) => {
+      'input: check validity': (e) => {
+        let el = e.currentTarget
         el.$valid();
       },
-      'change: send control change event': (e, el) => {
+      'change: send control change event': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

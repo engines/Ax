@@ -22,10 +22,7 @@ ax.extensions.check = function (options = {}) {
   };
 
   return a['ax-appkit-check'](
-    [
-      a.input(inputTagOptions),
-      a.label(labelTagOptions),
-    ],
+    [a.input(inputTagOptions), a.label(labelTagOptions)],
     options.checkTag || {}
   );
 };

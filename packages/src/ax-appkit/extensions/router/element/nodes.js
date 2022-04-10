@@ -19,16 +19,16 @@ ax.extensions.router.element.nodes = (options) => (el) => {
   let route = x.router.interface(config);
 
   if (options.scope) {
-    let scopeRoutes = {}
+    let scopeRoutes = {};
     scopeRoutes[options.scope] = (route) => {
       if (ax.is.function(routes)) {
         return routes(route);
       } else {
         return route.mount({ routes: routes });
       }
-    }
-    scopeRoutes['*'] = ''
-    return route.mount({ routes: scopeRoutes })
+    };
+    scopeRoutes['*'] = '';
+    return route.mount({ routes: scopeRoutes });
   } else {
     if (ax.is.function(routes)) {
       return routes(route);
@@ -36,5 +36,4 @@ ax.extensions.router.element.nodes = (options) => (el) => {
       return route.mount({ routes: routes });
     }
   }
-
 };

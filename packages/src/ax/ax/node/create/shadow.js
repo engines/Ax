@@ -9,5 +9,5 @@ ax.node.create.shadow = function (element) {
         ax.a.style(ax.css.sheet([element.$ax.$shadow]))
       );
     }
-  };
+  }
 };

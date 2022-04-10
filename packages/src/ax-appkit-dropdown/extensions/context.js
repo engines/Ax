@@ -12,7 +12,8 @@ ax.extensions.context = function (options = {}) {
 
   let contextTagOptions = {
     $on: {
-      click: (e, el) => {
+      click: (e) => {
+        let el = e.currentTarget
         if (options.menu) {
           let menu = el.$('ax-appkit-menu');
           menu && menu.$closeSubmenus();
@@ -86,7 +87,8 @@ ax.extensions.context = function (options = {}) {
       };
 
       el.$on({
-        contextmenu: (e, el) => {
+        contextmenu: (e) => {
+          let el = e.currentTarget
           e.preventDefault();
           e.stopPropagation();
           popup.$nodes = [popupContents];
@@ -103,10 +105,10 @@ ax.extensions.context = function (options = {}) {
   };
 
   return a['ax-appkit-context'](
-      [
-        a['ax-appkit-context-content'](component, contentTagOptions),
-        a['ax-appkit-context-popup'](popupTagOptions),
-      ],
-      contextTagOptions
-    );
+    [
+      a['ax-appkit-context-content'](component, contentTagOptions),
+      a['ax-appkit-context-popup'](popupTagOptions),
+    ],
+    contextTagOptions
+  );
 };

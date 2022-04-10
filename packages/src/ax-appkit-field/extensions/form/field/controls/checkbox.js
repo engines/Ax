@@ -51,10 +51,12 @@ ax.extensions.form.field.controls.checkbox = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (e) => {
+        let el = e.currentTarget
         el.$valid();
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

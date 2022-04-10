@@ -11,7 +11,7 @@ ax.extensions.router.interface = (config) => {
     ...config.match,
     ...config.query,
   };
-  
+
   result.load = ax.x.router.interface.load(config);
   result.open = ax.x.router.interface.open(config);
 

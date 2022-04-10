@@ -12,5 +12,4 @@ ax.node.create.accessors.nodes = function (element) {
       accessors.nodes.set(element, nodes);
     },
   });
-
 };

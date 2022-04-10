@@ -11,42 +11,44 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
-ax.extensions.table = (options = {}) => (a,x) => {
-  const header = options.header || []
-  const data = options.data || []
-  const tableTag = options.tableTag || {}
-  const theadTag = options.theadTag || {}
-  const tbodyTag = options.tbodyTag || {}
-  const thTag = {scope: 'col', ...options.thTag}
-  const trTag = options.trTag || {}
-  const tdTag = options.tdTag || {}
+ax.extensions.table = (options = {}) => (a, x) => {
+  const header = options.header || [];
+  const data = options.data || [];
+  const tableTag = options.tableTag || {};
+  const theadTag = options.theadTag || {};
+  const tbodyTag = options.tbodyTag || {};
+  const thTag = { scope: 'col', ...options.thTag };
+  const trTag = options.trTag || {};
+  const tdTag = options.tdTag || {};
 
   let tbodyNodes = [];
   let tableNodes = [];
 
-  if(header) {
-    tableNodes.push(a.thead(
-      a.tr(
-        data.shift().map(thNodes => a.th(thNodes, thTag)),
-        trTag
-      ),
-      theadTag
-    ))
+  if (header) {
+    tableNodes.push(
+      a.thead(
+        a.tr(
+          data.shift().map((thNodes) => a.th(thNodes, thTag)),
+          trTag
+        ),
+        theadTag
+      )
+    );
   }
 
-  for(let row of data) {
+  for (let row of data) {
     tbodyNodes.push(
       a.tr(
-        row.map(tdNodes => a.td(tdNodes, tdTag)),
+        row.map((tdNodes) => a.td(tdNodes, tdTag)),
         trTag
       )
-    )
+    );
   }
 
-  tableNodes.push(a.tbody(tbodyNodes, tbodyTag))
+  tableNodes.push(a.tbody(tbodyNodes, tbodyTag));
 
   return a.table(tableNodes, tableTag);
 };
@@ -144,11 +146,13 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
             itemsTag: {
               ...options.itemsTag,
               $on: {
-                sortstart: (e, el) => {
+                sortstart: (e) => {
+                  let el = e.currentTarget
                   let item = e.detail.item;
                   el.$dragging = item;
                 },
-                sortupdate: (e, el) => {
+                sortupdate: (e) => {
+                  let el = e.currentTarget
                   el.$dragging = undefined;
                   el.$send('ax.appkit.form.nest.item.move');
                 },
@@ -202,13 +206,14 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                             tabindex: 0,
                             ...options.deleteTag,
                             $on: {
-                              click: (e, el) =>
+                              click: (e) =>
                                 alert(
                                   `Drag ${
                                     options.singular || 'item'
                                   } here to remove it.`
                                 ),
-                              dragover: (e, el) => {
+                              dragover: (e) => {
+                                let el = e.currentTarget
                                 let items = el.$(
                                   '^ax-appkit-form-nest-many-wrapper ax-appkit-form-nest-items'
                                 );
@@ -233,7 +238,8 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                       a['ax-appkit-form-nest-drag-on'](
                         ff.button({
                           label: '⬍',
-                          onclick: (e, el) => {
+                          onclick: (e) => {
+                            let el = e.currentTarget
                             let dragOn = el.$('^ax-appkit-form-nest-drag-on');
                             let dragOff = el.$(
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-off'
@@ -261,7 +267,8 @@ ax.extensions.form.field.nest.prefab.controls.many = function (f, options) {
                       a['ax-appkit-form-nest-drag-off'](
                         ff.button({
                           label: '⬍',
-                          onclick: (e, el) => {
+                          onclick: (e) => {
+                            let el = e.currentTarget
                             let dragOff = el.$('^ax-appkit-form-nest-drag-off');
                             let dragOn = el.$(
                               '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-on'
@@ -333,7 +340,8 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                       ? ff.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (e, el) => {
+                              'click: toggle help': (e) => {
+                                let el = e.currentTarget
                                 el.$showHelp = !el.$showHelp;
                                 el.$render();
                                 el.$(
@@ -376,7 +384,10 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
           return cells;
         };
 
-        return a.thead(a.tr(headerCells(), options.tdTag || {}), options.tdTag || {});
+        return a.thead(
+          a.tr(headerCells(), options.tdTag || {}),
+          options.tdTag || {}
+        );
       };
 
       let tableHelp = () => {
@@ -530,11 +541,13 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
             $tag: 'tbody',
             ...options.itemsTag,
             $on: {
-              sortstart: (e, el) => {
+              sortstart: (e) => {
+                let el = e.currentTarget
                 let item = e.detail.item;
                 el.$dragging = item;
               },
-              sortupdate: (e, el) => {
+              sortupdate: (e) => {
+                let el = e.currentTarget
                 el.$dragging = undefined;
                 el.$send('ax.appkit.form.nest.item.move');
               },
@@ -595,13 +608,14 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                           tabindex: 0,
                           ...options.deleteTag,
                           $on: {
-                            click: (e, el) =>
+                            click: (e) =>
                               alert(
                                 `Drag ${
                                   options.singular || 'item'
                                 } here to remove it.`
                               ),
-                            dragover: (e, el) => {
+                            dragover: (e) => {
+                              let el = e.currentTarget
                               let items = el.$(
                                 '^ax-appkit-form-nest-table-wrapper tbody'
                               );
@@ -626,7 +640,8 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                     a['ax-appkit-form-nest-drag-on'](
                       ff.button({
                         label: '⬍',
-                        onclick: (e, el) => {
+                        onclick: (e) => {
+                          let el = e.currentTarget
                           let dragOn = el.$('^ax-appkit-form-nest-drag-on');
                           let dragOff = el.$(
                             '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-off'
@@ -653,7 +668,8 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
                     a['ax-appkit-form-nest-drag-off'](
                       ff.button({
                         label: '⬍',
-                        onclick: (e, el) => {
+                        onclick: (e) => {
+                          let el = e.currentTarget
                           let dragOff = el.$('^ax-appkit-form-nest-drag-off');
                           let dragOn = el.$(
                             '^ax-appkit-form-nest-drag-buttons ax-appkit-form-nest-drag-on'
@@ -716,23 +732,24 @@ ax.extensions.form.field.nest.prefab.controls.table = function (f, options) {
 ax.extensions.report.field.nest.prefab.controls.many = function (r, options) {
   return r.controls.nest({
     ...options,
-    report: (rr) => a['ax-appkit-report-nest-many-wrapper'](
-      [
-        rr.items({
-          ...options,
-          report: (rrr) => [
-            a['ax-appkit-report-nest-many-item-header'](
-              options.itemHeaderTag || {}
-            ),
-            a['ax-appkit-report-nest-many-item-body'](
-              options.report(rrr),
-              options.itemBodyTag || {}
-            ),
-          ],
-        }),
-      ],
-      options.wrapperTag || {}
-    ),
+    report: (rr) =>
+      a['ax-appkit-report-nest-many-wrapper'](
+        [
+          rr.items({
+            ...options,
+            report: (rrr) => [
+              a['ax-appkit-report-nest-many-item-header'](
+                options.itemHeaderTag || {}
+              ),
+              a['ax-appkit-report-nest-many-item-body'](
+                options.report(rrr),
+                options.itemBodyTag || {}
+              ),
+            ],
+          }),
+        ],
+        options.wrapperTag || {}
+      ),
   });
 };
 
@@ -757,7 +774,8 @@ ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
                       ? r.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (e, el) => {
+                              'click: toggle help': (e) => {
+                                let el = e.currentTarget
                                 el.$showHelp = !el.$showHelp;
                                 el.$render();
                                 el.$(
@@ -784,7 +802,10 @@ ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
           return cells;
         };
 
-        return a.thead(a.tr(headerCells(), options.trTag || {}), options.theadTag || {});
+        return a.thead(
+          a.tr(headerCells(), options.trTag || {}),
+          options.theadTag || {}
+        );
       };
 
       let tableHelp = function () {

@@ -1,5 +1,4 @@
 ax.node.create.render.nodes.append = function (element, nodes) {
-
   if (ax.is.node(nodes)) {
     element.appendChild(nodes);
   } else if (ax.is.nodelist(nodes)) {
@@ -12,5 +11,4 @@ ax.node.create.render.nodes.append = function (element, nodes) {
       this.append(element, node);
     }
   }
-
 };

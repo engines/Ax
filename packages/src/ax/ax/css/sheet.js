@@ -1,11 +1,11 @@
-ax.css.sheet = function (sheets, keys = []) {
-  return sheets
+ax.css.sheet = function (sheet, keys = []) {
+  return [sheet]
     .flat(Infinity)
-    .map((sheet) => {
-      if (ax.is.string(sheet)) {
-        return sheet;
+    .map((section) => {
+      if (ax.is.string(section)) {
+        return section;
       } else {
-        return this.rulesets(sheet, keys);
+        return this.rulesets(section, keys);
       }
     })
     .join(' ');

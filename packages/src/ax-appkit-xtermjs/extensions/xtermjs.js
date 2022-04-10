@@ -1,4 +1,5 @@
-ax.extensions.xtermjs = (options = {}) => a['ax-appkit-xtermjs'](
+ax.extensions.xtermjs = (options = {}) =>
+  a['ax-appkit-xtermjs'](
     [
       ax.is.false(options.toolbar) ? '' : x.xtermjs.toolbar(options),
       a.div({

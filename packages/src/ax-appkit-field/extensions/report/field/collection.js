@@ -27,14 +27,20 @@ ax.extensions.report.field.collection = function (f, control, options = {}) {
       return options.value;
     },
     $focus: (el) => () => {
-      el.$('ax-appkit-control-collection ax-appkit-report-control').$focus();
+      let first = el.$('ax-appkit-report-control');
+      if (first) setTimeout(first.$focus, 0);
     },
     ...options.controlTag,
   };
 
   return a['ax-appkit-report-control'](
     a['ax-appkit-control-collection'](
-      [a['ax-appkit-control-collection-items'](components, options.itemsTag || {})],
+      [
+        a['ax-appkit-control-collection-items'](
+          components,
+          options.itemsTag || {}
+        ),
+      ],
       options.collectionTag || {}
     ),
     controlTagOptions

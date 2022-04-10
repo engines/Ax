@@ -11,8 +11,8 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
 ax.extensions.form.field.nest = {};
 
@@ -221,7 +221,8 @@ ax.extensions.form.field.nest.components.nest.add = function (f, options) {
   return a['ax-appkit-form-nest-add-button'](
     f.button({
       label: label,
-      onclick: (e, el) => {
+      onclick: (e) => {
+        let el = e.currentTarget
         let items = el.$(`^ax-appkit-form-nest ${itemsTagName}`);
         items.$add();
       },
@@ -460,7 +461,8 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
 
   return f.button({
     label: '⏷',
-    onclick: (e, el) => {
+    onclick: (e) => {
+      let el = e.currentTarget
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -511,7 +513,8 @@ ax.extensions.form.field.nest.components.nest.items.remove = function (
   return f.button({
     label: '✖',
     confirm: confirmation,
-    onclick: (e, el) => {
+    onclick: (e) => {
+      let el = e.currentTarget
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;
@@ -538,7 +541,8 @@ ax.extensions.form.field.nest.components.nest.items.up = function (
 
   return f.button({
     label: '⏶',
-    onclick: (e, el) => {
+    onclick: (e) => {
+      let el = e.currentTarget
       let itemsElement = el.$(`^${itemsTagName}`);
       let itemElements = itemsElement.$itemElements();
       let item;

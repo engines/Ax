@@ -8,7 +8,10 @@ ax.extensions.form.async = (target, options = {}) =>
           formTag: {
             method: options.method,
             $controls: (el) => () =>
-              ax.x.lib.unnested(el, 'ax-appkit-form-control:not(.ax-appkit-form-control-without-value)'),
+              ax.x.lib.unnested(
+                el,
+                'ax-appkit-form-control:not(.ax-appkit-form-control-without-value)'
+              ),
             $output: (el) => () =>
               options.digest ? options.digest(el.$value()) : el.$value(),
             $value: (el) => () => {
@@ -56,7 +59,8 @@ ax.extensions.form.async = (target, options = {}) =>
     ],
     ...options.asyncformTag,
     $on: {
-      'submit: async submit': (e, el) => {
+      'submit: async submit': (e) => {
+        let el = e.currentTarget
         e.preventDefault();
         setTimeout(() => ax.extensions.form.async.submit(e, el, options), 0);
       },

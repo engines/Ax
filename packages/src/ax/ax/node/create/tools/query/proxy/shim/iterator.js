@@ -1,5 +1,5 @@
 ax.node.create.tools.query.proxy.shim.iterator = (collection) => {
-  return function() {
+  return function () {
     return {
       current: 0,
       last: collection.length - 1,
@@ -9,7 +9,7 @@ ax.node.create.tools.query.proxy.shim.iterator = (collection) => {
         } else {
           return { done: true };
         }
-      }
+      },
     };
-  }
-}
+  };
+};

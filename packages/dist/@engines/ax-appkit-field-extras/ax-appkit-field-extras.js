@@ -11,8 +11,8 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
 ax.extensions.lib.locale = {};
 
@@ -791,10 +791,12 @@ ax.extensions.form.field.extras.controls.country = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (e) => {
+        let el = e.currentTarget
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -802,7 +804,10 @@ ax.extensions.form.field.extras.controls.country = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-country'](f.select(selectOptions), options.countryTag || {}),
+    a['ax-appkit-form-country'](
+      f.select(selectOptions),
+      options.countryTag || {}
+    ),
     controlTagOptions
   );
 };
@@ -841,10 +846,12 @@ ax.extensions.form.field.extras.controls.language = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (e) => {
+        let el = e.currentTarget
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -852,7 +859,10 @@ ax.extensions.form.field.extras.controls.language = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-language'](f.select(selectOptions), options.languageTag || {}),
+    a['ax-appkit-form-language'](
+      f.select(selectOptions),
+      options.languageTag || {}
+    ),
     controlTagOptions
   );
 };
@@ -922,7 +932,8 @@ ax.extensions.form.field.extras.controls.multiselect = function (
     },
 
     $on: {
-      'ax.appkit.form.multiselect.selected.change: send control change event': (e, el) => {
+      'ax.appkit.form.multiselect.selected.change: send control change event': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1054,17 +1065,20 @@ ax.extensions.form.field.extras.controls.password = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'input: secure text': (e, el) => {
+      'input: secure text': (e) => {
+        let el = e.currentTarget
         for (let input of el.$inputs()) {
           secure(input);
         }
       },
-      'input: check validity': (e, el) => {
+      'input: check validity': (e) => {
+        let el = e.currentTarget
         for (let input of el.$inputs()) {
           input.$valid();
         }
       },
-      'input: send control change event': (e, el) => {
+      'input: send control change event': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1141,7 +1155,8 @@ ax.extensions.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
     $on: {
-      change: (e, el) => {
+      change: (e) => {
+        let el = e.currentTarget
         let select = el.$('select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(
@@ -1248,10 +1263,12 @@ ax.extensions.form.field.extras.controls.timezone = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (e) => {
+        let el = e.currentTarget
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -1259,7 +1276,10 @@ ax.extensions.form.field.extras.controls.timezone = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-timezone'](f.select(selectOptions), options.timezoneTag || {}),
+    a['ax-appkit-form-timezone'](
+      f.select(selectOptions),
+      options.timezoneTag || {}
+    ),
     controlTagOptions
   );
 };
@@ -1639,7 +1659,8 @@ ax.extensions.report.field.extras.controls.password = function (r, options) {
               }),
               x.button({
                 label: '👁',
-                onclick: (e, el) => {
+                onclick: (e) => {
+                  let el = e.currentTarget
                   let text = el.$(
                     '^ax-appkit-report-password ax-appkit-report-password-text'
                   );
@@ -1861,7 +1882,8 @@ ax.extensions.form.field.extras.controls.multiselect.select = function (
       selections: options.selections,
       selectTag: {
         $on: {
-          'change: add item to selection': (e, el) => {
+          'change: add item to selection': (e) => {
+            let el = e.currentTarget
             el.$(
               '^ax-appkit-form-control ax-appkit-form-multiselect-selected'
             ).$add({
@@ -1938,7 +1960,8 @@ ax.extensions.form.field.extras.controls.multiselect.selected = function (
                 a.button('✖', { type: 'button' }),
                 {
                   $on: {
-                    'click: remove item from selection': (e, el) => {
+                    'click: remove item from selection': (e) => {
+                      let el = e.currentTarget
                       if (!el.disabled) {
                         el.$('^ax-appkit-form-control')
                           .$('select')

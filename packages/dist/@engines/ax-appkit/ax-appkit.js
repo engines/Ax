@@ -11,8 +11,8 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
 ax.extensions.button = function (options = {}) {
   let handler = options.onclick || (() => {});
@@ -41,11 +41,12 @@ ax.extensions.button = function (options = {}) {
     value: options.value,
     ...options.buttonTag,
     $on: {
-      'click: button onclick': (e, el) => {
+      'click: button onclick': (e) => {
+        let el = e.currentTarget
         if (confirmation(el)) {
           handler(e, el);
         } else {
-          e.preventDefault()
+          e.preventDefault();
         }
       },
       ...(options.buttonTag || {}).$on,
@@ -79,10 +80,7 @@ ax.extensions.check = function (options = {}) {
   };
 
   return a['ax-appkit-check'](
-    [
-      a.input(inputTagOptions),
-      a.label(labelTagOptions),
-    ],
+    [a.input(inputTagOptions), a.label(labelTagOptions)],
     options.checkTag || {}
   );
 };
@@ -128,7 +126,7 @@ ax.extensions.form = function (options = {}) {
 };
 
 ax.extensions.out = function (value, options = {}) {
-  let outTag = options.outTag || {}
+  let outTag = options.outTag || {};
   let component;
 
   if (ax.is.undefined(value)) {
@@ -353,7 +351,7 @@ ax.AxAppkitFetch = class {
       this.element.$nodes = [
         a['ax-appkit-fetch-response.success'](
           a.pre(JSON.stringify(body, null, 2))
-        )
+        ),
       ];
     }
   }
@@ -364,9 +362,9 @@ ax.AxAppkitFetch = class {
       let nodes = this.catchCallback(error, this.element);
       this.element.$nodes = nodes;
     } else {
-      this.element.$nodes = [a['ax-appkit-fetch-response.error'](
-        a.pre(error.message)
-      )];
+      this.element.$nodes = [
+        a['ax-appkit-fetch-response.error'](a.pre(error.message)),
+      ];
     }
   }
 
@@ -576,7 +574,7 @@ ax.extensions.router.interface = (config) => {
     ...config.match,
     ...config.query,
   };
-  
+
   result.load = ax.x.router.interface.load(config);
   result.open = ax.x.router.interface.open(config);
 
@@ -589,7 +587,6 @@ ax.extensions.transition.fade = function (options = {}) {
   let duration = (options.duration || 500) / 2;
   return a['ax-appkit-transition']({
     $init: (el) => {
-
       el.style.display = 'none';
       if (options.initial) {
         el.$in(options.initial);
@@ -826,7 +823,7 @@ ax.extensions.form.factory.select = function (options = {}) {
     ...options.selectTag,
     $init: (el) => applyPlaceholder(el),
     $on: {
-      'change: update placeholder styling': (e, el) => applyPlaceholder(el),
+      'change: update placeholder styling': (e) => applyPlaceholder(e.currentTarget),
       ...(options.selectTag || {}).$on,
     },
   };
@@ -873,6 +870,8 @@ ax.extensions.form.factory.textarea = function (options = {}) {
 };
 
 ax.extensions.lib.animate.fade = {};
+
+ax.extensions.lib.animate.slide = {};
 
 ax.extensions.lib.coerce.boolean = function (value) {
   value = value || false;
@@ -1294,7 +1293,7 @@ ax.extensions.report.factory.text = function (options = {}) {
 
 ax.extensions.router.element.init = (options) => (el) => {
   window.addEventListener('popstate', el.$pop);
-  el.$nodes = ax.extensions.router.element.nodes(options)
+  el.$nodes = ax.extensions.router.element.nodes(options);
 };
 
 ax.extensions.router.element.load = (el) => (path, query, anchor) => {
@@ -1355,16 +1354,16 @@ ax.extensions.router.element.nodes = (options) => (el) => {
   let route = x.router.interface(config);
 
   if (options.scope) {
-    let scopeRoutes = {}
+    let scopeRoutes = {};
     scopeRoutes[options.scope] = (route) => {
       if (ax.is.function(routes)) {
         return routes(route);
       } else {
         return route.mount({ routes: routes });
       }
-    }
-    scopeRoutes['*'] = ''
-    return route.mount({ routes: scopeRoutes })
+    };
+    scopeRoutes['*'] = '';
+    return route.mount({ routes: scopeRoutes });
   } else {
     if (ax.is.function(routes)) {
       return routes(route);
@@ -1372,7 +1371,6 @@ ax.extensions.router.element.nodes = (options) => (el) => {
       return route.mount({ routes: routes });
     }
   }
-
 };
 
 ax.extensions.router.element.open = (options) => (el) => (
@@ -1383,7 +1381,7 @@ ax.extensions.router.element.open = (options) => (el) => (
   if (path[0] != '/') {
     path = options.scope + (path ? `/${path}` : '');
   }
-  
+
   el.$locate(path, query, anchor);
 };
 
@@ -1394,8 +1392,8 @@ ax.extensions.router.element.pop = (el) => () => {
 };
 
 ax.extensions.router.element.reload = (el) => () => {
-  let location = el.$location()
-  el.$load(location.path, location.query, location.anchor)
+  let location = el.$location();
+  el.$load(location.path, location.query, location.anchor);
 };
 
 ax.extensions.router.interface.load = (config) =>
@@ -1412,6 +1410,7 @@ ax.extensions.router.interface.load = (config) =>
           path = `${path}/${locator}`;
         }
       }
+      path = new URL(path, window.location.origin).pathname
     }
 
     config.router.$load(path, query, anchor);
@@ -1500,11 +1499,12 @@ ax.extensions.router.interface.routes = (setup) => {
       $scrollToAnchor: (el) => () => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
-          if (anchored) anchored.scrollIntoView({
-            behavior: 'instant',
-            block: 'center',
-            inline: 'center'
-        });
+          if (anchored)
+            anchored.scrollIntoView({
+              behavior: 'instant',
+              block: 'center',
+              inline: 'center',
+            });
         }
       },
 
@@ -1636,6 +1636,50 @@ ax.extensions.lib.animate.fade.out = function (el, options = {}) {
 };
 
 ax.extensions.lib.animate.fade.toggle = function (el, options = {}) {
+  if (el.style.display === 'none') {
+    this.in(el, options);
+  } else {
+    this.out(el, options);
+  }
+};
+
+ax.extensions.lib.animate.slide.in = function (el, options = {}) {
+  let duration = options.duration || 250;
+  el.style.transition = `max-height 0ms`;
+  el.style.maxHeight = '0px';
+  setTimeout(() => {
+    el.style.display = options.display || 'block';
+    el.style.transition = `max-height ${duration}ms ease-in`;
+    setTimeout(() => {
+      el.style.maxHeight = '1000px';
+      let complete = () => {
+        el.style.maxHeight = '';
+        if (options.complete) options.complete(el);
+      };
+      setTimeout(complete, duration);
+    }, 10);
+  }, 10);
+};
+
+ax.extensions.lib.animate.slide.out = function (el, options = {}) {
+  let duration = options.duration || 250;
+  el.style.transition = `max-height 0ms`;
+  el.style.maxHeight = '1000px';
+  el.style.overflow = 'hidden';
+  setTimeout(() => {
+    el.style.transition = `max-height ${duration}ms ease-out`;
+    setTimeout(() => {
+      el.style.maxHeight = '0px';
+      let complete = () => {
+        el.style.display = 'none';
+        if (options.complete) options.complete(el);
+      };
+      setTimeout(complete, duration);
+    }, 10);
+  }, 10);
+};
+
+ax.extensions.lib.animate.slide.toggle = function (el, options = {}) {
   if (el.style.display === 'none') {
     this.in(el, options);
   } else {
@@ -1825,7 +1869,7 @@ ax.extensions.router.interface.routes.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\/]*)';
+      pattern = '([^/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';

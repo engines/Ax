@@ -12,12 +12,11 @@ ax.node.create.element.tag = function (tag) {
 
   let nodename = (tag.match(/^([\w-]+)/) || [])[1];
   let id = (tag.match(/#([\w-]+)/) || [])[1];
-  let classes = [...tag.matchAll(/\.([\w-]+)/g)].map(
-    match => match[1]
-  );
-  let attrs = [...tag.matchAll(/\[(.*?)=(.*?)\]/g)].map(
-    match => [match[1], match[2]]
-  );
+  let classes = [...tag.matchAll(/\.([\w-]+)/g)].map((match) => match[1]);
+  let attrs = [...tag.matchAll(/\[(.*?)=(.*?)\]/g)].map((match) => [
+    match[1],
+    match[2],
+  ]);
 
   properties.$tag = nodename || 'span';
   if (id) properties.id = id;

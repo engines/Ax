@@ -62,11 +62,12 @@ ax.extensions.router.interface.routes = (setup) => {
       $scrollToAnchor: (el) => () => {
         if (config.anchor) {
           let anchored = window.document.getElementById(config.anchor);
-          if (anchored) anchored.scrollIntoView({
-            behavior: 'instant',
-            block: 'center',
-            inline: 'center'
-        });
+          if (anchored)
+            anchored.scrollIntoView({
+              behavior: 'instant',
+              block: 'center',
+              inline: 'center',
+            });
         }
       },
 

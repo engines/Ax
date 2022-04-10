@@ -2,7 +2,6 @@ ax.extensions.transition.fade = function (options = {}) {
   let duration = (options.duration || 500) / 2;
   return a['ax-appkit-transition']({
     $init: (el) => {
-
       el.style.display = 'none';
       if (options.initial) {
         el.$in(options.initial);

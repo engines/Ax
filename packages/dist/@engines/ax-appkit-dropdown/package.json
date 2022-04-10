@@ -1,6 +1,5 @@
 {
   "name": "@engines/ax-appkit-dropdown",
-  "version": "0.0.26",
   "description": "An Ax extension for dropdown menus and popups.",
   "main": "ax-appkit-dropdown.js",
   "repository": {

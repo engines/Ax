@@ -43,7 +43,7 @@ ax.css({
     '& > div': {
       $: {
         display: 'block',
-        height: '300px',
+        height: '500px',
       },
     },
     '.terminal.xterm': {

@@ -13,7 +13,7 @@ ax.extensions.router.interface.routes.view.match.regexp = (route) => {
     let pattern;
     if (capture === '&&wildcard&&') {
       paramKey = '*';
-      pattern = '([^\/]*)';
+      pattern = '([^/]*)';
     } else if (capture === '&&catchall&&') {
       paramKey = '**';
       pattern = '(.*)';

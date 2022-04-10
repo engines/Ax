@@ -2,7 +2,7 @@ ax.extensions.form.field.controls.textarea = (f, options = {}) => {
   let controlTagOptions = {
     $init: (el) => {
       setTimeout(() => {
-        el.$resize
+        el.$resize;
         // el.$valid()
       }, 0);
     },
@@ -58,10 +58,12 @@ ax.extensions.form.field.controls.textarea = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'input: check validity': (e, el) => {
+      'input: check validity': (e) => {
+        let el = e.currentTarget
         el.$valid();
       },
-      'input: send control change event and resize': (e, el) => {
+      'input: send control change event and resize': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
         el.$resize();
       },

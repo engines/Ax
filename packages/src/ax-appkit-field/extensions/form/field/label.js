@@ -6,7 +6,8 @@ ax.extensions.form.field.label = function (options = {}) {
     ...options.wrapperTag,
 
     $on: {
-      'click: focus on input': (e, el) => {
+      'click: focus on input': (e) => {
+        let el = e.currentTarget
         let target = el.$('^ax-appkit-form-field ax-appkit-form-control');
         target.$focus();
       },

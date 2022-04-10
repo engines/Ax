@@ -36,11 +36,11 @@ let ax = function (node, options = {}) {
  * Creates a <style> tag in <head> and inserts css.
  * css can be a string or an object.
  */
-ax.css = function (...sheets) {
+ax.css = function (sheet) {
   ax.insert(
     ax.node.create({
       $tag: 'style',
-      $html: this.css.sheet(sheets),
+      $html: this.css.sheet(sheet),
     }),
     {
       target: 'head',
@@ -128,7 +128,7 @@ ax.link = function (attributes = {}) {
  * and returns a node.
  */
 ax.node = function (node) {
-  if (ax.is.node(node) || ax.is.nodelist(node) ) return node;
+  if (ax.is.node(node) || ax.is.nodelist(node)) return node;
   if (ax.is.string(node)) return ax.node.text(node);
   if (ax.is.tag(node)) return ax.node.tag(node);
   if (ax.is.function(node)) return ax.node.function(node);
@@ -139,15 +139,9 @@ ax.node = function (node) {
  * Creates a <script> tag in <head>.
  */
 ax.script = function (...attributes) {
-  ax.insert(
-    ax.a(
-      ...attributes,
-      {$tag: 'script'},
-    ),
-    {
-      target: 'head',
-    }
-  );
+  ax.insert(ax.a(...attributes, { $tag: 'script' }), {
+    target: 'head',
+  });
 };
 
 /**
@@ -204,14 +198,14 @@ ax.css.selector = function (keys) {
   return keys.join(' ').replace(/\s&/g, '');
 };
 
-ax.css.sheet = function (sheets, keys = []) {
-  return sheets
+ax.css.sheet = function (sheet, keys = []) {
+  return [sheet]
     .flat(Infinity)
-    .map((sheet) => {
-      if (ax.is.string(sheet)) {
-        return sheet;
+    .map((section) => {
+      if (ax.is.string(section)) {
+        return section;
       } else {
-        return this.rulesets(sheet, keys);
+        return this.rulesets(section, keys);
       }
     })
     .join(' ');
@@ -326,7 +320,7 @@ ax.is.string = function (value) {
  * Determines whether value is a Tag Builder Proxy function.
  */
 ax.is.tag = function (value) {
-  return '' + ax.a.function == '' + value
+  return '' + ax.a.function == '' + value;
 };
 
 /**
@@ -418,12 +412,10 @@ ax.node.tag = (tag) => tag();
 ax.node.text = (text) => window.document.createTextNode(text);
 
 ax.style.definition = function (definition, keys = []) {
-
-
   return Object.entries(definition)
     .map(([key, value]) => {
       if (ax.is.undefined(value)) {
-        return ''
+        return '';
       } else if (ax.is.object(value)) {
         return ax.style.definition(value, [...keys, key]);
       } else {
@@ -439,16 +431,16 @@ ax.style.definition = function (definition, keys = []) {
 ax.tag.proxy = {};
 
 /**
-* Add methods to element.
-*/
+ * Add methods to element.
+ */
 ax.node.create.accessors = function (element) {
   // this.accessors.state(element)
-  this.accessors.nodes(element)
-  this.accessors.html(element)
-  this.accessors.text(element)
-  this.accessors.on(element)
-  this.accessors.off(element)
-  this.accessors.send(element)
+  this.accessors.nodes(element);
+  this.accessors.html(element);
+  this.accessors.text(element);
+  this.accessors.on(element);
+  this.accessors.off(element);
+  this.accessors.send(element);
 };
 
 /**
@@ -465,24 +457,24 @@ ax.node.create.apply = function (element) {
 };
 
 ax.node.create.element = function (properties) {
-  let element
+  let element;
   if (ax.is.array(properties.$tag)) {
-    let tag = ax.node.create.element.tag(properties.$tag[1] || '')
+    let tag = ax.node.create.element.tag(properties.$tag[1] || '');
     properties = {
       ...properties,
       ...tag,
-      $tag: [properties.$tag[0], tag.$tag]
-    }
+      $tag: [properties.$tag[0], tag.$tag],
+    };
     element = window.document.createElementNS(...properties.$tag);
   } else {
     properties = {
       ...properties,
-      ...ax.node.create.element.tag(properties.$tag || '')
-    }
+      ...ax.node.create.element.tag(properties.$tag || ''),
+    };
     element = window.document.createElement(properties.$tag);
   }
-  element.$ax = properties
-  return element
+  element.$ax = properties;
+  return element;
 };
 
 /**
@@ -490,24 +482,9 @@ ax.node.create.element = function (properties) {
  */
 ax.node.create.events = function (element) {
   if (element.$ax.$on) {
-    ax.node.create.events.ons(element, element.$ax.$on)
+    ax.node.create.events.adds(element, element.$ax.$on);
   }
 };
-
-ax.node.create.events.ons = function(element, ons) {
-  if (!element.$events) element.$events = {};
-
-  for (let on in ons) {
-    element.$events[on] = ons[on];
-    for (let event of on.split(':')[0].split(',')) {
-      element.addEventListener(
-        event.trim(),
-        (event) => element.$events[on](event, element),
-        false
-      );
-    }
-  };
-}
 
 /**
  * Append init script to element.
@@ -518,15 +495,15 @@ ax.node.create.init = function (element) {
       ax.node.create({
         $tag: 'script',
         type: 'text/javascript',
-        $text:`(${ax.node.create.init.function})()`,
+        $text: `(${ax.node.create.init.function})()`,
       })
     );
-  };
+  }
 };
 
 /**
-* Set properties on element.
-*/
+ * Set properties on element.
+ */
 ax.node.create.properties = function (element) {
   for (let property in element.$ax) {
     if (element.$ax.hasOwnProperty(property)) {
@@ -541,18 +518,18 @@ ax.node.create.properties = function (element) {
       } else {
         this.properties.attribute(element, property);
       }
-    };
-  };
-}
+    }
+  }
+};
 
 /**
  * Add render function to element.
  */
 ax.node.create.render = function (element) {
   element.$render = () => {
-    this.render.empty(element)
+    this.render.empty(element);
     this.apply(element);
-  }
+  };
 };
 
 /**
@@ -571,7 +548,7 @@ ax.node.create.shadow = function (element) {
         ax.a.style(ax.css.sheet([element.$ax.$shadow]))
       );
     }
-  };
+  }
 };
 
 // /**
@@ -588,12 +565,11 @@ ax.node.create.element.tag = function (tag) {
 
   let nodename = (tag.match(/^([\w-]+)/) || [])[1];
   let id = (tag.match(/#([\w-]+)/) || [])[1];
-  let classes = [...tag.matchAll(/\.([\w-]+)/g)].map(
-    match => match[1]
-  );
-  let attrs = [...tag.matchAll(/\[(.*?)=(.*?)\]/g)].map(
-    match => [match[1], match[2]]
-  );
+  let classes = [...tag.matchAll(/\.([\w-]+)/g)].map((match) => match[1]);
+  let attrs = [...tag.matchAll(/\[(.*?)=(.*?)\]/g)].map((match) => [
+    match[1],
+    match[2],
+  ]);
 
   properties.$tag = nodename || 'span';
   if (id) properties.id = id;
@@ -617,9 +593,7 @@ ax.node.create.tools = function (element) {
 
 ax.tag.proxy.create = (...properties) => {
   return ax.node.create(
-    Object.assign({},
-      ...properties.map(ax.tag.proxy.properties)
-    )
+    Object.assign({}, ...properties.map(ax.tag.proxy.properties))
   );
 };
 
@@ -635,8 +609,9 @@ ax.tag.proxy.function = (...arguments) => ax.tag.proxy.create(...arguments);
  */
 ax.tag.proxy.properties = function (properties) {
   if (ax.is.object(properties)) return properties;
-  if (ax.is.tag(properties)) return { $nodes: [properties()] }
-  if (ax.is.array(properties) || ax.is.nodelist(properties)) return { $nodes: properties };
+  if (ax.is.tag(properties)) return { $nodes: [properties()] };
+  if (ax.is.array(properties) || ax.is.nodelist(properties))
+    return { $nodes: properties };
   return { $nodes: [properties] };
 };
 
@@ -646,20 +621,16 @@ ax.tag.proxy.properties = function (properties) {
  */
 ax.tag.proxy.shim = {
   get: (target, property) => {
-
     if (ax.is.not.string(property)) {
       new Error('Expecting a string but got', property);
     }
 
     return (...properties) => {
       if (property == '!') return ax.node.raw(properties);
-      return ax.tag.proxy.create(
-        {$tag: property},
-        ...properties
-      );
-    }
+      return ax.tag.proxy.create({ $tag: property }, ...properties);
+    };
   },
-}
+};
 
 /**
  * Get HTML content, or set new HTML content.
@@ -691,7 +662,6 @@ ax.node.create.accessors.nodes = function (element) {
       accessors.nodes.set(element, nodes);
     },
   });
-
 };
 
 /**
@@ -717,8 +687,8 @@ ax.node.create.accessors.off = function (element) {
  * Add an event listener.
  */
 ax.node.create.accessors.on = function (element) {
-  element.$on = function (ons) {
-    ax.node.create.events.ons(element, ons)
+  element.$on = function (adds) {
+    ax.node.create.events.adds(element, adds);
   };
 };
 
@@ -753,15 +723,30 @@ ax.node.create.accessors.text = function (element) {
   });
 };
 
+ax.node.create.events.adds = function (element, adds) {
+  if (!element.$events) element.$events = {};
+
+  for (let add in adds) {
+    element.$events[add] = adds[add];
+    for (let event of add.split(':')[0].split(',')) {
+      element.addEventListener(
+        event.trim(),
+        element.$events[add].bind(element),
+        false
+      );
+    }
+  }
+};
+
 /**
  * init script.
  */
-ax.node.create.init.function = function() {
+ax.node.create.init.function = function () {
   let script = window.document.currentScript;
   let element = script.parentElement;
   script.remove();
   element.$ax.$init(element);
-}
+};
 
 /**
  * Define attribute on element.
@@ -965,7 +950,6 @@ ax.node.create.properties.attribute.set = function (element, keys, value) {
 };
 
 ax.node.create.render.nodes.append = function (element, nodes) {
-
   if (ax.is.node(nodes)) {
     element.appendChild(nodes);
   } else if (ax.is.nodelist(nodes)) {
@@ -978,7 +962,6 @@ ax.node.create.render.nodes.append = function (element, nodes) {
       this.append(element, node);
     }
   }
-
 };
 
 /**
@@ -1037,7 +1020,8 @@ ax.node.create.tools.query.proxy.shim.apply = function (collection, pending) {
  */
 ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
   return function (target, property, receiver) {
-    if (property == Symbol.iterator) return ax.node.create.tools.query.proxy.shim.iterator(collection);
+    if (property == Symbol.iterator)
+      return ax.node.create.tools.query.proxy.shim.iterator(collection);
     if (/^\d+$/.test(property)) return collection[property];
     // if (/^\$\$$/.test(property)) return collection;
     if (/^toArray$/.test(property)) return collection;
@@ -1060,7 +1044,7 @@ ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
 };
 
 ax.node.create.tools.query.proxy.shim.iterator = (collection) => {
-  return function() {
+  return function () {
     return {
       current: 0,
       last: collection.length - 1,
@@ -1070,10 +1054,10 @@ ax.node.create.tools.query.proxy.shim.iterator = (collection) => {
         } else {
           return { done: true };
         }
-      }
+      },
     };
-  }
-}
+  };
+};
 
 /**
  * Set a value on selected elements.

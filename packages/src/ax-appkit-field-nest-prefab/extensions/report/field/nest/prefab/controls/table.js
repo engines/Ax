@@ -19,7 +19,8 @@ ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
                       ? r.helpbutton({
                           helpbuttonTag: {
                             $on: {
-                              'click: toggle help': (e, el) => {
+                              'click: toggle help': (e) => {
+                                let el = e.currentTarget
                                 el.$showHelp = !el.$showHelp;
                                 el.$render();
                                 el.$(
@@ -46,7 +47,10 @@ ax.extensions.report.field.nest.prefab.controls.table = function (r, options) {
           return cells;
         };
 
-        return a.thead(a.tr(headerCells(), options.trTag || {}), options.theadTag || {});
+        return a.thead(
+          a.tr(headerCells(), options.trTag || {}),
+          options.theadTag || {}
+        );
       };
 
       let tableHelp = function () {

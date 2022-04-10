@@ -7,8 +7,8 @@ ax.node.create.init = function (element) {
       ax.node.create({
         $tag: 'script',
         type: 'text/javascript',
-        $text:`(${ax.node.create.init.function})()`,
+        $text: `(${ax.node.create.init.function})()`,
       })
     );
-  };
+  }
 };

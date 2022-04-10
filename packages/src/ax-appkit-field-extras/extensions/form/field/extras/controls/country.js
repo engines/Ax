@@ -31,10 +31,12 @@ ax.extensions.form.field.extras.controls.country = (f, options = {}) => {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (e) => {
+        let el = e.currentTarget
         if (selectOptions.readonly) e.preventDefault();
       },
-      'change:': (e, el) => {
+      'change:': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,
@@ -42,7 +44,10 @@ ax.extensions.form.field.extras.controls.country = (f, options = {}) => {
   };
 
   return a['ax-appkit-form-control'](
-    a['ax-appkit-form-country'](f.select(selectOptions), options.countryTag || {}),
+    a['ax-appkit-form-country'](
+      f.select(selectOptions),
+      options.countryTag || {}
+    ),
     controlTagOptions
   );
 };

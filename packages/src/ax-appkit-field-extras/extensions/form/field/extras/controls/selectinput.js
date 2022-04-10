@@ -59,7 +59,8 @@ ax.extensions.form.field.extras.controls.selectinput = (f, options = {}) => {
       }
     },
     $on: {
-      change: (e, el) => {
+      change: (e) => {
+        let el = e.currentTarget
         let select = el.$('select');
         let input = el.$('ax-appkit-control-selectinput-input input');
         let hiddeninput = el.$(

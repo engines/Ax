@@ -11,8 +11,8 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
 ax.extensions.filepond = (options = {}) => {
   return a['ax-appkit-filepond'](a.input(options.inputTag || {}), {

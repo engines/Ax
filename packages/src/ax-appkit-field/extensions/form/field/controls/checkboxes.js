@@ -40,10 +40,11 @@ ax.extensions.form.field.controls.checkboxes = function (f, options) {
     ...options.controlTag,
 
     $on: {
-      'click: do nothing when readonly': (e, el) => {
+      'click: do nothing when readonly': (e) => {
         if (options.readonly) e.preventDefault();
       },
-      'change: send control change event': (e, el) => {
+      'change: send control change event': (e) => {
+        let el = e.currentTarget
         el.$send('ax.appkit.form.control.change');
       },
       ...(options.controlTag || {}).$on,

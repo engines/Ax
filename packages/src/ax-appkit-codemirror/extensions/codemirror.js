@@ -8,7 +8,7 @@ ax.extensions.codemirror = function (options = {}) {
             ...options,
           }),
       a.textarea(options.value || '', {
-        style: {display: 'none'},
+        style: { display: 'none' },
         $init: (el) => {
           let intersection = new IntersectionObserver(() => {
             if (!el.$codemirror) {

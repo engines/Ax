@@ -167,7 +167,7 @@ ax.AxAppkitFetch = class {
       this.element.$nodes = [
         a['ax-appkit-fetch-response.success'](
           a.pre(JSON.stringify(body, null, 2))
-        )
+        ),
       ];
     }
   }
@@ -178,9 +178,9 @@ ax.AxAppkitFetch = class {
       let nodes = this.catchCallback(error, this.element);
       this.element.$nodes = nodes;
     } else {
-      this.element.$nodes = [a['ax-appkit-fetch-response.error'](
-        a.pre(error.message)
-      )];
+      this.element.$nodes = [
+        a['ax-appkit-fetch-response.error'](a.pre(error.message)),
+      ];
     }
   }
 

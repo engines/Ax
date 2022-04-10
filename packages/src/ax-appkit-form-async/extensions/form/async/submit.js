@@ -7,15 +7,17 @@ ax.extensions.form.async.submit = (e, el, options) => {
 
   let completeFn = () => {
     formEl.$enable && formEl.$enable();
-    var windowTop = window.scrollY;
-    var windowBottom = windowTop + window.innerHeight;
-    var outputTop = outputEl.offsetParent.offsetTop;
-    var outputBottom = outputTop + outputEl.offsetHeight;
-    if (outputBottom > windowBottom || outputTop < windowTop) {
-      outputEl.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
+    if (outputEl.isConnected) {
+      var windowTop = window.scrollY;
+      var windowBottom = windowTop + window.innerHeight;
+      var outputTop = outputEl.offsetParent.offsetTop;
+      var outputBottom = outputTop + outputEl.offsetHeight;
+      if (outputBottom > windowBottom || outputTop < windowTop) {
+        outputEl.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
         });
+      }
     }
     el.$send('ax.appkit.form.async.complete');
   };

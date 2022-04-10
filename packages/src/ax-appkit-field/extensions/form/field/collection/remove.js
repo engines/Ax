@@ -13,7 +13,8 @@ ax.extensions.form.field.collection.remove = function (f, options) {
   return f.button({
     label: '✖',
     confirm: confirmation,
-    onclick: (e, el) => {
+    onclick: (e) => {
+      let el = e.currentTarget
       var target = el.$('^ax-appkit-control-collection-item');
       let parent = target.parentElement;
       let index = Array.prototype.indexOf.call(parent.children, target);

@@ -11,8 +11,8 @@
 }(this, function(ax, dependencies={}) {
 
 const a = ax.a,
-      x = ax.x,
-      is = ax.is;
+  x = ax.x,
+  is = ax.is;
 
 ax.extensions.jsoneditor = {};
 
@@ -83,7 +83,8 @@ ax.extensions.jsoneditor.form.control = function (f, options = {}) {
       }
     },
     $on: {
-      'keydown: check for editor exit': (e, el) => {
+      'keydown: check for editor exit': (e) => {
+        let el = e.currentTarget
         if (e.keyCode == 27 && e.shiftKey) {
           // shift+ESC pressed - move focus backward
           ax.x.lib.tabable.previous(el).focus();

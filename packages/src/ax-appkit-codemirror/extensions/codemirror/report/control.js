@@ -6,7 +6,8 @@ ax.extensions.codemirror.report.control = function (r, options = {}) {
         ...options,
         codemirrorTag: {
           $on: {
-            'keydown: check for exit': (e, el) => {
+            'keydown: check for exit': (e) => {
+              let el = e.currentTarget
               let control = el.$('^ax-appkit-codemirror-control');
 
               if (control.classList.contains('fullscreen')) {
