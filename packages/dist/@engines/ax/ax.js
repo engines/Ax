@@ -320,7 +320,7 @@ ax.is.string = function (value) {
  * Determines whether value is a Tag Builder Proxy function.
  */
 ax.is.tag = function (value) {
-  return '' + ax.a.function == '' + value;
+  return ax.is.function(value) && ('' + ax.a.function == '' + value);
 };
 
 /**
@@ -1023,10 +1023,18 @@ ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
     if (property == Symbol.iterator)
       return ax.node.create.tools.query.proxy.shim.iterator(collection);
     if (/^\d+$/.test(property)) return collection[property];
-    // if (/^\$\$$/.test(property)) return collection;
-    if (/^toArray$/.test(property)) return collection;
-    if (/^forEach$/.test(property)) return (fn) => collection.forEach(fn);
-    if (/^toString$/.test(property)) return () => collection.toString();
+    if (/^\$\$$/.test(property)) return collection;
+    // if (/^toArray$/.test(property)) return collection;
+    // if (/^forEach$/.test(property)) return (fn) => collection.forEach(fn);
+    // if (/^toString$/.test(property)) return () => collection.toString();
+
+    if (
+      (/^toArray$/.test(property)) ||
+      (/^forEach$/.test(property)) ||
+      (/^toString$/.test(property))
+    ) {
+      debugger
+    }
 
     collection.forEach(function (node, i) {
       let result = node[property];
