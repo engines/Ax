@@ -73,7 +73,7 @@ ax.extensions.bootstrap.form.shim = {
           ...options.headerTag,
         },
         labelTag: {
-          class: 'mb-0',
+          class: 'mb-0 col-form-label',
         },
         bodyTag: {
           class: bodyTagClass,
@@ -449,7 +449,7 @@ ax.extensions.bootstrap.report.shim = {
         ...options.headerTag,
       },
       labelTag: {
-        class: 'mb-0',
+        class: 'mb-0 col-form-label',
       },
       bodyTag: {
         class: bodyTagClass,
