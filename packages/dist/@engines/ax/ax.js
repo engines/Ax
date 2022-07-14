@@ -320,7 +320,7 @@ ax.is.string = function (value) {
  * Determines whether value is a Tag Builder Proxy function.
  */
 ax.is.tag = function (value) {
-  return ax.is.function(value) && ('' + ax.a.function == '' + value);
+  return ax.is.function(value) && '' + ax.a.function == '' + value;
 };
 
 /**
@@ -1029,11 +1029,11 @@ ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
     // if (/^toString$/.test(property)) return () => collection.toString();
 
     if (
-      (/^toArray$/.test(property)) ||
-      (/^forEach$/.test(property)) ||
-      (/^toString$/.test(property))
+      /^toArray$/.test(property) ||
+      /^forEach$/.test(property) ||
+      /^toString$/.test(property)
     ) {
-      debugger
+      debugger;
     }
 
     collection.forEach(function (node, i) {

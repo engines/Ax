@@ -12,11 +12,11 @@ ax.node.create.tools.query.proxy.shim.get = function (collection, pending) {
     // if (/^toString$/.test(property)) return () => collection.toString();
 
     if (
-      (/^toArray$/.test(property)) ||
-      (/^forEach$/.test(property)) ||
-      (/^toString$/.test(property))
+      /^toArray$/.test(property) ||
+      /^forEach$/.test(property) ||
+      /^toString$/.test(property)
     ) {
-      debugger
+      debugger;
     }
 
     collection.forEach(function (node, i) {
