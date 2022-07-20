@@ -5,10 +5,12 @@ ax.node.create.render.nodes.append = function (element, nodes) {
     for (let node of Array.from(nodes)) {
       element.appendChild(node);
     }
-  } else {
+  } else if (ax.is.array(nodes)) {
     for (let node of nodes) {
       node = ax.node(node);
       this.append(element, node);
     }
+  } else {
+    this.append(element, [nodes]);
   }
 };
