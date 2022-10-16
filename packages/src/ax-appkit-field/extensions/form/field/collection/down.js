@@ -1,6 +1,6 @@
 ax.extensions.form.field.collection.down = function (f, options) {
   return f.button({
-    label: '⏷',
+    label: x.form.field.icons.down(),
     onclick: (e) => {
       let el = e.currentTarget;
       var target = options.itemTarget

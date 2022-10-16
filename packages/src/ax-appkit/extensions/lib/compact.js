@@ -6,7 +6,7 @@ ax.extensions.lib.compact = function (value) {
   } else if (ax.is.object(value)) {
     return compact.object(value);
   } else if (['', undefined, null].includes(value)) {
-    return '';
+    return null;
   } else {
     return value;
   }

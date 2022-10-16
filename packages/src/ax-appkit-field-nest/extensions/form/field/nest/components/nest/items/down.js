@@ -5,7 +5,7 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
   return f.button({
-    label: '⏷',
+    label: x.form.field.icons.down(),
     onclick: (e) => {
       let el = e.currentTarget;
       let itemsElement = el.$(`^${itemsTagName}`);

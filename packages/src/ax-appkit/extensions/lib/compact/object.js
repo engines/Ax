@@ -5,8 +5,7 @@ ax.extensions.lib.compact.object = function (object) {
       object[key] === null ||
       (ax.is.object(object[key]) && Object.keys(object[key]).length === 0) ||
       (ax.is.array(object[key]) && object[key].length === 0)
-    )
-      delete object[key];
+    ) delete object[key];
   }
 
   return object;

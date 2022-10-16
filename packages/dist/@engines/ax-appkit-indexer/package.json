@@ -1,0 +1,15 @@
+{
+  "name": "@engines/ax-appkit-indexer",
+  "description": "An Ax extension for indexing lists with filering and pagination.",
+  "main": "ax-appkit-indexer.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/engines/Ax.git"
+  },
+  "author": "Lachlan Douglas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/engines/Ax/issues"
+  },
+  "homepage": "https://github.com/engines/Ax/packages/ax-appkit-indexer#readme"
+}

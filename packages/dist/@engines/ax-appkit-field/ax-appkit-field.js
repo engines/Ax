@@ -335,6 +335,8 @@ ax.extensions.form.field.hint = function (options = {}) {
     : '';
 };
 
+ax.extensions.form.field.icons = {};
+
 ax.extensions.form.field.label = function (options = {}) {
   let label = options.label || x.lib.text.labelize(options.key);
   let component = a.label(label, options.labelTag || {});
@@ -729,7 +731,7 @@ ax.extensions.form.field.collection.add = function (f, options) {
 
 ax.extensions.form.field.collection.down = function (f, options) {
   return f.button({
-    label: '⏷',
+    label: x.form.field.icons.down(),
     onclick: (e) => {
       let el = e.currentTarget;
       var target = options.itemTarget
@@ -760,7 +762,7 @@ ax.extensions.form.field.collection.remove = function (f, options) {
   }
 
   return f.button({
-    label: '✖',
+    label: x.form.field.icons.remove(),
     confirm: confirmation,
     onclick: (e) => {
       let el = e.currentTarget;
@@ -784,7 +786,7 @@ ax.extensions.form.field.collection.remove = function (f, options) {
 
 ax.extensions.form.field.collection.up = function (f, options) {
   return f.button({
-    label: '⏶',
+    label: x.form.field.icons.up(),
     onclick: (e) => {
       let el = e.currentTarget;
       var target = options.itemTarget
@@ -1175,7 +1177,7 @@ ax.extensions.form.field.controls.textarea = (f, options = {}) => {
   let controlTagOptions = {
     $init: (el) => {
       setTimeout(() => {
-        el.$resize;
+        el.$resize();
         // el.$valid()
       }, 0);
     },
@@ -1246,6 +1248,69 @@ ax.extensions.form.field.controls.textarea = (f, options = {}) => {
 
   return a['ax-appkit-form-control'](f.textarea(options), controlTagOptions);
 };
+
+ax.extensions.form.field.icons.down = () =>
+  a({
+    $tag: ['http://www.w3.org/2000/svg', 'svg'],
+    height: 22,
+    width: 13,
+    viewBox: '0 0 22 13',
+    $nodes: [
+      a({
+        $tag: ['http://www.w3.org/2000/svg', 'g'],
+        transform: 'scale(0.04)',
+        $nodes: [
+          a({
+            $tag: ['http://www.w3.org/2000/svg', 'path'],
+            style: { fill: 'currentColor' },
+            d: `M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z`,
+          }),
+        ],
+      }),
+    ],
+  });
+
+ax.extensions.form.field.icons.remove = () =>
+  a({
+    $tag: ['http://www.w3.org/2000/svg', 'svg'],
+    height: 22,
+    width: 14,
+    viewBox: '0 0 22 14',
+    $nodes: [
+      a({
+        $tag: ['http://www.w3.org/2000/svg', 'g'],
+        transform: 'scale(0.04)',
+        $nodes: [
+          a({
+            $tag: ['http://www.w3.org/2000/svg', 'path'],
+            style: { fill: 'currentColor' },
+            d: `M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z`,
+          }),
+        ],
+      }),
+    ],
+  });
+
+ax.extensions.form.field.icons.up = () =>
+  a({
+    $tag: ['http://www.w3.org/2000/svg', 'svg'],
+    height: 22,
+    width: 13,
+    viewBox: '0 0 22 13',
+    $nodes: [
+      a({
+        $tag: ['http://www.w3.org/2000/svg', 'g'],
+        transform: 'scale(0.04)',
+        $nodes: [
+          a({
+            $tag: ['http://www.w3.org/2000/svg', 'path'],
+            style: { fill: 'currentColor' },
+            d: `M9.39 265.4l127.1-128C143.6 131.1 151.8 128 160 128s16.38 3.125 22.63 9.375l127.1 128c9.156 9.156 11.9 22.91 6.943 34.88S300.9 320 287.1 320H32.01c-12.94 0-24.62-7.781-29.58-19.75S.2333 274.5 9.39 265.4z`,
+          }),
+        ],
+      }),
+    ],
+  });
 
 ax.extensions.report.field.controls.checkbox = function (r, options) {
   let controlTagOptions = {

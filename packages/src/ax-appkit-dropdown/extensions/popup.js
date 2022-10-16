@@ -106,7 +106,10 @@ ax.extensions.popup = function (component, options = {}) {
   return a['ax-appkit-context'](
     [
       a['ax-appkit-context-content'](component, contentTagOptions),
-      a['ax-appkit-context-popup'](popupTagOptions),
+      a.br,
+      a['ax-appkit-context-popup-wrapper'](
+        a['ax-appkit-context-popup'](popupTagOptions),
+      ),
     ],
     contextTagOptions
   );

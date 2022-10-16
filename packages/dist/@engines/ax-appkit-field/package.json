@@ -1,6 +1,5 @@
 {
   "name": "@engines/ax-appkit-field",
-  "version": "0.0.33",
   "description": "An Ax extension that adds a field control to the ax-appkit-kit form builder and report builder.",
   "main": "ax-appkit-field.js",
   "repository": {

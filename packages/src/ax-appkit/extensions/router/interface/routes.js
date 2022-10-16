@@ -54,10 +54,10 @@ ax.extensions.router.interface.routes = (setup) => {
       $init: init,
       $nodes: component,
 
-      $reload: (el) => () => {
-        el.$matched = false;
-        el.$('^ax-appkit-router').$pop();
-      },
+      // $reload: (el) => () => {
+      //   el.$matched = false;
+      //   el.$('^ax-appkit-router').$pop();
+      // },
 
       $scrollToAnchor: (el) => () => {
         if (config.anchor) {

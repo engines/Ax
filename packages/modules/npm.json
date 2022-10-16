@@ -63,6 +63,10 @@
         "description": "An Ax extension that makes ax-appkit-kit forms submit asynchronously.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-form-async#readme"
       },
+      "ax-appkit-indexer": {
+        "description": "An Ax extension for indexing lists with filering and pagination.",
+        "homepage": "https://github.com/engines/Ax/packages/ax-appkit-indexer#readme"
+      },
       "ax-appkit-jsoneditor": {
         "description": "An Ax extension for JSONEditor.",
         "homepage": "https://github.com/engines/Ax/packages/ax-appkit-jsoneditor#readme"

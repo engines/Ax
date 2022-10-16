@@ -259,7 +259,10 @@ ax.extensions.popup = function (component, options = {}) {
   return a['ax-appkit-context'](
     [
       a['ax-appkit-context-content'](component, contentTagOptions),
-      a['ax-appkit-context-popup'](popupTagOptions),
+      a.br,
+      a['ax-appkit-context-popup-wrapper'](
+        a['ax-appkit-context-popup'](popupTagOptions),
+      ),
     ],
     contextTagOptions
   );
@@ -268,6 +271,11 @@ ax.extensions.popup = function (component, options = {}) {
 ax.css({
   'ax-appkit-context': {
     $: {
+      display: 'inline-block',
+    },
+  },
+  'ax-appkit-context-popup-wrapper': {
+    $: {
       position: 'relative',
     },
   },
@@ -275,12 +283,13 @@ ax.css({
     $: {
       display: 'none',
       left: '0px',
+      position: 'relative',
     },
   },
   'ax-appkit-menu': {
     $: {
       display: 'block',
-      width: '150px',
+      minWidth: '150px',
       zIndex: 1,
     },
     'ax-appkit-menu-item': {
@@ -376,7 +385,7 @@ ax.extensions.menu.item = (item, options = {}) => {
   let openSubmenu = (el, e) => {
     e.preventDefault();
     let target = el.$('ax-appkit-menu-submenu');
-    let submenus = el.$('^ax-appkit-menu').$$('ax-appkit-menu-submenu');
+    let submenus = el.$('^ax-appkit-menu').$$('ax-appkit-menu-submenu').$$;
 
     for (let i in submenus) {
       let submenu = submenus[i];

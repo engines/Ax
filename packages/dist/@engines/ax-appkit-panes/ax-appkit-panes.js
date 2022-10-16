@@ -21,27 +21,23 @@ ax.extensions.panes = (options = {}) => {
 
   let listeners;
 
-  let clear = (e) => {
-    let el = e.currentTarget;
+  let clear = (e, el) => {
     el.classList.remove('dragable');
     window.document.removeEventListener('mousemove', listeners.mousemove);
     window.document.removeEventListener('mouseup', listeners.mouseup);
   };
 
-  let move = (e) => {
-    let el = e.currentTarget;
-    if (e.target != document) {
-      let percent;
-      if (options.vertical) {
-        let position = el.clientHeight - (e.clientY - el.offsetTop);
-        percent = (100 * position) / el.clientHeight;
-      } else {
-        let position = el.clientWidth - (e.clientX - el.offsetLeft);
-        percent = 100 * (1 - position / el.clientWidth);
-      }
-      el.$percent = percent;
-      el.$resize();
+  let move = (e, el) => {
+    let percent;
+    if (options.vertical) {
+      let position = el.clientHeight - (e.clientY - el.offsetTop);
+      percent = (100 * position) / el.clientHeight;
+    } else {
+      let position = el.clientWidth - (e.clientX - el.offsetLeft);
+      percent = 100 * (1 - position / el.clientWidth);
     }
+    el.$percent = percent;
+    el.$resize();
   };
 
   return a['ax-appkit-panes'](
@@ -53,14 +49,19 @@ ax.extensions.panes = (options = {}) => {
             let el = e.currentTarget;
             e.preventDefault();
             let panesEl = el.$('^ax-appkit-panes');
-            panesEl.classList.add('dragable');
-            listeners = {
-              mousemove: (e) => move(e, panesEl),
-              mouseup: (e) => clear(e, panesEl),
-            };
-            clear(e, panesEl);
-            window.document.addEventListener('mousemove', listeners.mousemove);
-            window.document.addEventListener('mouseup', listeners.mouseup);
+            if (panesEl.classList.contains('dragable')) {
+              clear(e, panesEl)
+            } else {
+              panesEl.classList.add('dragable');
+              listeners = {
+                mousemove: (e) => move(e, panesEl),
+                mouseup: (e) => clear(e, panesEl),
+              };
+              clear(e, panesEl);
+              window.document.addEventListener('mousemove', listeners.mousemove);
+              window.document.addEventListener('mouseup', listeners.mouseup);
+
+            }
           },
         },
       }),

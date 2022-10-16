@@ -1,6 +1,11 @@
 ax.css({
   'ax-appkit-context': {
     $: {
+      display: 'inline-block',
+    },
+  },
+  'ax-appkit-context-popup-wrapper': {
+    $: {
       position: 'relative',
     },
   },
@@ -8,12 +13,13 @@ ax.css({
     $: {
       display: 'none',
       left: '0px',
+      position: 'relative',
     },
   },
   'ax-appkit-menu': {
     $: {
       display: 'block',
-      width: '150px',
+      minWidth: '150px',
       zIndex: 1,
     },
     'ax-appkit-menu-item': {

@@ -174,7 +174,7 @@ ax.extensions.router = (options = {}) => {
 
 ax.extensions.time = function (options = {}) {
   return a.time({
-    $init: (el) => setInterval(el.$render, 1000),
+    $init: (el) => options.ticking ? setInterval(el.$render, 1000) : null,
     $text: () => new Date().toLocaleTimeString(),
     ...options.timeTag,
   });
@@ -429,7 +429,7 @@ ax.extensions.lib.compact = function (value) {
   } else if (ax.is.object(value)) {
     return compact.object(value);
   } else if (['', undefined, null].includes(value)) {
-    return '';
+    return null;
   } else {
     return value;
   }
@@ -899,8 +899,7 @@ ax.extensions.lib.compact.object = function (object) {
       object[key] === null ||
       (ax.is.object(object[key]) && Object.keys(object[key]).length === 0) ||
       (ax.is.array(object[key]) && object[key].length === 0)
-    )
-      delete object[key];
+    ) delete object[key];
   }
 
   return object;
@@ -1434,6 +1433,7 @@ ax.extensions.router.interface.open = (config) => (
       path = `${path}/${locator}`;
     }
   }
+  
   config.router.$open(path, query, anchor);
 };
 
@@ -1493,10 +1493,10 @@ ax.extensions.router.interface.routes = (setup) => {
       $init: init,
       $nodes: component,
 
-      $reload: (el) => () => {
-        el.$matched = false;
-        el.$('^ax-appkit-router').$pop();
-      },
+      // $reload: (el) => () => {
+      //   el.$matched = false;
+      //   el.$('^ax-appkit-router').$pop();
+      // },
 
       $scrollToAnchor: (el) => () => {
         if (config.anchor) {

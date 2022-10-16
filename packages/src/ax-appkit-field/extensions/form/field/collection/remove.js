@@ -11,7 +11,7 @@ ax.extensions.form.field.collection.remove = function (f, options) {
   }
 
   return f.button({
-    label: '✖',
+    label: x.form.field.icons.remove(),
     confirm: confirmation,
     onclick: (e) => {
       let el = e.currentTarget;

@@ -20,7 +20,7 @@ ax.extensions.report.field.nest = {};
 
 ax.extensions.form.field.nest.components = {};
 
-ax.extensions.form.field.nest.lib = {};
+// ax.extensions.form.field.nest.lib = {};
 
 ax.extensions.form.field.nest.shim = {
   controls: {
@@ -460,7 +460,7 @@ ax.extensions.form.field.nest.components.nest.items.down = function (
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
   return f.button({
-    label: '⏷',
+    label: x.form.field.icons.down(),
     onclick: (e) => {
       let el = e.currentTarget;
       let itemsElement = el.$(`^${itemsTagName}`);
@@ -511,7 +511,7 @@ ax.extensions.form.field.nest.components.nest.items.remove = function (
   }
 
   return f.button({
-    label: '✖',
+    label: x.form.field.icons.remove(),
     confirm: confirmation,
     onclick: (e) => {
       let el = e.currentTarget;
@@ -540,7 +540,7 @@ ax.extensions.form.field.nest.components.nest.items.up = function (
   let itemsTagName = options.itemsTagName || 'ax-appkit-form-nest-items';
 
   return f.button({
-    label: '⏶',
+    label: x.form.field.icons.up(),
     onclick: (e) => {
       let el = e.currentTarget;
       let itemsElement = el.$(`^${itemsTagName}`);

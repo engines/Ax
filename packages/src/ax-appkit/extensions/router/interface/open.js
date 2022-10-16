@@ -14,5 +14,6 @@ ax.extensions.router.interface.open = (config) => (
       path = `${path}/${locator}`;
     }
   }
+  
   config.router.$open(path, query, anchor);
 };

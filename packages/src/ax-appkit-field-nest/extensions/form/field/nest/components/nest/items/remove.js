@@ -15,7 +15,7 @@ ax.extensions.form.field.nest.components.nest.items.remove = function (
   }
 
   return f.button({
-    label: '✖',
+    label: x.form.field.icons.remove(),
     confirm: confirmation,
     onclick: (e) => {
       let el = e.currentTarget;

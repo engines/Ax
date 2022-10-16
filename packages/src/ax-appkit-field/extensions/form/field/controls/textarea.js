@@ -2,7 +2,7 @@ ax.extensions.form.field.controls.textarea = (f, options = {}) => {
   let controlTagOptions = {
     $init: (el) => {
       setTimeout(() => {
-        el.$resize;
+        el.$resize();
         // el.$valid()
       }, 0);
     },
